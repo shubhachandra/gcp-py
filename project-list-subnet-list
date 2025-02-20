@@ -8,3 +8,20 @@ foreach ($project in $projects) {
 }
 
 
+$projects = Get-Content projects.txt
+
+foreach ($project in $projects) {
+    Write-Output "Fetching logs for project: $project"
+    gcloud logging read `
+        "protoPayload.methodName=\"v1.compute.subnetworks.insert\"" `
+        --project=$project --format=json | Out-File -Append subnet_creation_logs.json
+}
+
+The demarcation for non-routable addresses, as mentioned, is set using 100.0.0.0/10. We have defined four SDLC environments—Core, Non-Prod, Prod, and Sandbox—for each region (us-central1, us-east1, us-south1, us-east4), with a /15 subnet allocated for SDLC in each region.
+
+As per the current demarcation, I am reserving 50% of the subnet space in each SDLC environment for each region. Based on historical usage of assigned subnets:
+
+/24 is utilized around 5-6%,
+/25 accounts for 10% of the usage,
+80% of the requests are for /26.
+I have prepared the subnet allocation accordingly.
