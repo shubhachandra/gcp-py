@@ -1,0 +1,47 @@
+To **list all projects you have access to** and then **fetch audit logs for subnet creation**, follow these steps:
+
+---
+
+### **1. List All Projects**
+Run the following command to get a list of all projects you have access to:
+```sh
+gcloud projects list --format="value(projectId)" > projects.txt
+```
+
+---
+
+### **2. Fetch Audit Logs for Subnet Creation**
+Now, loop through each project and fetch subnet creation logs:
+
+```sh
+while read project; do
+    echo "Fetching logs for project: $project"
+    gcloud logging read \
+        'protoPayload.methodName="v1.compute.subnetworks.insert"' \
+        --project="$project" --format=json >> subnet_creation_logs.json
+done < projects.txt
+```
+
+---
+
+### **3. Convert JSON Logs to CSV**
+Use `jq` to extract relevant fields and save them as CSV:
+```sh
+echo "timestamp,project,actor_email,resource_name" > subnet_creation_logs.csv
+jq -r '.[] | [.timestamp, .resourceLabels.project_id, .protoPayload.authenticationInfo.principalEmail, .protoPayload.resourceName] | @csv' subnet_creation_logs.json >> subnet_creation_logs.csv
+```
+
+---
+
+### **4. Verify and Download**
+- Open `subnet_creation_logs.csv` to verify the logs.
+- Use:
+  ```sh
+  cat subnet_creation_logs.csv
+  ```
+  or download the file if running on Cloud Shell.
+
+---
+
+### **Automate This with a Script**
+If you want to **automate** this process, I can generate a full Bash script for you. Let me know if you need that! 🚀
