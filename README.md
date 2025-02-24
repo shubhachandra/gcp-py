@@ -15,3 +15,5 @@ resource "null_resource" "trigger_destroy" {
     command = "terraform destroy -target=google_compute_subnetwork.my_subnet -auto-approve"
   }
 }
+
+We need to create a dashboard for IP demarcation if an IPAM system is not available. The dashboard should display commonly used IP ranges, highlight ranges that are nearly exhausted with color coding, automatically update subnet provisioning data after the Excel sheet is refreshed, and show the available reserved IPs for each block.
