@@ -1,0 +1,7 @@
+gcloud projects list --format="value(projectId)" | while read project; do
+    VM_COUNT=$(gcloud compute instances list --project "$project" --format="value(name)" | wc -l)
+    if [[ $VM_COUNT -gt 0 ]]; then
+        echo "Project: $project"
+        gcloud compute instances list --project "$project" --format="table(name, zone, networkInterfaces[].network, networkInterfaces[].networkIP, networkInterfaces[].aliasIpRanges)"
+    fi
+done
