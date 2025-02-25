@@ -1,7 +1,68 @@
-gcloud projects list --format="value(projectId)" | while read project; do
-    VM_COUNT=$(gcloud compute instances list --project "$project" --format="value(name)" | wc -l)
-    if [[ $VM_COUNT -gt 0 ]]; then
-        echo "Project: $project"
-        gcloud compute instances list --project "$project" --format="table(name, zone, networkInterfaces[].network, networkInterfaces[].networkIP, networkInterfaces[].aliasIpRanges)"
+gcloud projects list --format="csv[no-heading](projectId, name)" > projects.csv
+
+#!/bin/bash
+
+# Define output CSV
+OUTPUT_FILE="projects_with_resources.csv"
+
+# Header for CSV
+echo "Project ID, Project Name, Has Resources" > $OUTPUT_FILE
+
+# Read projects from CSV
+while IFS=, read -r project_id project_name
+do
+    # Check if project has compute instances
+    instances=$(gcloud compute instances list --project "$project_id" --format="value(name)" 2>/dev/null)
+
+    # Check if project has storage buckets
+    buckets=$(gcloud storage buckets list --project "$project_id" --format="value(name)" 2>/dev/null)
+
+    # Check if project has resources
+    if [[ -n "$instances" || -n "$buckets" ]]; then
+        has_resources="Yes"
+    else
+        has_resources="No"
     fi
-done
+
+    # Append to output CSV
+    echo "$project_id, $project_name, $has_resources" >> $OUTPUT_FILE
+
+done < projects.csv
+
+# Display output file
+cat $OUTPUT_FILE
+
+
+
+# Define output CSV
+$OutputFile = "projects_with_resources.csv"
+
+# Add CSV Header
+"Project ID, Project Name, Has Resources" | Out-File -FilePath $OutputFile -Encoding utf8
+
+# Read projects from CSV
+$projects = Import-Csv -Path "projects.csv" -Header "ProjectID", "ProjectName"
+
+foreach ($project in $projects) {
+    $projectID = $project.ProjectID
+    $projectName = $project.ProjectName
+
+    # Check if Compute Instances exist
+    $instances = gcloud compute instances list --project $projectID --format="value(name)" 2>$null
+
+    # Check if Storage Buckets exist
+    $buckets = gcloud storage buckets list --project $projectID --format="value(name)" 2>$null
+
+    # Determine if project has resources
+    if ($instances -or $buckets) {
+        $hasResources = "Yes"
+    } else {
+        $hasResources = "No"
+    }
+
+    # Append results to CSV
+    "$projectID, $projectName, $hasResources" | Out-File -FilePath $OutputFile -Append -Encoding utf8
+}
+
+# Display output
+Get-Content $OutputFile
