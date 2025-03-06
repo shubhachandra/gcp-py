@@ -1,2 +1,3 @@
 
 =IF(ISNUMBER(MATCH(A2, Sheet2!A:A, 0)), "DELETE", "KEEP")
+=IFERROR(MID(A2, SEARCH("IpCidrRange", A2), 25), "")
