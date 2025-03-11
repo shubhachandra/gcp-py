@@ -1,3 +1,25 @@
+from google.auth import default
+from google.cloud import storage
+
+try:
+    # Check authentication
+    credentials, project = default()
+    print(f"✅ Authenticated successfully. Project: {project}")
+
+    # Test API call (list buckets in GCP project)
+    client = storage.Client()
+    buckets = list(client.list_buckets())
+    print(f"✅ Successfully accessed GCP resources. Buckets: {[bucket.name for bucket in buckets]}")
+
+except Exception as e:
+    print(f"❌ Authentication failed: {e}")
+
+
+
+
+
+
+
 import requests
 session = requests.Session()
 adapter = requests.adapters.HTTPAdapter(pool_connections=10, pool_maxsize=10, max_retries=5)
