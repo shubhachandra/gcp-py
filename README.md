@@ -1,3 +1,13 @@
+import requests
+session = requests.Session()
+adapter = requests.adapters.HTTPAdapter(pool_connections=10, pool_maxsize=10, max_retries=5)
+session.mount('https://', adapter)
+
+response = session.get("https://your-api-url")
+print(response.text)
+
+
+
 Key Considerations for Subnet Design
 IP Allocation Requirements: Each service needs a certain number of IP addresses.
 Overlapping IP Ranges: Some services require separate IP blocks (e.g., Composer needs a dedicated range for GKE).
