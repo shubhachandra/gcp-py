@@ -1,0 +1,59 @@
+from google.cloud import compute_v1
+
+def list_subnets_with_ip_ranges(project_id, region):
+    """Lists subnets in a project and region with their IP ranges, using pagination."""
+
+    subnet_client = compute_v1.SubnetworksClient()
+
+    request = compute_v1.ListSubnetworksRequest(
+        project=project_id,
+        region=region,
+    )
+
+    page_result = subnet_client.list(request=request)
+
+    for subnet in page_result:
+        print(f"Subnet Name: {subnet.name}")
+        print(f"  Network: {subnet.network}")
+        print(f"  IP CIDR Range: {subnet.ip_cidr_range}")
+        print(f"  Secondary IP Ranges:")
+        if subnet.secondary_ip_ranges:
+            for secondary_range in subnet.secondary_ip_ranges:
+                print(f"    Name: {secondary_range.range_name}, IP CIDR Range: {secondary_range.ip_cidr_range}")
+        else:
+            print("    None")
+        print("-" * 20)
+    while page_result.next_page_token:
+        request = compute_v1.ListSubnetworksRequest(
+            project=project_id,
+            region=region,
+            page_token=page_result.next_page_token,
+        )
+        page_result = subnet_client.list(request=request)
+        for subnet in page_result:
+            print(f"Subnet Name: {subnet.name}")
+            print(f"  Network: {subnet.network}")
+            print(f"  IP CIDR Range: {subnet.ip_cidr_range}")
+            print(f"  Secondary IP Ranges:")
+            if subnet.secondary_ip_ranges:
+                for secondary_range in subnet.secondary_ip_ranges:
+                    print(f"    Name: {secondary_range.range_name}, IP CIDR Range: {secondary_range.ip_cidr_range}")
+            else:
+                print("    None")
+            print("-" * 20)
+
+def main(project_id, region):
+    list_subnets_with_ip_ranges(project_id, region)
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="List subnets in a GCP project and region."
+    )
+    parser.add_argument("project_id", help="Your GCP project ID")
+    parser.add_argument("region", help="The GCP region (e.g., us-central1)")
+
+    args = parser.parse_args()
+
+    main(args.project_id, args.region)
