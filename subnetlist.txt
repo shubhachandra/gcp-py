@@ -5,3 +5,16 @@
 | Medium      | 2 - 10          | 2-5             | 7-12         | Medium      | 4-8       | 10-15 | 8-12     | 8-12 DAGs  | 8-12             | 8-12             | /26 (62 IPs)          | /22 (1022 IPs)        | /24 (254 IPs)                |
 | Large       | 10 - 50         | 6-10            | 13-20        | High        | 8-10      | 15-20 | 12-16    | 12-16 DAGs | 15-20            | 15-20            | /25 (126 IPs)         | /21 (2046 IPs)        | /24 (254 IPs)                |
 | Extra Large | 50+             | 11+             | 21+          | Very High   | 10+       | 20+   | 15+      | 15+ DAGs   | 20+              | 20+              | /24 or larger         | /20 (4094 IPs)        | /23 (510 IPs)                |
+
+
+Hello Team,
+
+I am part of the ACT GCP Network Team. We are currently in the process of understanding workload requirements, including data size, resource consumption, and tee sizes. To accurately define subnet allocations and ensure optimal resource provisioning, please complete the following questionnaire:
+
+[Insert Questionnaire Link Here]
+
+Your responses will help us categorize workloads by tee sizes (Extra Small, Small, Medium, Large, Extra Large) based on data volume, concurrent jobs, and resources needed.
+
+We are also open to discussing your requirements or suggestions further through meetings or email conversations. Feel free to reach out if you'd prefer direct discussion or if you have any suggestions or changes you'd like to propose.
+
+Please fill out the form by [Insert Deadline Here].
