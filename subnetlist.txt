@@ -1,23 +1,61 @@
-Guide Operations Team on Resolving Authentication and Connectivity Errors with Python Scripts
+Team Utilization and Roadmap Showcase
 
-Description:
+Completed:
 
-The operations team might encounter authentication and connectivity errors when executing the Python scripts. To proactively resolve this, they should follow the outlined configuration process:
+Addressed IP overlaps; structured clear subnet demarcation across regions.
 
-Create a new configuration.
+Transitioned subnet provisioning to Ops team, boosting Network team's productivity.
 
-Set the appropriate username.
+Established groundwork for Palo Alto implementations and IPAM alternatives.
 
-Set the certificate PEM file. (Best practice: Copy the PEM file to the download environment and replace the user ID.)
+In Progress:
 
-Ensure authentication via gcloud auth login.
+NIC Project: Reclaim unused IP CIDRs (inactive >3 months).
 
-Ensure application default login with gcloud auth application-default login before running the script.
+Future Plans:
 
-Tasks:
+Optimize network infrastructure to reduce latency.
 
-Task 1: Reach out to the operations team, guide them through the configuration process, and collect evidence of successful execution.
+Expand focus on strategic network engineering.
 
-Task 2: Document the configuration steps and update the relevant Confluence page.
+Build comprehensive network utilization dashboard using advanced analyzers.
 
-Task 3: Create an FAQ section in Confluence addressing common errors and troubleshooting steps related to script execution.
+Establish a safety net for subnet expansions and future demands.
+
+Build new US region (us-region), specifically "us-south" to support US workloads efficiently and reduce latency between on-premises and cloud resources.
+
+Completed:
+
+Developed Python script to verify subnet availability.
+
+Facilitated subnet creation handover to Operations team.
+
+Provided a robust alternative to Infoblox-IPAM tool.
+
+Created comprehensive documentation and knowledge transfer (KT).
+
+Delivered demo video for seamless adoption by Operations team.
+
+Work in Progress:
+
+Post-Sentinel policy rollout: Conducting BDD testing and modifying existing modules for compliance.
+
+Planned:
+
+Developing Terraform code for AD sandbox (physical separation).
+
+Implementing ProdDiscovery VOC in QA-Ent environment (pending refinement).
+
+Showcase: Sai Kumar's Work
+
+Completed:
+
+Successfully provisioned 9 subnets for various application teams: GDW, Pyfarm, Nonprod, SIT, Blade, and ADMF.
+
+In Progress:
+
+Continuing subnet provisioning for additional application team requests.
+
+Future Plans:
+
+Further streamline subnet provisioning processes for enhanced efficiency and scalability.
