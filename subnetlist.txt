@@ -1,20 +1,23 @@
-| Tee-Size    | Data Size (TB)  | Concurrent Jobs | Worker Nodes | Autoscaling | GKE Nodes | Pods  | Services | DAGs       | Dataflow Workers | Dataproc Workers | Subnet CIDR (Primary) | Pod Range (Secondary) | Services Range (Secondary)   |
-|-------------|-----------------|-----------------|--------------|-------------|-----------|-------|----------|------------|------------------|------------------|-----------------------|-----------------------|------------------------------|
-| Extra Small | < 0.5           | 1-2             | 2-4          | Low         | 2-4       | 5-8   | 2-4      | 2-4 DAGs   | 2-4              | 2-4              | /28 (14 IPs)          | /26 (62 IPs)          | /28 (14 IPs)                 |
-| Small       | 0.5 - 2         | 2-5             | 4-6          | Medium      | 3-6       | 6-10  | 5-8      | 4-8 DAGs   | 4-8              | 4-8              | /27 (30 IPs)          | /25 (126 IPs)         | /26 (62 IPs)                 |
-| Medium      | 2 - 10          | 2-5             | 7-12         | Medium      | 4-8       | 10-15 | 8-12     | 8-12 DAGs  | 8-12             | 8-12             | /26 (62 IPs)          | /22 (1022 IPs)        | /24 (254 IPs)                |
-| Large       | 10 - 50         | 6-10            | 13-20        | High        | 8-10      | 15-20 | 12-16    | 12-16 DAGs | 15-20            | 15-20            | /25 (126 IPs)         | /21 (2046 IPs)        | /24 (254 IPs)                |
-| Extra Large | 50+             | 11+             | 21+          | Very High   | 10+       | 20+   | 15+      | 15+ DAGs   | 20+              | 20+              | /24 or larger         | /20 (4094 IPs)        | /23 (510 IPs)                |
+Guide Operations Team on Resolving Authentication and Connectivity Errors with Python Scripts
 
+Description:
 
-Hello Team,
+The operations team might encounter authentication and connectivity errors when executing the Python scripts. To proactively resolve this, they should follow the outlined configuration process:
 
-I am part of the ACT GCP Network Team. We are currently in the process of understanding workload requirements, including data size, resource consumption, and tee sizes. To accurately define subnet allocations and ensure optimal resource provisioning, please complete the following questionnaire:
+Create a new configuration.
 
-[Insert Questionnaire Link Here]
+Set the appropriate username.
 
-Your responses will help us categorize workloads by tee sizes (Extra Small, Small, Medium, Large, Extra Large) based on data volume, concurrent jobs, and resources needed.
+Set the certificate PEM file. (Best practice: Copy the PEM file to the download environment and replace the user ID.)
 
-We are also open to discussing your requirements or suggestions further through meetings or email conversations. Feel free to reach out if you'd prefer direct discussion or if you have any suggestions or changes you'd like to propose.
+Ensure authentication via gcloud auth login.
 
-Please fill out the form by [Insert Deadline Here].
+Ensure application default login with gcloud auth application-default login before running the script.
+
+Tasks:
+
+Task 1: Reach out to the operations team, guide them through the configuration process, and collect evidence of successful execution.
+
+Task 2: Document the configuration steps and update the relevant Confluence page.
+
+Task 3: Create an FAQ section in Confluence addressing common errors and troubleshooting steps related to script execution.
