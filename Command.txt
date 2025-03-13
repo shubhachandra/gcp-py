@@ -1,43 +1,43 @@
-JIRA Story for Subnet Inventory & Mapping Using Network Connectivity Center
+JIRA Story: GCP Routing & Connectivity Audit for Misconfigurations and Open Paths
 
 Title:
-Subnet Inventory & Visual Mapping Using Network Connectivity Center
+GCP Routing & Connectivity Audit for Misconfigurations and Open Paths
 
 Description:
-As a Network Administrator, I want to generate a comprehensive inventory of all subnets across the environment and visualize their associated network paths using Google Cloud Network Connectivity Center, so that I can better understand and manage network topology, connectivity, and potential issues.
+As a Network Security Engineer, I want to perform an in-depth audit of GCP subnet routing paths to identify misconfigurations, detect unintentional open paths to the Internet, and flag redundant or conflicting routes, so that I can ensure network security, compliance, and optimal connectivity.
 
-Acceptance Criteria:
-	1.	Subnet Inventory Generation
-	•	List all subnets across the cloud environment.
-	•	Capture metadata such as region, VPC, CIDR, associated firewall rules, and route tables.
-	•	Ensure data accuracy and completeness.
-	2.	Network Connectivity Center Integration
-	•	Configure Network Connectivity Center to display visual network mapping.
-	•	Verify that all subnets and interconnectivity paths are represented accurately.
-	•	Ensure live updates and visibility into subnet changes.
-	3.	Visualization & Reporting
-	•	Validate that the subnet inventory can be exported (e.g., CSV, JSON).
-	•	Provide a detailed mapping report within the Google Cloud Console.
-	•	Document any missing or misconfigured network paths.
-	4.	Security & Compliance Check
-	•	Ensure permissions and IAM roles are correctly assigned for viewing and managing Network Connectivity Center.
-	•	Validate compliance with networking policies.
-	5.	User Testing & Documentation
-	•	Conduct a review session with key stakeholders.
-	•	Provide documentation on how to interpret the subnet mapping.
-	•	Address any feedback or necessary changes.
+⸻
+
+Acceptance Criteria (Including Required GCP Tools):
+	1.	Subnet Routing Analysis
+	•	Use Cloud Asset Inventory to collect and analyze all subnet routing paths.
+	•	Identify any unexpected or misconfigured routes that could impact connectivity.
+	•	Ensure all routes follow organizational policies and best practices.
+	2.	Detection of Unintentional Open Paths to the Internet
+	•	Utilize Cloud Security Command Center (SCC) and VPC Flow Logs to detect routes that unintentionally expose resources to the public Internet.
+	•	Use Cloud Logging & Cloud Monitoring to track network activity and flag security violations.
+	•	Generate alerts and reports on any exposed subnets.
+	3.	Redundant & Conflicting Route Identification
+	•	Use VPC Network Connectivity Center to visualize routing paths and detect redundant or conflicting routes.
+	•	Cross-check Cloud Asset Inventory data to identify duplicate or conflicting entries.
+	•	Suggest corrective actions to optimize routing.
+	4.	Automated Reporting & Compliance Checks
+	•	Use Cloud Logging & Security Command Center (SCC) to generate a structured report highlighting misconfigurations and recommended fixes.
+	•	Ensure compliance with internal security policies and GCP networking best practices.
+	5.	User Review & Documentation
+	•	Conduct a review session with the networking team using reports from VPC Flow Logs and Cloud Monitoring.
+	•	Provide documentation on how to interpret and resolve flagged routing issues.
+	•	Incorporate feedback for continuous improvement and update Terraform configurations if necessary.
 
 ⸻
 
 Story Points Estimate:
+	1.	Subnet Routing Analysis – 3 Points
+	2.	Detection of Unintentional Open Paths – 5 Points
+	3.	Redundant & Conflicting Route Identification – 3 Points
+	4.	Automated Reporting & Compliance Checks – 3 Points
+	5.	User Review & Documentation – 2 Points
 
-The Story Points depend on the complexity of the environment and integration efforts. A rough breakdown is:
-	1.	Subnet Inventory Automation – 3 Points
-	2.	Network Connectivity Center Setup & Integration – 5 Points
-	3.	Visualization & Report Generation – 3 Points
-	4.	Security & Compliance Review – 2 Points
-	5.	User Testing & Documentation – 2 Points
+Total: ~16 Story Points (adjustable based on team discussion).
 
-Total: ~15 Story Points (can be adjusted based on sprint capacity and refinement discussion).
-
-
+This format integrates both the audit tasks and GCP tool requirements directly into the acceptance criteria for clarity. Let me know if you need any refinements!
