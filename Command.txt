@@ -40,4 +40,4 @@ The Story Points depend on the complexity of the environment and integration eff
 
 Total: ~15 Story Points (can be adjusted based on sprint capacity and refinement discussion).
 
-Would you like a breakdown of subtasks as well?
+
