@@ -1,23 +1,43 @@
-Here's the updated and polished showcase reflecting the latest additions:
+JIRA Story for Subnet Inventory & Mapping Using Network Connectivity Center
 
----
+Title:
+Subnet Inventory & Visual Mapping Using Network Connectivity Center
 
-**Preetham – Work Utilization Showcase**
+Description:
+As a Network Administrator, I want to generate a comprehensive inventory of all subnets across the environment and visualize their associated network paths using Google Cloud Network Connectivity Center, so that I can better understand and manage network topology, connectivity, and potential issues.
 
-### Planned Work:
-- Implement and configure a new 100Gb AD interconnection in Ashburn.
-- Develop and deploy Terraform Infrastructure-as-Code (IaC) across QA Sandbox, QA Non-Prod, and QA Prod environments to achieve reliable physical separation between environments.
+Acceptance Criteria:
+	1.	Subnet Inventory Generation
+	•	List all subnets across the cloud environment.
+	•	Capture metadata such as region, VPC, CIDR, associated firewall rules, and route tables.
+	•	Ensure data accuracy and completeness.
+	2.	Network Connectivity Center Integration
+	•	Configure Network Connectivity Center to display visual network mapping.
+	•	Verify that all subnets and interconnectivity paths are represented accurately.
+	•	Ensure live updates and visibility into subnet changes.
+	3.	Visualization & Reporting
+	•	Validate that the subnet inventory can be exported (e.g., CSV, JSON).
+	•	Provide a detailed mapping report within the Google Cloud Console.
+	•	Document any missing or misconfigured network paths.
+	4.	Security & Compliance Check
+	•	Ensure permissions and IAM roles are correctly assigned for viewing and managing Network Connectivity Center.
+	•	Validate compliance with networking policies.
+	5.	User Testing & Documentation
+	•	Conduct a review session with key stakeholders.
+	•	Provide documentation on how to interpret the subnet mapping.
+	•	Address any feedback or necessary changes.
 
-### Work In Progress:
-- Analyzing asymmetric patterns in return traffic to provide optimization insights.
-- Supporting multiple ad-hoc tasks, including troubleshooting and resolving issues such as fixing the `wf service-directory-factory` module to comply with Sentinel policy.
-- Developing Hybrid NAT module.
+⸻
 
-### Completed Work:
-- Conducted network discovery to gather routes in AD alongside the SNS team.
-- Successfully ordered, installed, and configured interconnections (one pair each) in Dallas and Chicago, including MACsec and BGP setups for production and non-production environments.
-- Collaborated effectively with Cabling and Circuit teams to expedite the setup of new interconnections.
-- Completed BDD testing to meet compliance requirements.
-- Achieved SII compliance for all networking modules.
+Story Points Estimate:
 
----
+The Story Points depend on the complexity of the environment and integration efforts. A rough breakdown is:
+	1.	Subnet Inventory Automation – 3 Points
+	2.	Network Connectivity Center Setup & Integration – 5 Points
+	3.	Visualization & Report Generation – 3 Points
+	4.	Security & Compliance Review – 2 Points
+	5.	User Testing & Documentation – 2 Points
+
+Total: ~15 Story Points (can be adjusted based on sprint capacity and refinement discussion).
+
+Would you like a breakdown of subtasks as well?
