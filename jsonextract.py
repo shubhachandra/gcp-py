@@ -1,26 +1,32 @@
-import pandas as pd
 import json
+import csv
 
-# Load CSV file
-input_file = "your_file.csv"  # Replace with your actual file name
-df = pd.read_csv(input_file)
+# Input and output file paths
+input_json_file = "subnets.json"
+output_csv_file = "subnets.csv"
 
-# Column containing JSON data (replace 'json_column' with your actual column name)
-json_column = "json_column_name"  # Update with the actual column name
+# Load the JSON data
+with open(input_json_file, "r") as json_file:
+    subnets_data = json.load(json_file)
 
-# Function to extract "IpCidrRange"
-def extract_ip_cidr(json_data):
-    try:
-        data = json.loads(json_data)  # Convert string to dictionary
-        return data.get("IpCidrRange", "N/A")  # Extract value or return 'N/A' if missing
-    except (json.JSONDecodeError, TypeError):
-        return "Invalid JSON"  # Handle errors
+# Define the CSV headers
+csv_headers = ["name", "region", "network", "ipCidrRange", "creationTimestamp"]
 
-# Create a new column with extracted values
-df["IpCidrRange"] = df[json_column].apply(extract_ip_cidr)
+# Write to CSV file
+with open(output_csv_file, "w", newline="") as csv_file:
+    csv_writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
 
-# Save the updated CSV
-output_file = "updated_file.csv"
-df.to_csv(output_file, index=False)
+    # Write header row
+    csv_writer.writeheader()
 
-print(f"Updated CSV saved as: {output_file}")
+    # Write data rows
+    for subnet in subnets_data:
+        csv_writer.writerow({
+            "name": subnet.get("name", ""),
+            "region": subnet.get("region", "").split("/")[-1],  # Extract region name
+            "network": subnet.get("network", "").split("/")[-1],  # Extract network name
+            "ipCidrRange": subnet.get("ipCidrRange", ""),
+            "creationTimestamp": subnet.get("creationTimestamp", "")
+        })
+
+print(f"CSV file '{output_csv_file}' has been generated successfully.")
