@@ -1,0 +1,17 @@
+Your sentence is mostly clear but could be refined for better readability. Here’s a revised version:
+
+⸻
+
+Revised Version:
+
+The code generates Terraform scripts that the Ops team can copy, paste, and use. They only need to commit, push, and raise a PR. The Network team ensures that the Excel sheets are updated and evidence is provided, allowing us to approve the PR.
+
+Currently, there are six IP ranges, each clearly assigned for specific SDLC environments. The Ops team will pick the appropriate IP range from the Excel sheet, ensuring no overlap or conflicts in the selection process. The scripts also validate IP assignments to prevent conflicts.
+
+Version Control: You make a valid point, but since this is a temporary solution, we are currently using a color-coding technique—green for used IPs and no color for unused IPs—to help avoid conflicts.
+
+Python Version: We have defined the environment setup steps required to run the code.
+
+⸻
+
+This version improves readability and makes the process flow more structured. Let me know if you’d like any further refinements!
