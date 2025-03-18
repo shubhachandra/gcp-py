@@ -11,14 +11,17 @@ with open(INPUT_JSON, 'r') as json_file:
 # Extract subnet utilization details
 subnet_data = []
 for entry in logs_data:
-    subnet_utilization = entry.get('subnetIPultilization', {})
-    subnet_uri = subnet_utilization.get('subnetURI', 'Unknown')
-    allocation_ratio = subnet_utilization.get('allocationRatio', 'N/A')
+    json_payload = entry.get('jsonPayload', {})
+    ip_utilization_info = json_payload.get('ipUtilizationInfo', [])
 
-    subnet_data.append({
-        'Subnet URI': subnet_uri,
-        'Allocation Ratio': allocation_ratio
-    })
+    for info in ip_utilization_info:
+        subnet_uri = info.get('subnetUri', 'Unknown')
+        allocation_ratio = info.get('allocationRatio', 'N/A')
+
+        subnet_data.append({
+            'Subnet URI': subnet_uri,
+            'Allocation Ratio': allocation_ratio
+        })
 
 # Create DataFrame and export to CSV
 subnet_df = pd.DataFrame(subnet_data).drop_duplicates()
