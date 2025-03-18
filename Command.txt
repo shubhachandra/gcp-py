@@ -1,31 +1,22 @@
-from google.cloud import logging_v2
 import pandas as pd
+import json
 
-PROJECT_ID = 'your-gcp-project-id'
-NETWORK_ID = 'your-network-id'
+INPUT_JSON = 'subnet_logs.json'
 OUTPUT_CSV = 'subnet_allocation_report.csv'
 
-# Initialize the Cloud Logging client (default credentials)
-logging_client = logging_v2.Client(project=PROJECT_ID)
+# Read JSON file
+with open(INPUT_JSON, 'r') as json_file:
+    logs_data = json.load(json_file)
 
-# Define filter for Network Analyzer audit logs
-log_filter = (
-    f'logName="projects/{PROJECT_ID}/logs/networkanalyzer.googleapis.com%2Fanalyser_reports" '
-    f'jsonPayload.resourcename="//compute.googleapis.com/projects/{NETWORK_ID}"'
-)
-
-# Retrieve log entries
-entries = logging_client.list_entries(filter_=log_filter)
-
-# Extract subnet details
+# Extract subnet utilization details
 subnet_data = []
-for entry in entries:
-    payload = entry.payload
-    subnet_name = payload.get('subnet', 'Unknown')
-    allocation_ratio = payload.get('allocationRatio', 'N/A')
+for entry in logs_data:
+    subnet_utilization = entry.get('subnetIPultilization', {})
+    subnet_uri = subnet_utilization.get('subnetURI', 'Unknown')
+    allocation_ratio = subnet_utilization.get('allocationRatio', 'N/A')
 
     subnet_data.append({
-        'Subnet Name': subnet_name,
+        'Subnet URI': subnet_uri,
         'Allocation Ratio': allocation_ratio
     })
 
