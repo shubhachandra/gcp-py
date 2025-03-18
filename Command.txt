@@ -24,7 +24,7 @@ for entry in logs_data:
         })
 
 # Create DataFrame and export to CSV
-subnet_df = pd.DataFrame(subnet_data).drop_duplicates()
+subnet_df = pd.DataFrame(subnet_data)
 subnet_df.to_csv(OUTPUT_CSV, index=False)
 
 print(f"Subnet allocation report saved to {OUTPUT_CSV}")
