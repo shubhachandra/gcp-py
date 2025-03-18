@@ -1,43 +1,36 @@
-JIRA Story: GCP Routing & Connectivity Audit for Misconfigurations and Open Paths
+from google.cloud import logging_v2
+import pandas as pd
 
-Title:
-GCP Routing & Connectivity Audit for Misconfigurations and Open Paths
+PROJECT_ID = 'your-gcp-project-id'
+NETWORK_ID = 'your-network-id'
+OUTPUT_CSV = 'subnet_allocation_report.csv'
 
-Description:
-As a Network Security Engineer, I want to perform an in-depth audit of GCP subnet routing paths to identify misconfigurations, detect unintentional open paths to the Internet, and flag redundant or conflicting routes, so that I can ensure network security, compliance, and optimal connectivity.
+# Initialize the Cloud Logging client (default credentials)
+logging_client = logging_v2.Client(project=PROJECT_ID)
 
-⸻
+# Define filter for Network Analyzer audit logs
+log_filter = (
+    f'logName="projects/{PROJECT_ID}/logs/networkanalyzer.googleapis.com%2Fanalyser_reports" '
+    f'jsonPayload.resourcename="//compute.googleapis.com/projects/{NETWORK_ID}"'
+)
 
-Acceptance Criteria (Including Required GCP Tools):
-	1.	Subnet Routing Analysis
-	•	Use Cloud Asset Inventory to collect and analyze all subnet routing paths.
-	•	Identify any unexpected or misconfigured routes that could impact connectivity.
-	•	Ensure all routes follow organizational policies and best practices.
-	2.	Detection of Unintentional Open Paths to the Internet
-	•	Utilize Cloud Security Command Center (SCC) and VPC Flow Logs to detect routes that unintentionally expose resources to the public Internet.
-	•	Use Cloud Logging & Cloud Monitoring to track network activity and flag security violations.
-	•	Generate alerts and reports on any exposed subnets.
-	3.	Redundant & Conflicting Route Identification
-	•	Use VPC Network Connectivity Center to visualize routing paths and detect redundant or conflicting routes.
-	•	Cross-check Cloud Asset Inventory data to identify duplicate or conflicting entries.
-	•	Suggest corrective actions to optimize routing.
-	4.	Automated Reporting & Compliance Checks
-	•	Use Cloud Logging & Security Command Center (SCC) to generate a structured report highlighting misconfigurations and recommended fixes.
-	•	Ensure compliance with internal security policies and GCP networking best practices.
-	5.	User Review & Documentation
-	•	Conduct a review session with the networking team using reports from VPC Flow Logs and Cloud Monitoring.
-	•	Provide documentation on how to interpret and resolve flagged routing issues.
-	•	Incorporate feedback for continuous improvement and update Terraform configurations if necessary.
+# Retrieve log entries
+entries = logging_client.list_entries(filter_=log_filter)
 
-⸻
+# Extract subnet details
+subnet_data = []
+for entry in entries:
+    payload = entry.payload
+    subnet_name = payload.get('subnet', 'Unknown')
+    allocation_ratio = payload.get('allocationRatio', 'N/A')
 
-Story Points Estimate:
-	1.	Subnet Routing Analysis – 3 Points
-	2.	Detection of Unintentional Open Paths – 5 Points
-	3.	Redundant & Conflicting Route Identification – 3 Points
-	4.	Automated Reporting & Compliance Checks – 3 Points
-	5.	User Review & Documentation – 2 Points
+    subnet_data.append({
+        'Subnet Name': subnet_name,
+        'Allocation Ratio': allocation_ratio
+    })
 
-Total: ~16 Story Points (adjustable based on team discussion).
+# Create DataFrame and export to CSV
+subnet_df = pd.DataFrame(subnet_data).drop_duplicates()
+subnet_df.to_csv(OUTPUT_CSV, index=False)
 
-This format integrates both the audit tasks and GCP tool requirements directly into the acceptance criteria for clarity. Let me know if you need any refinements!
+print(f"Subnet allocation report saved to {OUTPUT_CSV}")
