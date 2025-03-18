@@ -1,32 +1,35 @@
-import json
-import csv
+import pandas as pd
+import re
 
-# Input and output file paths
-input_json_file = "subnets.json"
-output_csv_file = "subnets.csv"
+INPUT_JSON = 'subnet_logs.json'
+OUTPUT_CSV = 'subnet_details_report.csv'
 
-# Load the JSON data
-with open(input_json_file, "r") as json_file:
-    subnets_data = json.load(json_file)
+# Read JSON file as text
+with open(INPUT_JSON, 'r') as json_file:
+    json_text = json_file.read()
 
-# Define the CSV headers
-csv_headers = ["name", "region", "network", "ipCidrRange", "creationTimestamp"]
+# Regex pattern to extract required parts
+pattern = re.compile(
+    r'"subnetUri":"//compute.googleapis.com/projects/(?P<project>[^/]+)/regions/(?P<region>[^/]+)/subnetworks/(?P<subnetwork>[^"]+)".*?"allocationRatio":(?P<ratio>[\d\.]+)',
+    re.MULTILINE
+)
 
-# Write to CSV file
-with open(output_csv_file, "w", newline="") as csv_file:
-    csv_writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+# Extract matches
+matches = pattern.findall(json_text)
 
-    # Write header row
-    csv_writer.writeheader()
+# Create a structured data list
+structured_data = []
+for match in matches:
+    project, region, subnetwork, ratio = match
+    structured_data.append({
+        'Project': project,
+        'Region': region,
+        'Subnetwork': subnetwork,
+        'Allocation Ratio': ratio
+    })
 
-    # Write data rows
-    for subnet in subnets_data:
-        csv_writer.writerow({
-            "name": subnet.get("name", ""),
-            "region": subnet.get("region", "").split("/")[-1],  # Extract region name
-            "network": subnet.get("network", "").split("/")[-1],  # Extract network name
-            "ipCidrRange": subnet.get("ipCidrRange", ""),
-            "creationTimestamp": subnet.get("creationTimestamp", "")
-        })
+# Convert to DataFrame and export to CSV
+subnet_df = pd.DataFrame(structured_data)
+subnet_df.to_csv(OUTPUT_CSV, index=False)
 
-print(f"CSV file '{output_csv_file}' has been generated successfully.")
+print(f"Subnet details extracted and saved to {OUTPUT_CSV}")
