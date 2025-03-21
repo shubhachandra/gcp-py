@@ -1,35 +1,53 @@
-import pandas as pd
-import re
+| Tee Size       | Primary Range | Secondary Range | Service Range |
+|----------------|---------------|-----------------|---------------|
+| Micro-XS       | /28           | /23             | /27           |
+| Small-S        | /27           | /22             | /26           |
+| Medium-M       | /26           | /21             | /25           |
+| Large-L        | /25           | /20             | /24           |
+| Extra Large-XL | /24           | /19             | /18           |
 
-INPUT_JSON = 'subnet_logs.json'
-OUTPUT_CSV = 'subnet_details_report.csv'
+| Archetype Name                 | Data Pipeline Archetype Specification |
+|--------------------------------|---------------------------------------|
+| Tee Size Selected              | Large (L)                             |
+| Primary CIDR Range             | /25 (128 IP addresses)                |
+| Secondary CIDR Range           | /20                                   |
+| Service CIDR Range             | /24                                   |
 
-# Read JSON file as text
-with open(INPUT_JSON, 'r') as json_file:
-    json_text = json_file.read()
+| Scenario | Service            | CIDR Required | IP Address Count | CIDR Allocated              |
+|----------|--------------------|---------------|------------------|-----------------------------|
+| 1        | Cloud Composer     | /28           | 16               |                             |
+| 1        | Cloud Dataproc     | /26           | 64               | Single Shared Subnet (/25)  |
+| 1        | Cloud Dataflow     | /28           | 16               |                             |
+| 1        | Total              | /26 + 2×/28   | 96               | /25 (128 IP addresses)      |
 
-# Regex pattern to extract required parts
-pattern = re.compile(
-    r'"subnetUri":"//compute.googleapis.com/projects/(?P<project>[^/]+)/regions/(?P<region>[^/]+)/subnetworks/(?P<subnetwork>[^"]+)".*?"allocationRatio":(?P<ratio>[\d\.]+)',
-    re.MULTILINE
-)
+Pros Scenario 1:
+- Simpler subnet management.
+- Efficient IP address utilization.
+- Easier routing and firewall management.
+- Better scalability.
 
-# Extract matches
-matches = pattern.findall(json_text)
+Cons Scenario 1:
+- Reduced service isolation.
+- Potential security concerns.
 
-# Create a structured data list
-structured_data = []
-for match in matches:
-    project, region, subnetwork, ratio = match
-    structured_data.append({
-        'Project': project,
-        'Region': region,
-        'Subnetwork': subnetwork,
-        'Allocation Ratio': ratio
-    })
+| Scenario | Service            | CIDR Required | IP Address Count | CIDR Allocated (Individual) |
+|----------|--------------------|---------------|------------------|-----------------------------|
+| 2        | Cloud Composer     | /28           | 16               | /28                         |
+| 2        | Cloud Dataproc     | /26           | 64               | /26                         |
+| 2        | Cloud Dataflow     | /28           | 16               | /28                         |
+| 2        | Total              |               | 96               | 112 IP addresses (16 unused) |
 
-# Convert to DataFrame and export to CSV
-subnet_df = pd.DataFrame(structured_data)
-subnet_df.to_csv(OUTPUT_CSV, index=False)
+Pros Scenario 2:
+- Enhanced security and isolation.
+- Easier troubleshooting.
+- Compliance simplicity.
 
-print(f"Subnet details extracted and saved to {OUTPUT_CSV}")
+Cons Scenario 2:
+- Complex subnet management.
+- Inefficient IP address utilization.
+- Higher administrative overhead.
+- Potential scalability limitations.
+
+Recommended Scenario: Scenario 1 (Single Subnet)
+- Efficient, simpler management, scalable, balanced operational flexibility.
+
