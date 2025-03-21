@@ -64,49 +64,41 @@
 | Service CIDR Range             | `/24`                                                |
 | Resources Used                 | ✅ Composer, Dataproc, Dataflow, Vertex AI Workbench, Notebooks |
 
-### 🟨 Scenario 1: Single Subnet for All Services
+---
 
-**Table 6: Scenario 1 - Single Subnet Allocation**
+## 📌 Advanced Analytics Archetype Specification
 
-| Service                       | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed                     | Usage    | Concurrent Jobs |
-|-------------------------------|---------------|------------------|----------------------------|----------------------------------------|----------|-----------------|
-| Cloud Composer                | `/27`         | 32               | Single Shared Subnet (`/25`) | Workflow management environment        | 🟠 Medium | 🟠 Medium       |
-| Cloud Dataproc                | `/27`         | 32               |                            | Hadoop/Spark clusters                  | 🟠 Medium | 🟠 Medium       |
-| Cloud Dataflow                | `/28`         | 16               |                            | Data pipelines (streaming/batch)       | 🟠 Medium | 🟠 Medium       |
-| Vertex AI Workbench/Notebooks | `/28`         | 16               |                            | AIML Inferencing and model deployment  | 🟠 Medium | 🟠 Medium       |
-| **Total**                     | **`2×/27 + 2×/28`** | **96** | **`/25 (128 IP addresses allocated)`** |                                        |          |                 |
+**Table 6: Archetype Specification and Selected Tee Size**
+
+| Archetype Name                 | Advanced Analytics Archetype Specification |
+|--------------------------------|-------------------------------------------|
+| Tee Size Selected              | 🟢 **Small (S)**                           |
+| Primary CIDR Range             | `/27 (32 IP addresses)`                    |
+| Secondary CIDR Range           | `/22`                                     |
+| Service CIDR Range             | `/26`                                     |
+| Resources Used                 | ✅ Vertex AI Workbench, Notebooks          |
+| Resources Not Used             | ❌ Composer, Dataproc, Dataflow, Cloud SQL |
+
+### 🟨 Scenario: Single Subnet Allocation
+
+**Table 7: Scenario - Single Subnet Allocation**
+
+| Service                       | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed              | Usage    | Concurrent Jobs |
+|-------------------------------|---------------|------------------|----------------------------|---------------------------------|----------|-----------------|
+| Vertex AI Workbench/Notebooks | `/27`         | 32               | Single Subnet (`/27`)       | Advanced analytics environment  | 🟠 Medium | 🟠 Medium       |
+| **Total**                     | **`/27`**     | **32**           | **`/27 (32 IP addresses)`** |                                 |          |                 |
 
 **Pros:**
+- ✅ Optimal resource isolation
 - ✅ Efficient IP utilization
 - ✅ Simple management
-- ✅ Adequate scalability
 
 **Cons:**
-- ⚠️ Reduced isolation
-
-### 🟪 Scenario 2: Separate Subnets for Each Service
-
-**Table 7: Scenario 2 - Individual Subnet Allocation**
-
-| Service                       | CIDR Required | IP Address Count | CIDR Allocated (Individual) | Resources Consumed                    | Usage    | Concurrent Jobs |
-|-------------------------------|---------------|------------------|-----------------------------|---------------------------------------|----------|-----------------|
-| Cloud Composer                | `/27`         | 32               | `/27`                       | Workflow management environment       | 🟠 Medium | 🟠 Medium       |
-| Cloud Dataproc                | `/27`         | 32               | `/27`                       | Hadoop/Spark clusters                 | 🟠 Medium | 🟠 Medium       |
-| Cloud Dataflow                | `/28`         | 16               | `/28`                       | Data pipelines (streaming/batch)      | 🟠 Medium | 🟠 Medium       |
-| Vertex AI Workbench/Notebooks | `/28`         | 16               | `/28`                       | AIML Inferencing and model deployment | 🟠 Medium | 🟠 Medium       |
-| **Total**                     |               | **96**           | **96 IP addresses allocated** |                                       |          |                 |
-
-**Pros:**
-- ✅ Enhanced isolation and security
-- ✅ Easier service-specific management
-
-**Cons:**
-- ⚠️ Complex subnet management
-- ⚠️ Higher administrative overhead
+- ⚠️ Limited scalability for future growth
 
 ## 🎯 Recommendation
-**Recommended Scenario:** 🟨 **Scenario 1 (Single Subnet)**
-- ✅ Efficient IP allocation
-- ✅ Simplified subnet management
-- ✅ Good scalability and operational efficiency
+**Recommended Scenario:** 🟨 **Single Subnet**
+- ✅ Meets current usage demands
+- ✅ Provides optimal isolation for analytics workloads
+- ✅ Efficient management and cost-effectiveness
 
