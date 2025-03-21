@@ -16,59 +16,67 @@
 
 | Archetype Name                 | Data Pipeline Archetype Specification |
 |--------------------------------|---------------------------------------|
-| Tee Size Selected              | 🟢 **Large (L)**                       |
-| Primary CIDR Range             | `/25 (128 IP addresses)`              |
-| Secondary CIDR Range           | `/20`                                 |
-| Service CIDR Range             | `/24`                                 |
+| Tee Size Selected              | 🟢 **Extra Large (XL)**                |
+| Primary CIDR Range             | `/16 (65,536 IP addresses)`           |
+| Secondary CIDR Range           | `/19`                                 |
+| Service CIDR Range             | `/18`                                 |
 | Resources Not Used             | ❌ Vertex AI Workbench, Notebooks, Cloud SQL |
+
+---
+
+## 📌 Controlled Data Movement Archetype Specification
+
+**Table 3: Archetype Specification and Selected Tee Size**
+
+| Archetype Name                 | Controlled Data Movement Archetype Specification |
+|--------------------------------|----------------------------------------------|
+| Tee Size Selected              | 🟢 **Medium (M)**                             |
+| Primary CIDR Range             | `/26 (64 IP addresses)`                      |
+| Secondary CIDR Range           | `/21`                                        |
+| Service CIDR Range             | `/25`                                        |
+| Resources Not Used             | ❌ Vertex AI Workbench, Notebooks, Cloud SQL, Dataproc |
 
 ### 🟨 Scenario 1: Single Subnet for All Services
 
-**Table 3: Scenario 1 - Single Subnet Allocation**
+**Table 4: Scenario 1 - Single Subnet Allocation**
 
-| Service            | CIDR Required | IP Address Count | CIDR Allocated              | Resources Consumed | Usage    | Concurrent Jobs |
-|--------------------|---------------|------------------|-----------------------------|--------------------|----------|-----------------|
-| Cloud Composer     | `/28`         | 16               |                             | Workflow management environment | 🟢 Light | 🔵 Low |
-| Cloud Dataproc     | `/26`         | 64               | Single Shared Subnet (`/25`) | Hadoop/Spark clusters | 🔴 Heavy | 🔴 High |
-| Cloud Dataflow     | `/28`         | 16               |                             | Data pipelines (streaming/batch) | 🟠 Medium | 🔴 High |
-| **Total**          | **`/26 + 2×/28`** | **96**          | **`/25 (128 IP addresses)`**  |                    |          |                 |
+| Service            | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed                  | Usage    | Concurrent Jobs |
+|--------------------|---------------|------------------|----------------------------|-------------------------------------|----------|-----------------|
+| Cloud Composer     | `/27`         | 32               | Single Shared Subnet (`/26`) | Workflow management environment     | 🔴 Heavy | 🔴 High         |
+| Cloud Dataflow     | `/28`         | 16               |                            | Data pipelines (streaming/batch)    | 🟠 Medium | 🟠 Medium       |
+| **Total**          | **`/27 + /28`** | **48**          | **`/26 (64 IP addresses allocated)`** |                                     |          |                 |
 
 **Pros:**
-- ✅ Simple subnet management
-- ✅ Efficient IP utilization
-- ✅ Easier routing/firewall management
-- ✅ Better scalability
+- ✅ Optimal subnet size to accommodate heavy Composer usage and medium Dataflow usage
+- ✅ Simplified management and routing
+- ✅ Efficient IP address utilization
 
 **Cons:**
-- ⚠️ Reduced service isolation
-- ⚠️ Potential security concerns
+- ⚠️ Limited additional IP addresses for future growth
+- ⚠️ Reduced isolation between Composer and Dataflow
 
 ### 🟪 Scenario 2: Separate Subnets for Each Service
 
-**Table 4: Scenario 2 - Individual Subnet Allocation**
+**Table 5: Scenario 2 - Individual Subnet Allocation**
 
-| Service            | CIDR Required | IP Address Count | CIDR Allocated (Individual) | Resources Consumed | Usage    | Concurrent Jobs |
-|--------------------|---------------|------------------|-----------------------------|--------------------|----------|-----------------|
-| Cloud Composer     | `/28`         | 16               | `/28`                       | Workflow management environment | 🟢 Light | 🔵 Low |
-| Cloud Dataproc     | `/26`         | 64               | `/26`                       | Hadoop/Spark clusters | 🔴 Heavy | 🔴 High |
-| Cloud Dataflow     | `/28`         | 16               | `/28`                       | Data pipelines (streaming/batch) | 🟠 Medium | 🔴 High |
-| **Total**          |               | **96**           | **112 IP addresses (16 unused)** |                    |          |                 |
+| Service            | CIDR Required | IP Address Count | CIDR Allocated (Individual) | Resources Consumed               | Usage    | Concurrent Jobs |
+|--------------------|---------------|------------------|-----------------------------|----------------------------------|----------|-----------------|
+| Cloud Composer     | `/27`         | 32               | `/27`                       | Workflow management environment  | 🔴 Heavy | 🔴 High         |
+| Cloud Dataflow     | `/28`         | 16               | `/28`                       | Data pipelines (streaming/batch) | 🟠 Medium | 🟠 Medium       |
+| **Total**          |               | **48**           | **48 IP addresses allocated** |                                  |          |                 |
 
 **Pros:**
 - ✅ Enhanced security and isolation
-- ✅ Easier troubleshooting
-- ✅ Simplified compliance
+- ✅ Easier service-specific management
 
 **Cons:**
-- ⚠️ Complex subnet management
-- ⚠️ Inefficient IP utilization
+- ⚠️ Increased complexity in subnet management
 - ⚠️ Higher administrative overhead
-- ⚠️ Scalability limitations
+- ⚠️ Less efficient IP utilization
 
 ## 🎯 Recommendation
 **Recommended Scenario:** 🟨 **Scenario 1 (Single Subnet)**
-- ✅ Efficient IP usage
-- ✅ Simpler subnet management
-- ✅ Scalable
-- ✅ Balanced operational flexibility
+- ✅ Provides adequate capacity for heavy Composer and medium Dataflow usage
+- ✅ Offers simpler operational management and efficient IP utilization
+- ✅ Balanced approach between flexibility, growth potential, and resource management
 
