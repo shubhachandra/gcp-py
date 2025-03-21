@@ -36,47 +36,44 @@
 | Service CIDR Range             | `/25`                                        |
 | Resources Not Used             | ❌ Vertex AI Workbench, Notebooks, Cloud SQL, Dataproc |
 
+---
+
+## 📌 AIML Model Dev & Training Archetype Specification
+
+**Table 4: Archetype Specification and Selected Tee Size**
+
+| Archetype Name                 | AIML Model Dev & Training Archetype Specification |
+|--------------------------------|---------------------------------------------------|
+| Tee Size Selected              | 🟢 **Large (L)**                                   |
+| Primary CIDR Range             | `/25 (128 IP addresses)`                          |
+| Secondary CIDR Range           | `/20`                                             |
+| Service CIDR Range             | `/24`                                             |
+| Resources Used                 | ✅ Composer, Dataproc, Dataflow, Vertex AI Workbench, Notebooks |
+
 ### 🟨 Scenario 1: Single Subnet for All Services
 
-**Table 4: Scenario 1 - Single Subnet Allocation**
+**Table 5: Scenario 1 - Single Subnet Allocation**
 
-| Service            | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed                  | Usage    | Concurrent Jobs |
-|--------------------|---------------|------------------|----------------------------|-------------------------------------|----------|-----------------|
-| Cloud Composer     | `/27`         | 32               | Single Shared Subnet (`/26`) | Workflow management environment     | 🔴 Heavy | 🔴 High         |
-| Cloud Dataflow     | `/28`         | 16               |                            | Data pipelines (streaming/batch)    | 🟠 Medium | 🟠 Medium       |
-| **Total**          | **`/27 + /28`** | **48**          | **`/26 (64 IP addresses allocated)`** |                                     |          |                 |
-
-**Pros:**
-- ✅ Optimal subnet size to accommodate heavy Composer usage and medium Dataflow usage
-- ✅ Simplified management and routing
-- ✅ Efficient IP address utilization
-
-**Cons:**
-- ⚠️ Limited additional IP addresses for future growth
-- ⚠️ Reduced isolation between Composer and Dataflow
-
-### 🟪 Scenario 2: Separate Subnets for Each Service
-
-**Table 5: Scenario 2 - Individual Subnet Allocation**
-
-| Service            | CIDR Required | IP Address Count | CIDR Allocated (Individual) | Resources Consumed               | Usage    | Concurrent Jobs |
-|--------------------|---------------|------------------|-----------------------------|----------------------------------|----------|-----------------|
-| Cloud Composer     | `/27`         | 32               | `/27`                       | Workflow management environment  | 🔴 Heavy | 🔴 High         |
-| Cloud Dataflow     | `/28`         | 16               | `/28`                       | Data pipelines (streaming/batch) | 🟠 Medium | 🟠 Medium       |
-| **Total**          |               | **48**           | **48 IP addresses allocated** |                                  |          |                 |
+| Service            | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed                 | Usage    | Concurrent Jobs |
+|--------------------|---------------|------------------|----------------------------|------------------------------------|----------|-----------------|
+| Cloud Composer     | `/27`         | 32               | Single Shared Subnet (`/25`) | Workflow management environment    | 🔴 Heavy | 🔴 High         |
+| Cloud Dataproc     | `/27`         | 32               |                            | Hadoop/Spark clusters              | 🔴 Heavy | 🔴 High         |
+| Cloud Dataflow     | `/28`         | 16               |                            | Data pipelines (streaming/batch)   | 🟠 Medium | 🟠 Medium       |
+| Vertex AI Workbench/Notebooks | `/28` | 16            |                            | AI model development/training      | 🟠 Medium | 🔵 Low          |
+| **Total**          | **`2×/27 + 2×/28`** | **96**     | **`/25 (128 IP addresses allocated)`** |                                 |          |                 |
 
 **Pros:**
-- ✅ Enhanced security and isolation
-- ✅ Easier service-specific management
+- ✅ Efficient utilization of IP addresses
+- ✅ Simplified subnet management
+- ✅ Flexible resource allocation for various services
 
 **Cons:**
-- ⚠️ Increased complexity in subnet management
-- ⚠️ Higher administrative overhead
-- ⚠️ Less efficient IP utilization
+- ⚠️ Reduced isolation between services
+- ⚠️ Potential security concerns
 
 ## 🎯 Recommendation
 **Recommended Scenario:** 🟨 **Scenario 1 (Single Subnet)**
-- ✅ Provides adequate capacity for heavy Composer and medium Dataflow usage
-- ✅ Offers simpler operational management and efficient IP utilization
-- ✅ Balanced approach between flexibility, growth potential, and resource management
+- ✅ Ideal for AIML development & training with diverse resource requirements
+- ✅ Balances ease of management with operational efficiency
+- ✅ Provides adequate IP addresses for growth and flexibility
 
