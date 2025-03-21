@@ -50,30 +50,63 @@
 | Service CIDR Range             | `/24`                                             |
 | Resources Used                 | ✅ Composer, Dataproc, Dataflow, Vertex AI Workbench, Notebooks |
 
+---
+
+## 📌 AIML Deployment & Inferencing Archetype Specification
+
+**Table 5: Archetype Specification and Selected Tee Size**
+
+| Archetype Name                 | AIML Deployment & Inferencing Archetype Specification |
+|--------------------------------|------------------------------------------------------|
+| Tee Size Selected              | 🟢 **Large (L)**                                      |
+| Primary CIDR Range             | `/25 (128 IP addresses)`                             |
+| Secondary CIDR Range           | `/20`                                                |
+| Service CIDR Range             | `/24`                                                |
+| Resources Used                 | ✅ Composer, Dataproc, Dataflow, Vertex AI Workbench, Notebooks |
+
 ### 🟨 Scenario 1: Single Subnet for All Services
 
-**Table 5: Scenario 1 - Single Subnet Allocation**
+**Table 6: Scenario 1 - Single Subnet Allocation**
 
-| Service            | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed                 | Usage    | Concurrent Jobs |
-|--------------------|---------------|------------------|----------------------------|------------------------------------|----------|-----------------|
-| Cloud Composer     | `/27`         | 32               | Single Shared Subnet (`/25`) | Workflow management environment    | 🔴 Heavy | 🔴 High         |
-| Cloud Dataproc     | `/27`         | 32               |                            | Hadoop/Spark clusters              | 🔴 Heavy | 🔴 High         |
-| Cloud Dataflow     | `/28`         | 16               |                            | Data pipelines (streaming/batch)   | 🟠 Medium | 🟠 Medium       |
-| Vertex AI Workbench/Notebooks | `/28` | 16            |                            | AI model development/training      | 🟠 Medium | 🔵 Low          |
-| **Total**          | **`2×/27 + 2×/28`** | **96**     | **`/25 (128 IP addresses allocated)`** |                                 |          |                 |
+| Service                       | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed                     | Usage    | Concurrent Jobs |
+|-------------------------------|---------------|------------------|----------------------------|----------------------------------------|----------|-----------------|
+| Cloud Composer                | `/27`         | 32               | Single Shared Subnet (`/25`) | Workflow management environment        | 🟠 Medium | 🟠 Medium       |
+| Cloud Dataproc                | `/27`         | 32               |                            | Hadoop/Spark clusters                  | 🟠 Medium | 🟠 Medium       |
+| Cloud Dataflow                | `/28`         | 16               |                            | Data pipelines (streaming/batch)       | 🟠 Medium | 🟠 Medium       |
+| Vertex AI Workbench/Notebooks | `/28`         | 16               |                            | AIML Inferencing and model deployment  | 🟠 Medium | 🟠 Medium       |
+| **Total**                     | **`2×/27 + 2×/28`** | **96** | **`/25 (128 IP addresses allocated)`** |                                        |          |                 |
 
 **Pros:**
-- ✅ Efficient utilization of IP addresses
-- ✅ Simplified subnet management
-- ✅ Flexible resource allocation for various services
+- ✅ Efficient IP utilization
+- ✅ Simple management
+- ✅ Adequate scalability
 
 **Cons:**
-- ⚠️ Reduced isolation between services
-- ⚠️ Potential security concerns
+- ⚠️ Reduced isolation
+
+### 🟪 Scenario 2: Separate Subnets for Each Service
+
+**Table 7: Scenario 2 - Individual Subnet Allocation**
+
+| Service                       | CIDR Required | IP Address Count | CIDR Allocated (Individual) | Resources Consumed                    | Usage    | Concurrent Jobs |
+|-------------------------------|---------------|------------------|-----------------------------|---------------------------------------|----------|-----------------|
+| Cloud Composer                | `/27`         | 32               | `/27`                       | Workflow management environment       | 🟠 Medium | 🟠 Medium       |
+| Cloud Dataproc                | `/27`         | 32               | `/27`                       | Hadoop/Spark clusters                 | 🟠 Medium | 🟠 Medium       |
+| Cloud Dataflow                | `/28`         | 16               | `/28`                       | Data pipelines (streaming/batch)      | 🟠 Medium | 🟠 Medium       |
+| Vertex AI Workbench/Notebooks | `/28`         | 16               | `/28`                       | AIML Inferencing and model deployment | 🟠 Medium | 🟠 Medium       |
+| **Total**                     |               | **96**           | **96 IP addresses allocated** |                                       |          |                 |
+
+**Pros:**
+- ✅ Enhanced isolation and security
+- ✅ Easier service-specific management
+
+**Cons:**
+- ⚠️ Complex subnet management
+- ⚠️ Higher administrative overhead
 
 ## 🎯 Recommendation
 **Recommended Scenario:** 🟨 **Scenario 1 (Single Subnet)**
-- ✅ Ideal for AIML development & training with diverse resource requirements
-- ✅ Balances ease of management with operational efficiency
-- ✅ Provides adequate IP addresses for growth and flexibility
+- ✅ Efficient IP allocation
+- ✅ Simplified subnet management
+- ✅ Good scalability and operational efficiency
 
