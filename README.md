@@ -79,26 +79,17 @@
 | Resources Used                 | ✅ Vertex AI Workbench, Notebooks          |
 | Resources Not Used             | ❌ Composer, Dataproc, Dataflow, Cloud SQL |
 
-### 🟨 Scenario: Single Subnet Allocation
+---
 
-**Table 7: Scenario - Single Subnet Allocation**
+## 📌 Business Intelligence Archetype Specification
 
-| Service                       | CIDR Required | IP Address Count | CIDR Allocated             | Resources Consumed              | Usage    | Concurrent Jobs |
-|-------------------------------|---------------|------------------|----------------------------|---------------------------------|----------|-----------------|
-| Vertex AI Workbench/Notebooks | `/27`         | 32               | Single Subnet (`/27`)       | Advanced analytics environment  | 🟠 Medium | 🟠 Medium       |
-| **Total**                     | **`/27`**     | **32**           | **`/27 (32 IP addresses)`** |                                 |          |                 |
+**Table 7: Archetype Specification and Selected Tee Size**
 
-**Pros:**
-- ✅ Optimal resource isolation
-- ✅ Efficient IP utilization
-- ✅ Simple management
+| Archetype Name                 | Business Intelligence Archetype Specification |
+|--------------------------------|----------------------------------------------|
+| Tee Size Selected              | ❌ **No Subnet Required**                      |
+| Resources Used                 | ✅ Non-compute resources (e.g., Looker, BigQuery) |
+| Resources Not Used             | ❌ Composer, Dataproc, Dataflow, Vertex AI Workbench, Notebooks, Cloud SQL |
 
-**Cons:**
-- ⚠️ Limited scalability for future growth
-
-## 🎯 Recommendation
-**Recommended Scenario:** 🟨 **Single Subnet**
-- ✅ Meets current usage demands
-- ✅ Provides optimal isolation for analytics workloads
-- ✅ Efficient management and cost-effectiveness
+**Note:** This archetype does not require a subnet allocation as it does not utilize compute resources.
 
