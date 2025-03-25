@@ -26,8 +26,11 @@ Step 2: Retrieve Subnet Details from Cloud Asset Inventory
 	2.	Click on Resources and select compute.subnetwork.
 	3.	Click on Asset Query.
 	4.	Run the following query in Asset Query:
- SELECT * FROM compute_googleapis_com_Subnetwork;
- 5.	Click on Run.
+
+SELECT * FROM compute_googleapis_com_Subnetwork;
+
+
+	5.	Click on Run.
 	6.	Export the results to a CSV file and save it locally.
 
 ⸻
@@ -53,7 +56,8 @@ Step 4: Join Tables & Filter Old Subnets
 	3.	Use a filter to identify subnets older than 3 months.
 	4.	Compute the IP allocation ratio for each subnet.
 	5.	Example SQL query:
- SELECT 
+
+SELECT 
     n.subnetwork_name, 
     n.region,
     c.creation_timestamp,
@@ -69,7 +73,8 @@ JOIN `your_project.your_dataset.subnet_inventory` c
 ON n.subnetwork_name = c.subnetwork_name
 WHERE TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), c.creation_timestamp, DAY) > 90;
 
-Save the results in a new BigQuery table for further analysis.
+
+	6.	Save the results in a new BigQuery table for further analysis.
 
 ⸻
 
@@ -93,5 +98,3 @@ This implementation enables:
 	•	BI-based visualization for better decision-making.
 
 By following these steps, Google Cloud Network Analyzer logs are effectively analyzed, stored in BigQuery, and visualized through a BI tool, helping teams optimize their network resources.
-
- 
