@@ -1,3 +1,26 @@
+Minutes:
+
+Sandbox environments will use subnet mask /27.
+
+For all applications (production/non-production), the subnet mask /27 is insufficient due to the requirement of running 3 Composer instances per subnet.
+
+Recommended subnet mask for non-production and production environments: /26 (covering test, SA, UAT, and saferoom).
+
+Each subnet in non-production and production environments will accommodate:
+
+2 development projects.
+
+3 Composer instances per subnet.
+
+Dataproc subnet allocations will require explicit requests from application teams.
+
+Summary:
+
+Sandbox: /27 subnet mask
+
+Non-production/Production: /26 subnet mask (for test, SA, UAT, saferoom)
+
+Dataproc: Requires explicit subnet allocation requests
 Here’s a Confluence-friendly version of the Google Cloud Network Intelligence Center - Network Analyzer Implementation document. It includes proper formatting with headers, code blocks, and SQL styling to ensure readability.
 
 ⸻
