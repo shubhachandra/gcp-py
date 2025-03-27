@@ -1,4 +1,7 @@
-Got it! Here’s a revised version incorporating the point that larger subnets require proper consideration, while still maintaining clarity and flexibility:
+Subnet Recommendation:
+We recommend using /27 subnets for all SDLC environments. Typically, /27 is the approved range for sandbox environments, while /27 and /26 are approved for production and non-production. Please use the /26 ranges listed in the provided sheets when planning for production and non-production environments.
+
+Regarding larger subnets: We are open to using them when needed; however, proper evaluation and planning are necessary to ensure optimal utilization and to prevent IP exhaustion in the long term.
 
 ⸻
 
