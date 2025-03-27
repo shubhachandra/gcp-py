@@ -1,4 +1,18 @@
-Minutes:
+Got it! Here’s a revised version incorporating the point that larger subnets require proper consideration, while still maintaining clarity and flexibility:
+
+⸻
+
+Not all teams may require Dataproc. When a team does come with a Dataproc request, the cluster size may vary. Based on the specific requirements, we will accommodate the cluster size and switch to appropriately sized subnets.
+
+Additional consideration: There is also a proposal to run Dataproc clusters on GKE.
+
+For Composer 3, all application teams will eventually need to migrate. In such cases, we can opt for /28 subnets, or if not necessary, subnet sizing won’t be a concern.
+
+Regarding larger subnets: We are open to using them; however, proper evaluation and consideration will be required to ensure efficient utilization and avoid IP exhaustion in the long run.
+
+⸻
+
+Let me know if you’d like to include examples or specific scenarios.
 
 Sandbox environments will use subnet mask /27.
 
