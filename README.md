@@ -1,4 +1,22 @@
-As per our discussion yesterday, we are carving out IP ranges for us-east4 and us-south1 from the existing allocated range of the core VPC in us-central1 and us-east1.
+We currently have preallocated IP ranges for various SDLC environments — Prod, Non-Prod, Sandbox, and Core. However, we are running short on available IP addresses. The Core ranges, in particular, are underutilized and mostly idle.
+
+To improve efficiency, we plan to restructure the existing Core IP allocations:
+	•	The current Core /17 range will be split into two /18 blocks:
+	•	The first /18 will continue to serve us-central1
+	•	The second /18 will be repurposed for the new region us-east4
+
+Similarly, for us-east1:
+	•	We’ll split its /17 allocation into two /18 blocks:
+	•	One /18 will support us-south1
+	•	The remaining /18 will be reserved for testing and experimental use cases
+
+As part of this process, we will:
+	•	Delete existing /20 subnets
+	•	Create new /21 subnets using updated naming conventions to better align with the new IP strategy
+
+This restructuring will help us optimize our IP usage and ensure sufficient address space for expansion.
+
+Let me know if you have any feedback or concerns.As per our discussion yesterday, we are carving out IP ranges for us-east4 and us-south1 from the existing allocated range of the core VPC in us-central1 and us-east1.
 
 Additionally, we need to delete the following subnets: subnet1 and subnet2. However, please note that these subnet names are currently referenced 46 times across various repositories.
 
