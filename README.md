@@ -1,4 +1,10 @@
-Here's your structured subnet allocation table as requested:
+As per our discussion yesterday, we are carving out IP ranges for us-east4 and us-south1 from the existing allocated range of the core VPC in us-central1 and us-east1.
+
+Additionally, we need to delete the following subnets: subnet1 and subnet2. However, please note that these subnet names are currently referenced 46 times across various repositories.
+
+After deleting the older /20 subnets, I will create new /21 subnets using updated naming conventions. The older subnet names will remain unchanged where the new naming conventions are not yet applied.
+
+Please let me know if you have any concerns.Here's your structured subnet allocation table as requested:
 
 📥 [Download the CSV file](sandbox:/mnt/data/subnet_allocation_table.csv)
 
