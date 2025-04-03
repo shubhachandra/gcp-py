@@ -1,18 +1,8 @@
-Here’s a well-structured summary report based on the RFC1918 address blocks you’ve provided, focusing on their usage in ad-Ent and qa-Ent across the SDLC (Software Development Life Cycle) environments:
+Absolutely! Here’s the same summary in |-delimited table format so you can easily paste it into a Markdown editor or Confluence page (HIT):
 
 ⸻
 
-RFC 1918 Address Usage in ad-Ent and qa-Ent Across SDLC
-
-Overview
-
-The following summarizes private IP address allocations (per RFC 1918) utilized within the ad-Ent and qa-Ent environments across various stages of the SDLC, including development, testing, staging, and production. This report aggregates the CIDR blocks used and presents them in a structured format for network planning and compliance reference.
-
-⸻
-
-1. 10.x.x.x Range (RFC1918)
-
-These blocks are used heavily for internal development and QA workloads, particularly within isolated VPCs for SDLC environments.
+10.x.x.x Range (RFC1918)
 
 CIDR Block	Description
 10.0.0.128/25	Subnet for smaller environments or zones
@@ -24,9 +14,7 @@ CIDR Block	Description
 
 ⸻
 
-2. 172.16.x.x Range (RFC1918)
-
-This range represents more structured allocations, often aligned to specific SDLC stages.
+172.16.x.x Range (RFC1918)
 
 CIDR Block	IP Range Covered	Purpose
 172.16.0.0/20	172.16.0.0 – 172.16.15.255	Base VPC block for ad-Ent dev environments
@@ -40,9 +28,7 @@ CIDR Block	IP Range Covered	Purpose
 
 ⸻
 
-3. 172.21.x.x – 172.25.x.x Range (RFC1918)
-
-These blocks are used for enterprise-level SDLC support, such as QA platforms, system simulations, and staging.
+172.21.x.x – 172.25.x.x Range (RFC1918)
 
 CIDR Block	Purpose
 172.21.0.64/26	Small isolated subnet
@@ -56,7 +42,7 @@ CIDR Block	Purpose
 172.21.64.0/18	Shared services across SDLC
 172.21.128.0/17	Non-prod mirror of prod
 172.22.0.0/15	Staging and dry-run environments
-172.24.0.0/14	Pre-production and user acceptance testing
+172.24.0.0/14	Pre-production and UAT
 172.25.0.0/17	Specialized QA scenarios
 172.25.128.0/27	Isolated service or node testing
 172.25.128.32/28	API mock endpoints
@@ -67,15 +53,4 @@ CIDR Block	Purpose
 
 ⸻
 
-Conclusion
-
-The IP blocks listed here are all from RFC1918 private address space, reserved for internal use. This structured allocation across ad-Ent and qa-Ent ensures:
-	•	Clear separation of concerns across SDLC stages
-	•	Efficient routing within VPCs
-	•	Security isolation between components and teams
-
-This strategy also facilitates network observability, scalability, and future-proofing for on-prem/cloud hybrid SDLC setups.
-
-⸻
-
-Let me know if you’d like this formatted as a PDF or Excel file, or if you’d like to tag each CIDR with the exact application or team owner.
+Let me know if you’d like to add an “Owner” or “Environment (Dev/QA/Stage)” column as well!
