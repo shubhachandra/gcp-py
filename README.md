@@ -1,4 +1,23 @@
-Here’s a clearer and more polished version of your message for better readability and professionalism:
+Here’s a clearer and more professional version of your message, restructured for clarity and flow:
+
+⸻
+
+Update on RFC1918 Address Space and Cloud NAT Implementation
+	•	The plan was to use RFC1918 address space, as these IPs are non-routable by design, aligning with our goal of keeping internal services isolated from public exposure.
+	•	This approach was agreed upon and also communicated by Richard.
+
+Current Situation:
+	•	We are in the process of enabling Cloud NAT, which is required to allow communication from cloud workloads to on-prem environments.
+	•	Until Cloud NAT is fully configured and deployed, these workloads cannot reach on-prem resources.
+
+Progress Update:
+	•	The PR has been approved.
+	•	Testing is already underway in the background, with rigorous validation to ensure every possible scenario is covered.
+	•	Our goal is to avoid any future impact by proactively identifying and addressing edge cases during this phase.
+
+⸻
+
+Let me know if you want this turned into an email format or a status update for stakeholders.Here’s a clearer and more polished version of your message for better readability and professionalism:
 
 ⸻
 
