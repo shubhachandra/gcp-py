@@ -1,38 +1,53 @@
-Here’s a more polished and professional version of your request to the ops team:
-Here’s a clear and concise Acceptance Criteria section you can use in your JIRA ticket:
+Jira Feature: Infrastructure Setup for Non-Managed Notebook Instances
 
-⸻
+Description:
+This feature involves creating necessary infrastructure components for Non-Managed Notebook instances, structured into multiple sub-stories for clarity and manageability.
 
-Acceptance Criteria
-	1.	IAM allow policy quota is increased beyond the current 1,500 principal limit (to an approved and feasible higher limit).
-	2.	Terraform-based project creation completes successfully without IAM-related failures.
-	3.	New service accounts can be added as principals without triggering policy binding limit errors.
-	4.	Confirmation from the ops team that the updated quota is applied and active.
-	5.	Documentation or internal communication is updated to reflect the new limit and any associated guidelines or constraints.
+Sub-story 1: Create Subnets
 
-⸻
+Regions: us-central1 (usc1), us-east1 (use)
 
-Let me know if you’d like to add a testing step or link this to other dependent tasks.
-⸻
+SDLC Environments: prod, nonprod, sandbox
 
-Subject: Request to Increase IAM Policy Quota
+Subnet CIDR: /18 block for each combination, resulting in a total of 6 subnets.
 
-Hi Team,
+Naming Convention: <sdlcname>-netb-ainotebook-<region>-<IP details>
 
-Each IAM allow policy can contain up to 1,500 principals. For the purpose of this limit, IAM counts all instances of each principal in the allow policy role bindings — including repeated references.
+Example: prod-netb-ainotebook-usc1-100-126-183-128-27
 
-In our current setup, any new project created using Terraform results in a failure because:
-	•	Our configuration references shared VPC networks each time.
-	•	A new service account is added as a principal that requires access.
-	•	We’re approaching or have exceeded the 1,500 principal limit.
+Where:
 
-Given these constraints, we are unable to proceed with new project provisioning. We request an increase in the IAM policy quota to accommodate our setup.
+prod represents the SDLC name.
 
-Please let us know the next steps or if any additional information is required.
+netb and ainotebook are standard naming conventions.
 
-Thanks,
-[Your Name]
+usc1 refers to us-central1, and use refers to us-east1.
 
-⸻
+Sub-story 2: Create AD Groups and Bind to Subnets
 
-Let me know if you’d like this adapted to a specific tone or format (Slack, email, ticket, etc.).
+Purpose: Create dedicated AD groups and bind notebook instances to their respective subnets.
+
+Ownership and Management:
+
+Clearly document that AD group ownership belongs to Dinesh's team, as they own the application.
+
+Dinesh’s team must approve user access; approved users will gain visibility of the corresponding subnet.
+
+Coordination:
+
+Work closely with the Landing Zone and IAM teams to ensure smooth implementation.
+
+Reason for AD Groups:
+
+AD groups address the limitation of IAM policy, which currently has a maximum of 1500 principals—a limit that has already been reached.
+
+Notes:
+
+Ensure comprehensive documentation detailing subnet and AD group setup.
+
+Clearly outline approval workflows involving Dinesh’s team.
+
+Confirm coordination completion with Landing Zone and IAM teams.
+
+Acceptance Criteria:
+
