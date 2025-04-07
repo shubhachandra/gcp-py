@@ -1,5 +1,18 @@
 Here’s a more polished and professional version of your request to the ops team:
+Here’s a clear and concise Acceptance Criteria section you can use in your JIRA ticket:
 
+⸻
+
+Acceptance Criteria
+	1.	IAM allow policy quota is increased beyond the current 1,500 principal limit (to an approved and feasible higher limit).
+	2.	Terraform-based project creation completes successfully without IAM-related failures.
+	3.	New service accounts can be added as principals without triggering policy binding limit errors.
+	4.	Confirmation from the ops team that the updated quota is applied and active.
+	5.	Documentation or internal communication is updated to reflect the new limit and any associated guidelines or constraints.
+
+⸻
+
+Let me know if you’d like to add a testing step or link this to other dependent tasks.
 ⸻
 
 Subject: Request to Increase IAM Policy Quota
