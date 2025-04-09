@@ -1,53 +1,38 @@
-Jira Feature: Infrastructure Setup for Non-Managed Notebook Instances
+**Summary:**
+Create GCP Project with BigQuery Data Editor role and Dataset for Network Analyzer Logs
 
-Description:
-This feature involves creating necessary infrastructure components for Non-Managed Notebook instances, structured into multiple sub-stories for clarity and manageability.
+**Description:**
 
-Sub-story 1: Create Subnets
+As part of the NIC: GCP Network Analyzer initiative, this subtask involves the following actions:
 
-Regions: us-central1 (usc1), us-east1 (use)
+1. **Create a new GCP Project:**
+   - Follow the agreed-upon naming conventions.
 
-SDLC Environments: prod, nonprod, sandbox
+2. **Assign Roles:**
+   - Ensure the BigQuery Data Editor (`roles/bigquery.dataEditor`) role is assigned to the required service account/user.
 
-Subnet CIDR: /18 block for each combination, resulting in a total of 6 subnets.
+3. **Create BigQuery Dataset:**
+   - Name the dataset appropriately for logging purposes (e.g., `network_analyzer_logs`).
 
-Naming Convention: <sdlcname>-netb-ainotebook-<region>-<IP details>
+4. **Set up Export for Cloud Logging:**
+   - Configure log sinks in Cloud Logging to export Network Analyzer-related logs directly into the newly created BigQuery dataset.
+   - Ensure logs are filtered specifically for Network Analyzer events.
 
-Example: prod-netb-ainotebook-usc1-100-126-183-128-27
+**Acceptance Criteria:**
+- [ ] GCP Project is created with correct naming.
+- [ ] BigQuery Data Editor role assigned appropriately.
+- [ ] BigQuery Dataset is created successfully.
+- [ ] Network Analyzer logs are properly exporting to the BigQuery dataset.
 
-Where:
+**Dependencies:**
+- NIC: GCP Network Analyzer (parent task)
 
-prod represents the SDLC name.
+**Assignee:**
+(Assign accordingly)
 
-netb and ainotebook are standard naming conventions.
+**Priority:**
+(Mark as per project requirement)
 
-usc1 refers to us-central1, and use refers to us-east1.
-
-Sub-story 2: Create AD Groups and Bind to Subnets
-
-Purpose: Create dedicated AD groups and bind notebook instances to their respective subnets.
-
-Ownership and Management:
-
-Clearly document that AD group ownership belongs to Dinesh's team, as they own the application.
-
-Dinesh’s team must approve user access; approved users will gain visibility of the corresponding subnet.
-
-Coordination:
-
-Work closely with the Landing Zone and IAM teams to ensure smooth implementation.
-
-Reason for AD Groups:
-
-AD groups address the limitation of IAM policy, which currently has a maximum of 1500 principals—a limit that has already been reached.
-
-Notes:
-
-Ensure comprehensive documentation detailing subnet and AD group setup.
-
-Clearly outline approval workflows involving Dinesh’s team.
-
-Confirm coordination completion with Landing Zone and IAM teams.
-
-Acceptance Criteria:
+**Due Date:**
+(Provide relevant date)
 
