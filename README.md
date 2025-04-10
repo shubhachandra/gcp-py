@@ -1,38 +1,31 @@
-**Summary:**
-Create GCP Project with BigQuery Data Editor role and Dataset for Network Analyzer Logs
+Here’s a well-structured business justification and business impact statement you can use or adapt:
 
-**Description:**
+⸻
 
-As part of the NIC: GCP Network Analyzer initiative, this subtask involves the following actions:
+Business Justification
 
-1. **Create a new GCP Project:**
-   - Follow the agreed-upon naming conventions.
+There is an ongoing request to update existing infrastructure via Terraform in a non-production environment. As part of the update process, each service account is being granted the roles/compute.networkUser role at the project level. GCP IAM policies have a hard limit of 1,500 members per policy binding, and we have now reached or exceeded this limit.
 
-2. **Assign Roles:**
-   - Ensure the BigQuery Data Editor (`roles/bigquery.dataEditor`) role is assigned to the required service account/user.
+This limitation is causing all Terraform updates to fail during policy modification steps, preventing further infrastructure changes in the non-prod environment. Without resolving this issue, any future changes—regardless of their criticality—will continue to fail.
 
-3. **Create BigQuery Dataset:**
-   - Name the dataset appropriately for logging purposes (e.g., `network_analyzer_logs`).
+⸻
 
-4. **Set up Export for Cloud Logging:**
-   - Configure log sinks in Cloud Logging to export Network Analyzer-related logs directly into the newly created BigQuery dataset.
-   - Ensure logs are filtered specifically for Network Analyzer events.
+Business Impact
+	•	Blocked non-prod deployments: All Terraform-based deployments in non-prod environments are currently blocked, halting feature testing, validation, and QA activities.
+	•	Risk of cascading failures: The same IAM policy structure is used in PROB and SANDBOX environments, which are likely to hit the same limit soon, leading to similar disruptions.
+	•	Delayed development cycles: Without updates being pushed to non-prod, development teams are unable to test new features or bug fixes, directly impacting sprint velocity and release timelines.
+	•	Compliance & cost risk: Stuck resources or partial deployments may incur unnecessary cloud costs or deviate from compliance baselines due to failed automation.
 
-**Acceptance Criteria:**
-- [ ] GCP Project is created with correct naming.
-- [ ] BigQuery Data Editor role assigned appropriately.
-- [ ] BigQuery Dataset is created successfully.
-- [ ] Network Analyzer logs are properly exporting to the BigQuery dataset.
+⸻
 
-**Dependencies:**
-- NIC: GCP Network Analyzer (parent task)
+Recommendation
 
-**Assignee:**
-(Assign accordingly)
+Refactor the IAM policy to reduce the number of members in a single binding. One suggested approach is to:
+	•	Create GCP IAM groups and assign the networkUser role to the group instead of individual service accounts.
+	•	Add service accounts to these groups dynamically via automation.
 
-**Priority:**
-(Mark as per project requirement)
+This will ensure we remain within policy limits and maintain flexibility and scalability for future updates.
 
-**Due Date:**
-(Provide relevant date)
+⸻
 
+Let me know if you’d like a version that can go into a ticket, email, or presentation format.
