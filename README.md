@@ -1,71 +1,56 @@
-Here’s the updated Jira ticket content with clearly defined Acceptance Criteria:
+Perfect! Here's the updated **Jira story** with that context added for clarity and use-case alignment 👇
 
-⸻
+---
 
-Title: Decommission Unused Test Subnets and Provision New Shared Subnets for Region Expansion
+**Title**: Define Output Variables for Well-Known IP Prefixes for Firewall Rule Reuse
 
-⸻
+**Description**:  
+To streamline the creation and management of network firewall rules across cloud platforms, define Terraform output variables for well-known IP prefixes. These variables will be reusable across multiple Terraform modules, enabling consistent policy enforcement and simplified referencing.
 
-Description:
+This will include public, private, and special-use IP ranges, including those used by Wells Fargo and other known third parties, as referenced in the shared PPT.
 
-This ticket includes two major actions:
+---
 
-⸻
+**Scope of Work**:
 
-1. Deletion of Unused Test Subnets
+1. **Define IP Prefixes**:
+   - Wells Fargo public IPs
+   - RFC1918 (Private IP ranges)
+   - RFC6598 (Carrier-grade NAT)
+   - Squat space IPs
+   - 3rd-party vendor IPs (from PPT)
 
-Subnets to Delete:
-	•	test-subnet-usc1-100-126-100-0-24
-	•	(Add other subnet names if applicable)
+2. **Terraform File Structure**:
+   - `wf-generic-prefixes.tf`: Wells Fargo & common IPs.
+   - `gcp-prefixes.tf`: Google Cloud service ranges (e.g., APIs, DNS).
+   - `azure-prefixes.tf`: Azure service IPs (e.g., VNet service tags).
 
-Justification:
-	•	Originally created for testing purposes; no longer required.
-	•	Network Analyzer confirms only 8% usage:
-	•	1 Reserved IP (not assigned)
-	•	1 Internet Gateway IP
-	•	1 Broadcast IP
-	•	1 Network IP
-	•	No GCP services or workloads actively use these subnets.
+3. **Output Variables**:
+   - Use `output` blocks for each logical IP group.
+   - Example:  
+     ```hcl
+     output "rfc1918_prefixes" {
+       value = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+       description = "RFC1918 private IP ranges"
+     }
+     ```
+   - Prefix variables will be referenced in firewall rules to avoid hardcoding IPs.
 
-Evidence:
-	•	Screenshot from Network Analyzer confirming unused status (attached).
+4. **Documentation**:
+   - Add inline comments and source references for each IP range.
+   - Ensure each `.tf` file is scoped by platform and usage (e.g., infra vs application).
 
-⸻
+---
 
-2. Creation of Shared Subnets in us-south1 and us-east4
+**Acceptance Criteria**:
 
-Purpose:
-To support regional expansion by enabling GCP managed services access via private IPs in:
-	•	us-south1
-	•	us-east4
+- [ ] Output variables defined for all categorized IP ranges.
+- [ ] Variables available for use in firewall rule modules across environments.
+- [ ] File structure follows naming convention: `wf-generic-prefixes.tf`, `gcp-prefixes.tf`, `azure-prefixes.tf`.
+- [ ] Documentation and inline comments provided for all outputs.
+- [ ] Validated via plan and peer reviewed.
+- [ ] Merged into shared Terraform module repo.
 
-Subnet Details:
+---
 
-Region	Subnet Name	CIDR Range	Description
-us-south1	nonprod-netb-ainotebook-uss1-100-126-144-0-25	100.126.144.0/25	Shared subnet for GCP managed services
-us-east4	nonprod-netb-ainotebook-use4-100-126-200-0-25	100.126.200.0/25	Shared subnet for GCP managed services
-
-	•	Subnets will be shared via Shared VPC.
-	•	Private DNS A-records will be created to resolve managed services (Vertex AI, Dataflow, Dataproc) internally.
-
-⸻
-
-Acceptance Criteria:
-	1.	For Subnet Deletion:
-	•	Subnet(s) are deleted successfully.
-	•	No IAM bindings or active dependencies exist on the deleted subnet.
-	•	Network Analyzer screenshot showing 8% usage is attached as evidence.
-	•	IP range reclaimed and marked as available in IPAM documentation.
-	2.	For Subnet Creation (Region Expansion):
-	•	Shared subnets are created in us-south1 and us-east4 with correct CIDR ranges.
-	•	Private Google Access is enabled on the subnets.
-	•	DNS A-records for GCP services (e.g., vertexai.googleapis.com) are created and resolve internally.
-	•	Subnets are shared successfully with appropriate service projects.
-	•	Verification of internal access to GCP managed services using private IPs is successful.
-	3.	Documentation:
-	•	All changes are reflected in the central network documentation or IP inventory.
-	•	Terraform code (if used) is updated and committed.
-
-⸻
-
-Let me know if you’d like a subtasks breakdown or Terraform module snippets for subnet and DNS creation.
+Let me know if you'd like a starter template for the `.tf` files or sample usage in a firewall module 💡
