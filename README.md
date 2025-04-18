@@ -1,3 +1,32 @@
-I wanted to check if there are any upcoming plans or considerations from the networking team regarding investment in inter-cloud connectivity, particularly interconnect solutions between Azure and GCP.
+locals {
+  default_networks = {
+    core = [
+      "projects/wf-us12547/regions/us-central1/subnetworks/core-subnet1",
+      "projects/wf-us12547/regions/us-central1/subnetworks/core-subnet2"
+    ]
+  }
 
-We are observing a steady increase in multi-cloud workloads, especially with services like Apigee X and Apigee Hybrid that span across both platforms. Given this growing demand, it would be helpful to understand whether inter-cloud networking enhancements are on the roadmap to support such hybrid deployments efficiently.
+  default_host_projects = {
+    core = "vpc01"
+  }
+
+  subnet_access_groups = {
+    core = "group:gcp_gcp_core_subnet_sa_ComputeNetworkUser@wells.com"
+  }
+}
+
+resource "google_compute_subnetwork_iam_member" "core_subnet_access" {
+  for_each = {
+    for subnet_link in local.default_networks["core"] : subnet_link => {
+      project = local.default_host_projects["core"]
+      region  = split("/", subnet_link)[4]
+      name    = split("/", subnet_link)[6]
+    }
+  }
+
+  project = each.value.project
+  region  = each.value.region
+  subnetwork = each.value.name
+  role    = "roles/compute.networkUser"
+  member  = local.subnet_access_groups["core"]
+}
