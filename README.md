@@ -11,7 +11,7 @@ locals {
   }
 
   subnet_access_groups = {
-    core = "group:gcp_gcp_core_subnet_sa_ComputeNetworkUser@wells.com"
+    core = "group:gcp_gcp_core_subnet_sa_ComputeNetworkUser@msg@wells.com"
   }
 }
 
