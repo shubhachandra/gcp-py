@@ -1,17 +1,13 @@
-resource "google_compute_subnetwork_iam_member" "subnet_group_access" {
-  provider = google-beta
+resource "google_cloudidentity_group_membership" "service_account_membership" {
+  for_each = local.apis  # or toset(local.active_apis) if you prefer
 
-  for_each = {
-    for subnet_link in local.default_networks["core"] : subnet_link => {
-      region = split("/", subnet_link)[3]
-      name   = split("/", subnet_link)[5]
-      project = local.default_host_projects["core"]
-    }
+  group = "groups/gcp_gcp_core_subnetwork_sa@wells.com"  # Replace with your group's email
+
+  preferred_member_key {
+    id = format("serviceAccount:%s", each.value)  # e.g. serviceAccount:service-<project_number>@...
   }
 
-  project    = each.value.project
-  region     = each.value.region
-  subnetwork = each.value.name
-  role       = "roles/compute.networkUser"
-  member     = local.subnet_access_groups["core"]
+  roles {
+    name = "MEMBER"
+  }
 }
