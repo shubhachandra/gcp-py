@@ -1,10 +1,12 @@
-resource "google_cloudidentity_group_membership" "service_account_membership" {
-  for_each = local.apis  # or toset(local.active_apis) if you prefer
+data "google_cloud_identity_group" "subnetwork_group" {
+  group_email = var.group_email
+}
 
-  group = "groups/gcp_gcp_core_subnetwork_sa@wells.com"  # Replace with your group's email
+resource "google_cloud_identity_group_membership" "example_member" {
+  group = data.google_cloud_identity_group.subnetwork_group.name
 
   preferred_member_key {
-    id = format("serviceAccount:%s", each.value)  # e.g. serviceAccount:service-<project_number>@...
+    id = "serviceAccount:my-service-account@my-project.iam.gserviceaccount.com"  # Replace with actual member
   }
 
   roles {
