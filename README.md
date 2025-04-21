@@ -1,43 +1,30 @@
-Here's a well-structured Jira story to address the GCP policy binding limit by using a group profile:
+Here’s a cleaned-up and organized list of Q2 Deliverables based on your input:
 
----
+⸻
 
-**Title:**  
-Mitigate GCP Policy Binding Limit (1500 Members) by Using Group Profile for `roles/compute.networkUser` in Core SDLC
+Q2 Deliverables
+	1.	Prod and Non-Prod Separation
+	•	Deployment of border routers in Colo to enable traffic segmentation.
+	2.	Infrastructure for Non-Managed Notebooks
+	•	Subnet provisioning and AD group creation to enable click-ops based notebook creation for engineers.
+	3.	PoC: Google Next Generation Firewall (NGFW)
+	•	Evaluation of NGFW capabilities (currently in testing phase).
+	4.	PoC: Google Agent Space
+	•	Integration using Private Service Connect with Azure SharePoint (PoC phase).
+	5.	IP Space Management and Reclamation
+	•	Using Google Network Intelligence Center (implementation phase).
+	6.	Enablement of us-east Region in GCP
+	7.	Hybrid NAT Service Enablement
+	•	In testing phase.
+	8.	Cross-Cloud Connectivity
+	•	Established connectivity between Azure and GCP.
+	9.	Palo Alto Firewall Implementation in GCP
+	10.	GCP Network Connectivity Center
+	•	Enablement and integration.
+	11.	GCP NGFW Service Enablement
+	12.	Apigee Hybrid Implementation
+	13.	Network Topology Design
 
----
+⸻
 
-**Description:**  
-GCP IAM policies have a limitation of 1500 principals per role binding. In our current setup, individual service accounts are granted the `roles/compute.networkUser` role at the subnet level within the **Core SDLC**, leading to policy updates failing as we reach this limit.
-
-To mitigate this issue, we propose the creation of a **central group profile** that will include all relevant service accounts as members. This group will then be granted the `roles/compute.networkUser` role at the Core subnet level. This approach simplifies IAM management and avoids exceeding the policy binding limit.
-
----
-
-**Acceptance Criteria:**
-
-1. A new Google Group is created for Core SDLC subnet access (e.g., `gcp_gcp_core_subnet_sa_ComputeNetworkUser@domain.com`).
-2. All service accounts that require `compute.networkUser` access are added as members of this group.
-3. The group is granted the `roles/compute.networkUser` IAM role at the subnet level within the Core SDLC VPC.
-4. Terraform code is updated to reflect this group-based role assignment.
-5. Validate that the role is successfully applied and IAM policy binding size is within GCP limits.
-6. Add documentation on:
-   - How to request access (i.e., adding new service accounts to the group).
-   - Ownership and maintenance of the group.
-
----
-
-**Justification:**  
-- Prevents policy update failures due to GCP's 1500 member IAM binding limit.  
-- Ensures scalability for future subnet access requests.  
-- Reduces operational overhead by centralizing IAM access control.
-
----
-
-**Impact if Not Implemented:**  
-- Future Terraform runs may fail for project provisioning and subnet access.  
-- Manual workaround may increase IAM misconfiguration risk and operational delays.
-
----
-
-Let me know if you want a subtasks breakdown or Terraform code snippet included in the story.
+Let me know if you’d like to tag these by phase (planned, in-progress, complete), add owners, or turn it into a report or slide.
