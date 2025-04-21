@@ -25,3 +25,19 @@ resource "google_cloud_identity_group_membership" "example" {
     name = "MEMBER"
   }
 }
+
+resource "google_cloud_identity_group_membership" "dataproc_sa_member" {
+  group = "groups/YOUR-GROUP-ID" # Replace with actual group ID
+
+  preferred_member_key {
+    id = format(
+      "serviceAccount:service-%s@dataproc-accounts.iam.gserviceaccount.com",
+      module.project_factory_project_number
+    )
+  }
+
+  roles {
+    name = "MEMBER"
+  }
+}
+
