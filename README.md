@@ -1,18 +1,11 @@
-Subject: Snippet Code for Adding Members to Group Profile - Completed
+Subject: Clarification on API Usage and QA to AD Environment Transition
 
-Hello all,
+Hi [Recipient’s Name],
 
-The snippet code for adding members to the group profile has been completed.
+Noted. Regarding the APIs — these are the same ones currently used in the Project Factory.
 
-Steps taken:
-	1.	The IAM team created subnetwork groups where the service account will be added.
-	2.	The IAM team granted the Terraform service account (from the sandbox provisioning project workspace) the Owner role on the group.
-	3.	The Networking team added the group profile with the compute.networkUser role.
+API Assumption:
+We will attempt to add 7 service agents. Only the active API service agents will be successfully added; the inactive ones will fail and will not be included.
 
-Next Steps:
-	1.	Integrate the snippet into the project-factory code under the networking.tf file. Please review or approve the changes.
-	2.	Create a new beta version.
-	3.	Test with a few provisioning projects by removing the shared VPC names.
-
-Expected Result:
-The service account will be added as a member of the group, and its access to shared subnets will be removed.
+QA to AD Environment Transition:
+We need to perform one round of testing in the QA environment before moving the group ID to the Project Provisioning repo. Once confirmed, the group ID will be passed from the Project Provisioning repo to the Project Factory repo.
