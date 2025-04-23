@@ -15,7 +15,6 @@ FROM table1 t1
 LEFT JOIN flattened_table2 t2
   ON t1.subnet_name = t2.subneturi
 WHERE t2.subneturi IS NULL
-
 ⸻
 
 Revised Version:
