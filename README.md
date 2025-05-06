@@ -1,6 +1,20 @@
-Here’s a clear and professional breakdown in the format you requested, using the four columns:
+Here’s a concise and professional justification you can use for deleting the two subnets:
 
-What was the problem?	What did we do?	What was the impact?	Additional commentary
-Non-prod deployments were failing due to hitting the Google policy binding limit (1500), a hard limit imposed by GCP.	The networking team analyzed the error and proposed using a group to manage network user role bindings instead of assigning the role to each service agent individually. We created a custom repository in the project-factory module to add service accounts to the group.	This solution unblocked non-prod deployments, which in turn allowed us to proceed with production deployments, as non-prod validation is a prerequisite.	We collaborated with the IAM team to create the group and assign the Terraform service account as owner. We also engaged the Landing Zone team to review and approve the solution and test the custom module.
+⸻
 
-Would you like this turned into a slide or formatted document as well?
+Justification for Subnet Deletion
+
+The two subnets in question were previously used by the Private Service Connect (PSC) module for publishing or consuming services. After a recent architecture review and service audit, it was confirmed that:
+	1.	No active PSC endpoints or service attachments are currently associated with these subnets.
+	2.	The subnets are not referenced by any active firewall rules, routes, or load balancers.
+	3.	There is no current or planned workload that requires these subnets.
+
+Retaining unused subnets can lead to:
+	•	Unnecessary IP range reservation, potentially limiting future subnet planning.
+	•	Configuration clutter, increasing complexity and risk during troubleshooting or audits.
+
+Therefore, to ensure optimal resource hygiene and maintain a clean networking configuration, we recommend proceeding with the deletion of these subnets.
+
+⸻
+
+Would you like to tailor this further based on actual subnet names or regions?
