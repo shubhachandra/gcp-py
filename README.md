@@ -1,20 +1,66 @@
-Here’s a concise and professional justification you can use for deleting the two subnets:
+Here’s how you can break your initiative into Jira stories under an Epic like:
+“Implement BlueCat-based IPAM Solution in Core Project”.
 
 ⸻
 
-Justification for Subnet Deletion
+Story 1: Create BlueCat Instance in Core Project
 
-The two subnets in question were previously used by the Private Service Connect (PSC) module for publishing or consuming services. After a recent architecture review and service audit, it was confirmed that:
-	1.	No active PSC endpoints or service attachments are currently associated with these subnets.
-	2.	The subnets are not referenced by any active firewall rules, routes, or load balancers.
-	3.	There is no current or planned workload that requires these subnets.
-
-Retaining unused subnets can lead to:
-	•	Unnecessary IP range reservation, potentially limiting future subnet planning.
-	•	Configuration clutter, increasing complexity and risk during troubleshooting or audits.
-
-Therefore, to ensure optimal resource hygiene and maintain a clean networking configuration, we recommend proceeding with the deletion of these subnets.
+Summary: Provision a BlueCat instance in the Core GCP project for building a custom IPAM solution.
+Acceptance Criteria:
+	•	BlueCat instance configuration documented.
+	•	Instance running in the Core project.
+	•	Tagged and labeled appropriately.
 
 ⸻
 
-Would you like to tailor this further based on actual subnet names or regions?
+Story 2: Discover Org Policies Preventing Marketplace Deployment
+
+Summary: Identify all organization policies preventing deployment of BlueCat from Marketplace.
+Acceptance Criteria:
+	•	List of specific org policies discovered.
+	•	Documentation of how each policy impacts deployment.
+	•	Suggested mitigation or exception path.
+
+⸻
+
+Story 3: Coordinate with Murray’s Team to Enable BlueCat Image
+
+Summary: Engage with Murray and team to enable BlueCat image deployment for the Core networking project only.
+Acceptance Criteria:
+	•	Meeting notes or communication log with Murray’s team.
+	•	BlueCat image enabled in the required project.
+	•	Policies adjusted only for the Core project, not globally.
+
+⸻
+
+Story 4: Learn and Document BlueCat for IPAM Use
+
+Summary: Explore and document features of BlueCat that support IP address management (IPAM).
+Acceptance Criteria:
+	•	BlueCat IPAM functionality documented.
+	•	Comparison of BlueCat features vs. IPAM needs.
+	•	Limitations (excluding DNS) clearly stated.
+
+⸻
+
+Story 5: Document Deployment Process for BlueCat in Core Project
+
+Summary: Create a reproducible deployment process for BlueCat without using the Marketplace.
+Acceptance Criteria:
+	•	Deployment method documented (custom image, scripts, etc.).
+	•	Validated by test deployment.
+	•	Deployment artifacts versioned and stored securely.
+
+⸻
+
+Story 6: Validate Terraform Integration with BlueCat
+
+Summary: Explore BlueCat’s Terraform provider and validate integration with Core project.
+Acceptance Criteria:
+	•	Sample Terraform script to interact with BlueCat.
+	•	Successful creation of IP objects via Terraform.
+	•	Documentation of supported Terraform resources.
+
+⸻
+
+Would you like these formatted for export to Jira (CSV or JSON), or created as a Confluence page summary?
