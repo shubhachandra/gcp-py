@@ -1,28 +1,20 @@
-Thanks! Here’s the updated meeting minutes with your tactical point added:
+Here’s a polished and grammatically correct version of your summary statement, maintaining the technical accuracy and intent:
 
 ⸻
 
-Meeting Minutes
+Summary of Terraform Customizations for Google-Provided Modules:
 
-Topic: Handling 1500 IAM Policy Bindings Limit in Host Project
-Date: [Insert Date]
-Attendees: [Insert Names if needed]
+As per the Project Factory module, when subnets or shared subnets are passed in the list, all active API service agents are automatically granted the roles/compute.networkUser role at the subnet level.
 
-Key Observations:
-	•	The 1500 IAM bindings limit was mitigated by shifting to the host project.
-	•	A recent code fix successfully added service agents to the group.
-	•	However, the non-prod network user limit is still not reducing as expected.
+We customized this behavior by adding service accounts to a group that already has the roles/compute.networkUser role at the subnet level, thereby simplifying IAM bindings.
 
-New Action Plan:
-	1.	Create separate groups for different user roles.
-	2.	When Project Factory adds service agents to the network, those should be moved to a group profile.
-	3.	The tactical change is to move existing projects to the newer version of the Project Factory code.
+If no subnets are provided, the module defaults to granting roles/compute.networkUser to the active API service agents at the host project level. We encountered the IAM policy binding limit (1500 bindings) in this scenario. To avoid this, we introduced a flag to prevent assigning this role at the host project level when groups are used instead.
 
-Next Steps:
-	•	Request the Ops team (Prakash) to initiate the migration of existing projects to the new version of Project Factory.
-	•	Prakash will also coordinate with Vidha and raise the required Change Requests (CRs).
-	•	Networking team to implement a similar model for other service agents, using group profiles to manage IAM limits.
+In addition to the above:
+	•	The roles/composer.ServiceAgentV2Ext role is granted to the Composer service account for using Composer with the Shared VPC host project.
+	•	The roles/compute.networkAdmin role is granted to the Datastream service account to enable Datastream connectivity configuration on the Shared VPC host.
+	•	We also created a custom role: roles/vpcaccess.user.
 
 ⸻
 
-Let me know if you’d like this in a specific format or added to an email draft.
+Would you like this formatted as a markdown doc, slide bullet points, or a comment block for code documentation?
