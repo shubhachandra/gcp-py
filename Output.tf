@@ -25,3 +25,12 @@ output "membership_resource_name" {
   value       = google_cloud_identity_group_membership.sa_membership.name
   description = "Full resource name of the membership"
 }
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 4.58.0"
+    }
+  }
+  required_version = ">= 1.3"
+}
