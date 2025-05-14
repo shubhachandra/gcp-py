@@ -1,3 +1,28 @@
+resource "google_project_organization_policy" "allow_public_marketplace" {
+  project    = "your-project-id"
+  constraint = "constraints/commerceorggovernance.disablePublicMarketplace"
+
+  restore_policy {
+    default = true
+  }
+}
+
+
+resource "google_project_organization_policy" "allow_specific_marketplace_services" {
+  project    = "your-project-id"
+  constraint = "constraints/commerceorggovernance.marketplaceServices"
+
+  list_policy {
+    allow {
+      values = [
+        "marketplace.gcr.io"
+      ]
+    }
+    suggested_value = "marketplace.gcr.io"
+  }
+}
+
+
 provider "google" {
   project = "your-project-id"
   region  = "us-central1"
