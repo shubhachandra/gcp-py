@@ -1,43 +1,35 @@
-Thanks! Since the Jira is for **creating a GCP project** for the new SDLC environment called **"Prod Discovery"**, here's an updated Jira description:
+Here’s a professional way to raise a ticket for this issue. You can customize the wording to fit your team's template or ticketing system:
 
 ---
 
-### **Title:**
+**Title:** Align PROD AD-ent with QA-ent to Eliminate Technical Debt
 
-Create GCP Project for New SDLC Environment – *Prod Discovery*
+**Description:**
+While working with the **PROD AD-ent** environment, we observed significant technical debt and configuration drift when compared to **QA-ent**, which it is supposed to mirror. This inconsistency is leading to environment-specific issues and risks to production stability.
 
----
+**Issue Summary:**
 
-### **Description:**
+* PROD AD-ent is not in sync with QA-ent.
+* Differences include \[add a few specific examples if known, e.g., group policies, OU structure, permissions, etc.].
+* These deviations are causing potential reliability and maintenance challenges.
 
-As a **Network Engineer**, I need to create a new **GCP project** to support the **"Prod Discovery"** SDLC environment. This project will serve as the foundation for provisioning infrastructure components such as VPC, subnets, compute, and other cloud services required by the development and production teams.
+**Proposed Action:**
 
----
+* Perform a thorough comparison between QA-ent and PROD AD-ent.
+* Document all configuration differences.
+* Align PROD AD-ent to mirror QA-ent (or vice versa, based on what is the intended baseline).
+* Establish ongoing configuration sync checks to prevent future drift.
 
-### **Scope of Work:**
+**Impact if Unresolved:**
 
-* Create a new GCP project under the appropriate **folder or organization node**.
-* Name the project following naming conventions (e.g., `proj-prod-discovery`).
-* Set the correct **billing account** and **organization/folder ID**.
-* Apply required **labels/tags** (e.g., `env = prod`, `sdlc = discovery`, `owner = networking`).
-* Enable core **APIs** such as:
+* Increased troubleshooting time.
+* Risk of environment-specific failures.
+* Harder rollout of changes validated in QA.
 
-  * Compute Engine API
-  * VPC Access API
-  * Cloud Resource Manager API
-* Assign necessary **IAM roles** to networking and project owners.
-* Ensure **project is ready for network provisioning** (VPC, subnets, etc.).
-
----
-
-### **Acceptance Criteria:**
-
-* A new GCP project named `prod-discovery` (or per naming standard) is created.
-* Billing account is correctly linked.
-* Required APIs are enabled successfully.
-* Labels and IAM roles are applied.
-* Project is available for use in Terraform/IaC deployments.
+**Priority:** High
+**Requested By:** \[Your Name]
+**Due By:** \[Insert preferred timeline or sprint]
 
 ---
 
-Let me know if you're using **Terraform**, **gcloud CLI**, or manual creation, and I can provide a tailored task breakdown or code.
+Would you like help filling in specific technical differences or attaching evidence/screenshots to support this ticket?
