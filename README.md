@@ -1,51 +1,38 @@
-Here's a **cleaned-up version of your content as clear, concise presentation bullet points**, while preserving all key technical details:
+Here’s a suggested Jira ticket draft for your GCP project creation request:
 
 ---
 
-### 🔧 Issue Faced in GCP
+**Title:** Create GCP Host Project for Shared VPC (Discovery - SDLC - Prod)
 
-* Encountered a **400 error** due to exceeding the **1,500 IAM policy bindings limit** in GCP.
-* Cause: Every time a new project was added, the **Active Service Account (Service Agent)** was granted the `compute.networkUser` role on **shared VPC subnets**.
-* This led to an increasing number of service accounts being added to shared subnet IAM policies, ultimately hitting the limit.
+**Description:**
 
----
+We need to create a new GCP project that will serve as the **Host Project for Shared VPC**. This host project will be used to connect and manage service projects across different environments: **Discovery, SDLC, and Prod**.
 
-### 🛠️ Collaboration & Fix
+As the Network Engineer, I will be responsible for:
 
-* Engaged with **Google Support**, who advised using **Google Groups** instead of assigning roles to **individual service accounts**.
-* Worked with the **Landing Zone (LZ)** and **IAM teams** to:
+* Creating the GCP project
+* Enabling necessary APIs
+* Setting up the Shared VPC
+* Associating the appropriate service projects
+* Implementing necessary IAM policies and folder structure alignment
 
-  * Create appropriate **Google Groups**.
-  * Update **group IDs** in the project factor code.
-* **Richard** assisted in coding changes to add **service agents to the group** instead of assigning roles individually.
+**Project Requirements:**
 
----
+* **Purpose**: Host Project for Shared VPC
+* **Environment Coverage**: Discovery, SDLC, and Prod
+* **Billing**: To be linked with appropriate billing account
+* **Folder**: Under correct organization/folder hierarchy (to be confirmed)
+* **Labels/Tags**: Include relevant labels like `env=shared`, `purpose=network`, `owner=network-team`
 
-### 🚀 Fix Implementation
+**Action Owner:** \[Your Name] (Network Engineer)
 
-* Updated the **project factory code**.
-* **LZ team released version 4.2.1**, which initially resolved the issue in spoke projects.
+**Due Date:** \[Add date, if any]
 
----
+**Notes:**
 
-### 🪲 New Bug in Host Project
-
-* The **same 400 error occurred in the host project** after the 4.2.1 release.
-* Based on Richard's recommendation:
-
-  * Introduced a **flag** to **skip assigning roles to the service agent** at the **host project** level.
-  * Released an updated version **4.2.2** to fix this issue.
+* Coordination with IAM and Billing teams might be required.
+* Please confirm the folder and billing details before creation.
 
 ---
 
-### 🤝 Final Steps & Resolution
-
-* **Ops team had already migrated to version 4.2.1**, which still had the host project bug.
-* We coordinated with the Ops team to:
-
-  * **Explain the issue** and how the role assignment logic had changed.
-  * Push an **immediate upgrade to version 4.2.2**, resolving the problem in host projects.
-
----
-
-Let me know if you'd like this in slide-ready format (e.g. PowerPoint, Google Slides) or with visual aids like a flow diagram of the fix.
+Let me know if you'd like this formatted in a Jira markdown format or copied into a JSON payload for automation.
