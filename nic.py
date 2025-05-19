@@ -1,4 +1,13 @@
-from google.cloud import recommender_v1
+SELECT t1.*
+FROM `project.dataset.table1` AS t1
+LEFT JOIN (
+  SELECT DISTINCT subutil.subneturi AS subnet_uri
+  FROM `project.dataset.table2`,
+  UNNEST(payload_v1_report.iputilizationinfo) AS iputil,
+  UNNEST(iputil.subnetiputilization) AS subutil
+) AS t2
+ON t1.subnet_uri = t2.subnet_uri
+WHERE t2.subnet_uri IS NULL; google.cloud import recommender_v1
 import csv
 
 PROJECT_ID = 'your-gcp-project-id'
