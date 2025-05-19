@@ -1,32 +1,51 @@
-Got it! Here's a version of the ticket written in **requesting mode**, with a clear ask for action:
+Here's a **cleaned-up version of your content as clear, concise presentation bullet points**, while preserving all key technical details:
 
 ---
 
-**Title:** Request to Align PROD AD-ent with QA-ent to Eliminate Technical Debt
+### 🔧 Issue Faced in GCP
 
-**Description:**
-I would like to request an initiative to align the **PROD AD-ent** environment with **QA-ent**, which it is intended to mirror. During recent work in PROD, we identified significant technical debt and discrepancies when compared to QA-ent. These differences could introduce risks and inconsistencies between environments.
-
-**Request Details:**
-
-* Please conduct a comparison between QA-ent and PROD AD-ent.
-* Identify and document key differences (e.g., configurations, group policies, OU structures, permissions, etc.).
-* Based on findings, update PROD AD-ent to ensure it mirrors QA-ent.
-* Optionally, we can explore setting up automated checks or documentation to maintain alignment going forward.
-
-**Reason for Request:**
-
-* Reduce technical debt and configuration drift.
-* Ensure consistency and reliability across environments.
-* Enable smoother and safer rollout of changes tested in QA.
-
-**Suggested Timeline:** \[Insert preferred date or sprint if applicable]
-
-Please let me know if further inputs or validations are needed from my end.
-
-Thanks,
-\[Your Name]
+* Encountered a **400 error** due to exceeding the **1,500 IAM policy bindings limit** in GCP.
+* Cause: Every time a new project was added, the **Active Service Account (Service Agent)** was granted the `compute.networkUser` role on **shared VPC subnets**.
+* This led to an increasing number of service accounts being added to shared subnet IAM policies, ultimately hitting the limit.
 
 ---
 
-Would you like a version of this for Jira, ServiceNow, or any specific ticketing format?
+### 🛠️ Collaboration & Fix
+
+* Engaged with **Google Support**, who advised using **Google Groups** instead of assigning roles to **individual service accounts**.
+* Worked with the **Landing Zone (LZ)** and **IAM teams** to:
+
+  * Create appropriate **Google Groups**.
+  * Update **group IDs** in the project factor code.
+* **Richard** assisted in coding changes to add **service agents to the group** instead of assigning roles individually.
+
+---
+
+### 🚀 Fix Implementation
+
+* Updated the **project factory code**.
+* **LZ team released version 4.2.1**, which initially resolved the issue in spoke projects.
+
+---
+
+### 🪲 New Bug in Host Project
+
+* The **same 400 error occurred in the host project** after the 4.2.1 release.
+* Based on Richard's recommendation:
+
+  * Introduced a **flag** to **skip assigning roles to the service agent** at the **host project** level.
+  * Released an updated version **4.2.2** to fix this issue.
+
+---
+
+### 🤝 Final Steps & Resolution
+
+* **Ops team had already migrated to version 4.2.1**, which still had the host project bug.
+* We coordinated with the Ops team to:
+
+  * **Explain the issue** and how the role assignment logic had changed.
+  * Push an **immediate upgrade to version 4.2.2**, resolving the problem in host projects.
+
+---
+
+Let me know if you'd like this in slide-ready format (e.g. PowerPoint, Google Slides) or with visual aids like a flow diagram of the fix.
