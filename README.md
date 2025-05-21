@@ -1,11 +1,7 @@
-Here’s a clearer and more grammatically correct version of your sentence:
+We’ve hit rock bottom on this issue and need your urgent attention.
 
----
+The Project Factory code provided by Google cannot be modified any further, as a majority of our environments—both non-production and production—have become dependent on it. This limitation has placed us in a rigid position where making any updates or enhancements is no longer feasible without risking environment stability.
 
-> To my understanding, there is one possible issue: currently, we are using a seed service account to create resources in the prod SDLC. While using the Dialogflow service, we need to assign the `roles/dialogflow.pscAuthorizedService` and `roles/networkconnectivity.networkAttacher` roles to the **service agents** of the prod SDLC in the **core project**. However, the seed service account does **not** have the **Service Account Admin** role, as you can see in the attached screenshot.
->
-> In the `project-factory` module, the `networking.tf` file passes the networking hub host project on **line 99**, and also on **line 20**.
+Additionally, we are facing the 1500-member limit on IAM policy bindings, which is now a critical blocker for us. These two constraints combined are preventing us from moving forward.
 
----
-
-Let me know if you’re preparing this for a code review comment, documentation, or a support case—I can tailor it more precisely.
+We are requesting an urgent exception and/or feature support to unblock this situation. This is the highest level of escalation from our team, and we need your immediate intervention to prevent further delays and disruptions.
