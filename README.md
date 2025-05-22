@@ -1,65 +1,47 @@
-Here’s an updated **Jira ticket** description with your new requirement and a revised **email to Daniel**. This includes the Terraform validation for the new `psidco` (disco) environment variable in the **project-factory** repository.
+Thanks! Here's an updated version of the email with your note about the fix for versions 4.2.1 and 4.2.2 — and that the issue still persists.
 
 ---
 
-### ✅ **Updated Jira Ticket: Add New CI Environment Variable `psidco`**
+**Subject:** Continued IAM Binding Limit Issues Post 4.2.1/4.2.2 Fix – Request for Group Migration Approval
 
-**Title:**
-Introduce new CI environment variable `psidco` (Product Discovery) and update Terraform validations
+Hi \[Recipient's Name],
 
-**Type:**
-Task / Change Request
+We are still encountering **HTTP 400 errors** due to **IAM policy binding member limits** (exceeding the 1500-member cap at the host VPC project level), even after applying the **4.2.1 and 4.2.2 fixes**.
 
-**Priority:**
-High
+As previously advised, we’ve communicated to the application teams to:
 
-**Description:**
-We are introducing a new CI environment variable called `psidco` (short for **Product Discovery**), in addition to the existing environment variables: `prod`, `nonprod`, `sandbox`, and `core`.
+* Run `terraform init --upgrade` before applying any changes.
+* Avoid using the UI for Terraform version upgrades. Instead, they should clone the codebase, execute `terraform init --upgrade`, and apply changes via CLI.
 
-**Product Discovery (psidco)** is a new SDLC phase aimed at **validating ideas, prototyping, collecting stakeholder feedback, and checking feasibility before full-scale development begins**. It helps teams de-risk projects and align early on.
+### Long-term Resolution:
 
-### Scope of Work:
+To resolve this at scale, we propose **migrating direct IAM role bindings of service accounts to pre-approved groups**, especially for service accounts with the `roles/compute.networkUser` role at the host VPC project level.
 
-1. **CI/CD Updates**
+Typical service accounts per project include:
 
-   * Add `psidco` as a valid CI environment variable in all relevant pipelines.
-   * Update logic handling CI environment selection to account for `psidco`.
+* Cloud Services Service Agent
+* Notebooks Service Agent
+* Terraform Service Account (`tf-service`)
 
-2. **Terraform Validation Updates**
+By moving these accounts to respective groups that already hold the required `compute.networkUser` role, we expect to **free up approximately 650 IAM bindings**.
 
-   * Modify the **project-factory** repo to recognize `psidco` as a valid environment in Terraform validation rules.
-   * Ensure `validate_environment` includes `psidco` as a permitted value.
+Additional contributors to the binding limit:
 
-3. **Documentation**
+* **Composer**: Uses the **Shared VPC Agent** role, which adds around **274 bindings**. We propose grouping these service accounts similarly.
+* Other roles to consolidate via groups:
 
-   * Update developer documentation and CI environment references to include `psidco`.
+  * `roles/vpcaccess.user` (Serverless VPC Access)
+  * `roles/container.hostServiceAgentUser` (GKE Host Service Agent)
 
-**Acceptance Criteria:**
+### Request:
 
-* CI/CD scripts accept `psidco` as a valid environment.
-* Terraform `validate_environment` logic in project-factory repo includes `psidco`.
-* All validation and testing steps completed successfully in staging/test.
-* Documentation updated.
+Kindly **approve the proposed group names** so we can proceed with this optimization. This change is critical to ensure continued stability and scalability of IAM configurations.
 
----
-
-### 📧 **Revised Email to Daniel**
-
-**Subject:** Urgent: Add `psidco` Environment to CI/CD and Terraform Validation (Landing Zone Board)
-
-Hi Daniel,
-
-I’ve created a high-priority Jira ticket to introduce a new CI environment variable: **`psidco`**, representing the **Product Discovery** phase.
-
-This phase supports early-stage validation, prototyping, and feasibility analysis before full development. Along with updating our pipelines, this also requires a **Terraform validation change in the `project-factory` repo** to accept `psidco` as a valid environment (`validate_environment` logic).
-
-Can you please accept and route this ticket to the **Landing Zone** board for immediate action?
-
-Let me know if you need further details.
+Please let us know if you require the full mapping of service accounts to groups or if you'd prefer a quick discussion to finalize.
 
 Best regards,
 **Shubhachandra S Hotpeti**
 
 ---
 
-Let me know if you want help writing the actual Terraform code snippet for `validate_environment`, or if this needs to be formatted for Jira or GitHub Issues.
+Let me know if you'd like this reformatted into an internal Confluence page or Slack message version.
