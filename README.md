@@ -1,31 +1,12 @@
-Title: Add IAM Roles to Specific Groups to Mitigate 400 Error from IAM Policy Limit
+The "owner" mentioned refers to the group owner, who will manage group membership by adding service agents and service accounts using Terraform automation.
 
-Description:
+The Composer Shared VPC group will be used by Cloud Composer instances to access the Shared VPC.
 
-We are hitting a hard limit of 1500 IAM bindings on some resources, resulting in 400 errors during deployments and operations. This is due to the high number of individual user/service account bindings across projects.
+The Serverless VPC Access User role will be granted to a group containing the relevant service agents, enabling them to access Serverless VPC connectors.
 
-Tactical Resolution:
+Similarly, the GKE Host Service Agent User role will be granted to a group to allow GKE service agents to operate with the required permissions.
 
-To mitigate this issue temporarily, we propose assigning the required IAM roles to specific groups instead of individual users. This will help reduce the number of bindings significantly.
+Currently, these roles are directly assigned to individual service agents at the Host VPC project level, which has led to reaching the hard limit of 1500 IAM policy bindings, resulting in 400 errors.
 
-Action Items:
+To mitigate this, we plan to move the service agents into respective groups, and assign IAM roles to these groups instead of individual service accounts. This is a tactical solution to reduce IAM bindings and resolve the errors temporarily while we work on a more scalable long-term solution.
 
-Add the following roles to designated groups:
-
-roles/compute.networkUser
-
-roles/composer.sharedVpcAgent
-
-roles/vpcaccess.user (Serverless VPC Access User)
-
-roles/container.hostServiceAgentUser (GKE Host Agent User)
-
-Purpose:
-This change is aimed at reducing IAM binding sprawl and mitigating the 400 error until a more permanent IAM design is implemented.
-
-Priority: High (due to deployment blockers)
-
-Impact if not done: Continued deployment failures, limited service functionality, and project delivery delays.
-
-Assignee: [Assign appropriate team or individual]
-Labels: IAM, GCP, AccessControl, BlockingIssue, TacticalFix
