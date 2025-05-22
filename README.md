@@ -41,7 +41,23 @@ Please let us know if you require the full mapping of service accounts to groups
 
 Best regards,
 **Shubhachandra S Hotpeti**
+To optimize IAM bindings at the host VPC project level, we are creating dedicated Google Groups to manage role assignments more efficiently:
 
+A group (<GROUP_NAME_FOR_COMPUTE_NETWORK_USER>) will be created to assign the roles/compute.networkUser role. This group will include:
+
+Cloud Service Agents (service accounts ending with @cloudservices.gserviceaccount.com)
+
+Notebooks Service Agents (ending with ggc-sa-notebooks.iam.gserviceaccount.com)
+
+Terraform service accounts (tf-<sdlc>-<appid>.iam.gserviceaccount.com)
+
+A group (<GROUP_NAME_FOR_COMPOSER_SHARED_VPC_AGENT>) will be created for Composer Shared VPC Agent roles, consolidating Composer service agents that currently have individual bindings.
+
+A group (<GROUP_NAME_FOR_SERVERLESS_VPC_ACCESS>) will be created for service accounts using the roles/vpcaccess.user role (Serverless VPC Access).
+
+A group (<GROUP_NAME_FOR_CONTAINER_SERVICE_AGENT>) will be created for service accounts using the roles/container.hostServiceAgentUser role (GKE Host Service Agent).
+
+These groups will be granted the required roles at the host project level, significantly reducing the total number of IAM bindings
 ---
 
 Let me know if you'd like this reformatted into an internal Confluence page or Slack message version.
