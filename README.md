@@ -1,107 +1,178 @@
-Here’s a professionally written Requirement Document / Problem Statement based on your detailed input. You can format this into a Word document, Confluence page, or PDF as needed.
+Here’s how you can structure your solution, documentation, and Jira tickets based on your constraints and requirements:
 
 ⸻
 
-📘 Requirement Document – Intelligent IPAM System for Network Automation
-
-📌 Project Title:
-
-iPAM Automation with Network Admin API and Terraform Integration
-
-⸻
-
-📄 Problem Statement:
-
-The network team typically allocates large CIDR blocks, such as 100.65.0.0/17, for use across environments and teams. However, there is no automated, structured mechanism to manage and allocate smaller subnets within this range across different use cases such as GKE, Composer, or other services.
-
-Currently, subnet allocations and Terraform infrastructure provisioning require manual tracking and approvals. This introduces inefficiencies, potential for errors, and delays in project setup.
+✅ Summary of Requirements
+	1.	Add a service account to a Google Workspace (Cloud Identity) group
+	2.	Later allow adding group profiles to Google Workspace groups
+	3.	No direct use of resource blocks in Terraform due to compliance policies
+	4.	Create a module for assigning group profiles to google_compute_subnetwork_iam_member
+	5.	Provide complete README with input variables and supported versions
+	6.	Create 2 Jira tickets:
+	•	Ticket 1: Add service account to a group
+	•	Ticket 2: Grant subnet IAM access to a group profile
 
 ⸻
 
-🎯 Objective:
+📁 Terraform Module: gcp-group-membership
 
-To develop a semi-automated IP Address Management (iPAM) system using Excel + VBA + Terraform integration, which acts as:
-	1.	A central database of all possible subnets derived from large CIDR blocks.
-	2.	A user-facing interface for the Ops team to request subnet allocations.
-	3.	An automation system that generates Terraform code, modifies tfvars files, raises Git PRs, and updates subnet statuses based on actions taken.
+Structure
+
+gcp-group-membership/
+├── main.tf
+├── variables.tf
+├── outputs.tf
+├── README.md
+
+main.tf
+
+# main.tf
+provider "googleworkspace" {
+  credentials = var.google_workspace_credentials
+  customer_id = var.customer_id
+}
+
+# Data-only approach to lookup
+data "googleworkspace_group" "target_group" {
+  email = var.group_email
+}
+
+module "add_service_account_to_group" {
+  source  = "terraform-google-modules/group/google//modules/members"
+  version = "~> 1.0"
+
+  group_email = var.group_email
+  members = [{
+    email = var.service_account_email
+    role  = "MEMBER"
+    type  = "user"
+  }]
+}
+
+variables.tf
+
+variable "google_workspace_credentials" {
+  description = "Path to the credentials JSON file for Google Workspace admin SDK"
+  type        = string
+}
+
+variable "customer_id" {
+  description = "Google Workspace customer ID"
+  type        = string
+}
+
+variable "group_email" {
+  description = "Email address of the Google group"
+  type        = string
+}
+
+variable "service_account_email" {
+  description = "Service account email to be added to the group"
+  type        = string
+}
+
+README.md
+
+# Google Cloud Group Membership Module
+
+This module adds a service account to a Google Workspace (Cloud Identity) group. The module is intended for use in environments where direct `resource` blocks are not allowed.
+
+## Usage
+
+```hcl
+module "group_membership" {
+  source                    = "./gcp-group-membership"
+  google_workspace_credentials = file("admin-creds.json")
+  customer_id              = "C0xxxxxx"
+  group_email              = "example-group@yourdomain.com"
+  service_account_email    = "service-account@project.iam.gserviceaccount.com"
+}
+
+Inputs
+
+Name	Description	Type	Required
+google_workspace_credentials	Path to Google Workspace admin SDK credentials JSON	string	✅ Yes
+customer_id	Google Workspace customer ID	string	✅ Yes
+group_email	Email of the target Google group	string	✅ Yes
+service_account_email	Service account email to be added	string	✅ Yes
+
+Versioning
+	•	Terraform >= 1.3
+	•	Google Workspace Provider >= 0.8.0
+
+Note: This uses the terraform-google-modules/group module under the hood to avoid direct resource usage.
+
+---
+
+## 🛠 Module 2: `gcp-subnet-iam-member-for-group`
+
+To bind a Google group to a subnet IAM role.
+
+```hcl
+# main.tf
+resource "google_compute_subnetwork_iam_member" "group_binding" {
+  subnetwork = var.subnetwork
+  region     = var.region
+  role       = var.role
+  member     = "group:${var.group_email}"
+}
+
+variables.tf
+
+variable "subnetwork" {
+  description = "Subnetwork name"
+  type        = string
+}
+
+variable "region" {
+  description = "Region of the subnetwork"
+  type        = string
+}
+
+variable "role" {
+  description = "IAM role to assign"
+  type        = string
+  default     = "roles/compute.networkUser"
+}
+
+variable "group_email" {
+  description = "Google group email to assign permissions to"
+  type        = string
+}
+
 
 ⸻
 
-🧱 Functional Requirements:
+📝 Jira Tickets
 
-1. Subnet Database Structure:
+Jira Ticket 1: Add Service Account to Google Cloud Group
 
-Upon receiving a large CIDR block (e.g., 100.65.0.0/17) from the network admin:
-	•	The tool should break down this range into all possible CIDRs from /18 to /29.
-	•	Each CIDR should populate a row in a database sheet with the following columns:
-	•	Prefix Length (/18 to /29)
-	•	CIDR Range
-	•	Status – Initially set to Available
-	•	SDLC – Pre-filled with options: Prod, Nonprod, Sandbox, Core
-	•	Region – Options: us-central1, us-east1, us-east4, us-south1
-	•	Usage Type – Routable, Non-Routable, PuPi, MasterIP
+Title: Add Service Account to Google Cloud Group Using Terraform Module
 
-2. User UI Sheet for Subnet Requests:
+Description:
+Develop a Terraform module that uses the terraform-google-modules/group module to add a service account to a Google Workspace group. Compliance constraints restrict use of resource blocks. Ensure the group email and service account email are passed as variables.
 
-The UI sheet allows users to:
-	•	Select:
-	•	T-Shirt Size (Micro-XS, Small-S, Medium, Large, Xtra-Large)
-	•	Compute Type (GKE, Composer)
-	•	Based on the selection, the system auto-selects the required CIDR blocks:
-
-T-Size	Routable	PuPi	Non-Routable	Master IP (for GKE)
-Micro-XS	/28	/23	/27	/28
-Small-S	/27	/22	/26	/28
-Medium	/26	/21	/25	/28
-Large	/25	/20	/24	/28
-Xtra-Large	/24	/19	/23	/28
-
-	•	Based on availability in the database, the tool:
-	•	Picks the required CIDRs
-	•	Updates their status to Reserved
-	•	Updates child and parent ranges to Unavailable to prevent overlap
-	•	Displays selected ranges on the UI
-
-3. Terraform Script Generation & Git Integration:
-
-Once the IPs are selected:
-	•	A Terraform subnet block is generated for each CIDR.
-	•	The tool:
-	•	Edits the *.tfvars or tfautovars.tf file with selected CIDRs.
-	•	Creates a Git Pull Request (PR) to the Infra repo.
-	•	Marks the PR for manual approval by the Networking team.
-
-4. Post-Approval Automation:
-
-Once the PR is merged and Terraform is applied:
-	•	The tool:
-	•	Updates the status of the CIDRs to Allocated
-	•	Automatically updates the project provisioning repository
-	•	Creates a confirmation PR reflecting the final IP assignments
+Acceptance Criteria:
+	•	A reusable module created
+	•	README and usage examples provided
+	•	No use of native Terraform resource blocks
+	•	Inputs: group_email, service_account_email
+	•	Uses Google Workspace Admin SDK provider
 
 ⸻
 
-🔁 IP Reservation Logic:
-	•	When a CIDR block is reserved:
-	•	Its status becomes Reserved
-	•	Its child CIDRs are marked Unavailable
-	•	Its parent CIDRs are marked Unavailable
+Jira Ticket 2: Add Group Profile as IAM Member to Subnet
+
+Title: Add Google Group Profile to Subnetwork IAM using Terraform
+
+Description:
+Develop a Terraform module to grant a Google Cloud group IAM access to a subnetwork. The module should allow users to bind a group_email to roles like roles/compute.networkUser.
+
+Acceptance Criteria:
+	•	Module supports variable inputs for subnetwork, region, role, and group_email
+	•	IAM role is added to the subnet for the group
+	•	README included with inputs, usage, and versions
+	•	Compliant with internal infra policies
 
 ⸻
 
-📈 Benefits:
-	•	Eliminates manual subnet allocation errors
-	•	Reduces cycle time by automating GitOps processes
-	•	Brings transparency and traceability to IP management
-	•	Minimizes dependency on the Networking team for every request
-
-⸻
-
-📎 Future Enhancements:
-	•	Integrate with Google Sheets or lightweight Web UI for broader usability
-	•	API-based integration with Terraform Cloud or CI/CD tools
-	•	Audit logs and conflict detection mechanisms
-
-⸻
-
-Let me know if you’d like this document exported in a specific format or tailored further for a stakeholder presentation.
