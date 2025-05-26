@@ -1,4 +1,22 @@
-Here’s a **clearer and more professional** version of your sentence, organized by individual, with improved grammar, structure, and clarity. I’ve also preserved all the original technical details:
+Here’s a polished version of your feedback with improved grammar, sentence structure, and clarity, while keeping your original intent and tone:
+
+⸻
+
+Feedback
+
+Preetham:
+Preetham is easy to work with and has in-depth knowledge of the systems and processes. He understands the workflows well and knows the right teams to approach, which results in quicker resolutions and faster responses from other teams. His involvement ensures that issues get the necessary attention promptly.
+Preetham and I should be the first point of contact for India networking issues before involving Richard. We need to build this capability further, as we both have the ability to make informed decisions—ultimately helping reduce Richard’s workload.
+
+Hemalatha:
+Hemalatha is eager to work and completes Jira tickets on time. One area of improvement would be to focus more on understanding the process and thoroughly investigating the issue before escalating to Richard. Only the final outcome should be presented to him. Temporary or partial solutions should not be escalated. Developing this approach will help improve efficiency and reduce dependency on Richard.
+
+Myself:
+I was able to collaborate effectively with the broader team and reach out to the right members when needed. I would like to continue improving my problem-solving abilities and become more independent in finding solutions. My goal is to consistently “hit the bullseye” with my efforts.
+
+⸻
+
+Let me know if you’d like to format this into a professional email or feedback form. a **clearer and more professional** version of your sentence, organized by individual, with improved grammar, structure, and clarity. I’ve also preserved all the original technical details:
 
 ---
 
