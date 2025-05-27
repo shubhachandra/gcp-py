@@ -1,4 +1,12 @@
-Here’s a well-structured, professional self-evaluation draft based on your detailed input. It covers your achievements, contributions, collaboration, innovation, and problem-solving, and ends with a crisp summary and forward-looking tone.
+Risk Overlay Section (Insert This)
+
+As part of my responsibilities, I actively identified and mitigated risks that could impact delivery and operations:
+	•	IAM Policy Binding Limits: Identified policy binding errors at the subnet and later at the host project level. I escalated this early, collected concrete evidence of the failure patterns, and collaborated with the Google team to increase the quota from 1500 to 2500, preventing outages in future releases.
+	•	Version Risk Escalation: During v4.1.0, I raised a concern that the fix addressed subnet-level issues but not host-level bindings. This was later confirmed and resolved in coordination with Google in v4.2.0. I provided clear documentation and ensured the larger impact was communicated and understood by the broader team.
+	•	Reclamation & Resource Efficiency: Through subnet cleanup and integration with Network Intelligence Center tools, I minimized risk of IP exhaustion and improved visibility on unused subnets.
+	•	Tooling & Automation Risk: Initiated and led automation efforts (Excel/VBA-based iPAM) to reduce manual errors and allocation conflicts — significantly reducing operational risks in UP allocation.
+
+Overall, I have taken ownership in identifying, mitigating, and communicating risks across both technical and coordination fronts, ensuring delivery remained stable, scalable, and forward-lookingHere’s a well-structured, professional self-evaluation draft based on your detailed input. It covers your achievements, contributions, collaboration, innovation, and problem-solving, and ends with a crisp summary and forward-looking tone.
 
 ⸻
 
