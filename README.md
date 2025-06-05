@@ -1,44 +1,160 @@
+Here’s a well-structured Confluence page draft that explains the usage of your Google Cloud **Private Service Connect (PSC)** Terraform module. You can copy-paste this into your Confluence editor:
 
-# This block of IAM bindings assigns the necessary roles to user groups for proper networking and service access:
-# 1. Grants 'roles/compute.networkUser' on specific subnets to allow VM interface creation.
-# 2. Grants 'roles/compute.networkUser' at the Shared VPC host project level for broader network access.
-# 3. Grants 'roles/composer.sharedVpcAgent' at the host project level to enable Cloud Composer to use the Shared VPC.
-# 4. Grants 'roles/vpcaccess.user' at the host project level to allow usage of Serverless VPC Access connectors.
-# 5. Grants 'roles/container.hostServiceAgentUser' at the host project level to allow GKE to use host project services.
-	•	Why it’s useful: Detect privilege escalations or unauthorized access.
-	•	✅ Required for security auditing.
+---
 
-⸻
+# 🧩 Private Service Connect (PSC) Terraform Module Usage Guide
 
-🧩 10. Persistent Disk Metrics
-	•	IOPS
-	•	Throughput
-	•	Queue depth
-	•	Why it’s useful: Helps with storage performance diagnostics.
-	•	⚠️ Useful in high-performance storage use cases.
+## 📌 Overview
 
-⸻
+This module provisions all necessary Google Cloud components to expose a service through **Private Service Connect (PSC)** using Internal TCP Load Balancing and Network Endpoint Groups. It's designed to enable secure, private access to services across projects/VPCs.
 
-🧠 Final Tip: Use Cloud Monitoring Dashboards and Log-Based Metrics
-	•	Create custom dashboards for:
-	•	App success/failure
-	•	Load balancer latency
-	•	DNS lookup failures
-	•	Backend error rates
-	•	Create alerts using log-based metrics (e.g., firewall deny, DNS errors, 5xx errors)
+---
 
-⸻
+## 🗺️ Key Resources Created
 
-✅ Recommended Additions by Use Case
+### 🔹 `google_compute_subnetwork` - PSC Subnet for NAT
 
-Use Case	Add These
-VM-based workloads	VPC Flow Logs, GCE Metrics, Audit Logs
-GKE (Kubernetes)	GKE Metrics, Kubernetes Logs, Error Reporting
-High-Security Workloads	IAM logs, Audit logs, Firewall hit logs
-Cost Control	Billing Metrics, Network egress tracking
-Hybrid Cloud / Interconnect	Interconnect metrics, VPN logs, Cloud NAT
+This subnet is reserved for PSC NAT purposes.
 
+```hcl
+purpose = "PRIVATE_SERVICE_CONNECT"
+private_ip_google_access = true
+```
 
-⸻
+* Dynamically named using region and sanitized CIDR.
+* Logging enabled via `log_config`.
 
-Let me know your GCP architecture (VMs, GKE, Interconnect, etc.) and I can give a checklist tailored specifically to that.
+---
+
+### 🔹 `google_compute_region_backend_service` - Internal Load Balancer Backend
+
+Acts as the backend service for TCP proxy.
+
+* Uses `INTERNAL MANAGED` load balancing scheme.
+* Round-robin locality policy.
+* Backend NEG attached with `balancing_mode = CONNECTION`.
+
+---
+
+### 🔹 `google_compute_network_endpoint_group` - PSC NEG
+
+Created for each zone using `NON_GCP_PRIVATE_IP_PORT`.
+
+* Used to point to non-GCP backends (IP\:Port).
+* Each zone in `local.zones` gets a NEG instance.
+
+---
+
+### 🔹 `google_compute_region_target_tcp_proxy` - Target TCP Proxy
+
+References the backend service and routes internal traffic to it.
+
+---
+
+### 🔹 `google_compute_address` - Internal IP for Load Balancer
+
+Reserves a static internal IP within the PSC subnet for the forwarding rule.
+
+---
+
+### 🔹 `google_compute_forwarding_rule` - Internal Forwarding Rule
+
+Establishes internal routing using the TCP proxy.
+
+* Includes PSC subnet and internal IP.
+* Can optionally enable global access.
+
+---
+
+### 🔹 Output: `psc_service_attachment`
+
+Outputs the final **PSC Service Attachment** that can be shared with consumers.
+
+---
+
+## ⚙️ Required Input Variables
+
+| Variable                | Description                                  | Default       |
+| ----------------------- | -------------------------------------------- | ------------- |
+| `psc_nat_subnets`       | List of subnet CIDRs to allocate for PSC NAT | —             |
+| `project_id`            | Target project for all resources             | —             |
+| `region`                | Deployment region                            | `us-central1` |
+| `port_range`            | Port range to expose over forwarding rule    | —             |
+| `ip_protocol`           | TCP/UDP                                      | `TCP`         |
+| `global_access`         | Allow global access to forwarding rule       | `true`        |
+| `max_connections`       | Max connections per NEG                      | `500`         |
+| `tenant`, `environment` | Used to fetch shared networking info         | —             |
+| `zones`                 | List of zones for NEG deployment             | —             |
+
+---
+
+## 💡 Logging Configuration (Optional)
+
+If `enable_log = true`, backend service flow logs will be configured:
+
+```hcl
+log_config {
+  aggregation_interval = "INTERVAL_5_SEC"
+  flow_sampling        = 0.5
+  metadata             = "INCLUDE_ALL_METADATA"
+  filter_expr          = "true"
+}
+```
+
+---
+
+## 🩺 Health Check Configuration
+
+* `healthy_threshold`: Marks unhealthy endpoints as healthy after `n` successful probes.
+* `unhealthy_threshold`: Marks healthy endpoints as unhealthy after `n` failures.
+* `health_check_interval`: Interval in seconds between probes.
+* `health_check_timeout`: Response wait time per probe.
+
+---
+
+## 🧪 Example Usage
+
+```hcl
+module "psc_service" {
+  source              = "./modules/psc"
+  project_id          = "my-project"
+  region              = "us-central1"
+  psc_nat_subnets     = ["10.10.1.0/24"]
+  port_range          = "443"
+  ip_protocol         = "TCP"
+  global_access       = true
+  max_connections     = 1000
+  ...
+}
+```
+
+---
+
+## 📤 Output
+
+```hcl
+output "psc_service_attachment" {
+  value = google_compute_service_attachment.psc_ilb_service_attachment.id
+}
+```
+
+This value can be shared with service consumers to connect to the service privately.
+
+---
+
+## 🛡️ Validation Rules
+
+* Tenant must be one of `AD-ENT` or `QA-ENT`.
+* App ID and AU must follow regex formats.
+* Health check thresholds must be between `1-10`.
+
+---
+
+## 📚 References
+
+* [PSC Interface Codelab](https://codelabs.developers.google.com/codelabs/psc-interface)
+* [Terraform Google Provider Docs](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
+
+---
+
+Would you like me to help you **convert this to markdown**, **attach diagrams**, or create a **landing page** inside Confluence?
