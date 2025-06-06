@@ -1,7 +1,17 @@
 
+Here’s a clearer and more polished version of your message:
+
 ⸻
 
-Title:
+GCP had a hard limit of 1,500 member bindings per IAM policy, which Google temporarily increased to 2,500 as a tactical solution. However, we continue to face various issues that quickly exhaust this limit.
+
+We had already planned a long-term strategic solution: assigning service accounts to group profiles for roles such as VPC Service Agent, GKE Shared VPC Agent, and Network User. To implement this, we urgently need these group profiles in place.
+
+Due to the current issue, most non-prod deployments are blocked. And as we know, if non-prod is blocked, production will also be severely impacted.
+
+⸻
+
+Let me know if you want a version that’s more formal or simplified further.Title:
 [BLOCKER] Manually Remove Obsolete IAM Role Bindings for Deleted Groups – Blocking QA Deployments
 
 Description:
