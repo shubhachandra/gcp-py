@@ -1,18 +1,115 @@
+Here's a detailed and professional draft of your Jira ticket as a **Network Engineer**. You can copy-paste this into your change request form or Jira system:
 
-Here’s a clearer and more polished version of your message:
+---
 
-⸻
+### **1. Change Title / Summary**
 
-GCP had a hard limit of 1,500 member bindings per IAM policy, which Google temporarily increased to 2,500 as a tactical solution. However, we continue to face various issues that quickly exhaust this limit.
+**Update Routing Entries in Core SDLC Network Hub for US Region Expansion (us-south1 & us-east4)**
 
-We had already planned a long-term strategic solution: assigning service accounts to group profiles for roles such as VPC Service Agent, GKE Shared VPC Agent, and Network User. To implement this, we urgently need these group profiles in place.
+---
 
-Due to the current issue, most non-prod deployments are blocked. And as we know, if non-prod is blocked, production will also be severely impacted.
+### **2. Change Type**
 
-⸻
+**Standard**
 
-Let me know if you want a version that’s more formal or simplified further.Title:
-[BLOCKER] Manually Remove Obsolete IAM Role Bindings for Deleted Groups – Blocking QA Deployments
+---
+
+### **3. Change Category**
+
+**Infrastructure**
+
+---
+
+### **4. Priority**
+
+**High**
+
+---
+
+### **5. Linked Engineering Jira (QA Completed)**
+
+*Reference Jira:* [ENG-1234](https://engineering-jira.example.com/browse/ENG-1234) – Routing update completed for QA network hub.
+
+> **Note:** Current change is only applicable to **ad-ent environments** for the 3rd and 4th region expansion. No change is being made in QA.
+
+---
+
+### **6. Pull Request Information**
+
+*PR Link:* [https://git.example.com/network/hub-routing/pull/87](https://git.example.com/network/hub-routing/pull/87)
+
+---
+
+### **7. Support Documentation**
+
+**N/A**
+
+---
+
+## **Change Description**
+
+### 1. **Description**
+
+This change involves updating the routing entries in the **Core SDLC Network Hub** to support new region expansions for the **ad-ent** environment in **`us-south1`** and **`us-east4`**. Without these routing updates, services deployed in these new regions will not be reachable, affecting east-west traffic within the organization’s internal network.
+
+### 2. **Change Justification**
+
+To enable connectivity to the newly provisioned regions (`us-south1`, `us-east4`), routing updates in the Core SDLC hub are mandatory. These are required for traffic engineering and network reachability to/from centralized services hosted across regions.
+
+### 3. **Benefits / Impact**
+
+* **Benefit**: Establishes proper routing and regional connectivity as part of global network expansion strategy.
+* **Impact if not implemented**: Traffic to/from new regional deployments will fail. Services hosted in `us-south1` and `us-east4` will remain unreachable, causing downstream service disruptions.
+
+### 4. **Known Defects**
+
+No known defects. Clean configuration changes, tested in QA under [ENG-1234](https://engineering-jira.example.com/browse/ENG-1234).
+
+### 5. **Alerting and Monitoring**
+
+No change to existing alerting. Existing NOC and flow logs will be monitored post-deployment to ensure region route propagation.
+
+### 6. **Blast Radius**
+
+* **Internal Only**: ad-ent environments that interact with services deployed in `us-south1` and `us-east4`.
+* No external customers impacted, but internal app teams may experience reachability issues if the change fails.
+
+### 7. **Post-Change Validation**
+
+* Validate route propagation using `gcloud compute routes list` and `traceroute`.
+* Check connectivity from workloads in `core-sdlc` to `us-south1` and `us-east4`.
+* Confirm monitoring systems do not show anomalies in route updates.
+
+### 8. **Communication Plan**
+
+* Notify Networking Operations team before and after change.
+* Engineering stakeholders informed via Slack and email.
+* No user-facing communication required.
+
+### 9. **Implementation Steps**
+
+* Backup existing routing table.
+* Apply routing updates via Terraform in ad-ent projects.
+* Validate changes with route inspection commands.
+* Confirm successful region connectivity.
+
+### 10. **Backout Plan**
+
+* Rollback to previous routing configuration using Terraform state.
+* Validate restored state via route and connectivity checks.
+* Reference backout procedure: [Confluence Doc - Network Rollback Procedures](https://confluence.example.com/display/NW/Network+Rollback)
+
+### 11. **Rollback Limitations**
+
+Can rollback unless dependent network services are deployed after this change that rely solely on the new routes. No such dependencies currently expected.
+
+### 12. **Fail-Forward Strategy**
+
+**No** – This is **not** a fail-forward deployment. All updates will be validated and rolled back immediately in case of failure.
+
+---
+
+Let me know if you’d like me to generate this in a downloadable format (like Word or Markdown), or integrate this into a Jira automation script.
 
 Description:
 Due to a recent group rename and cleanup, older IAM group profiles were deleted. However, IAM roles assigned to these now-nonexistent groups (from previous naming conventions) still persist in GCP IAM policies.
