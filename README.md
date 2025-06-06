@@ -1,4 +1,53 @@
-Here’s a well-structured Confluence page draft that explains the usage of your Google Cloud **Private Service Connect (PSC)** Terraform module. You can copy-paste this into your Confluence editor:
+
+⸻
+
+Title:
+[BLOCKER] Manually Remove Obsolete IAM Role Bindings for Deleted Groups – Blocking QA Deployments
+
+Description:
+Due to a recent group rename and cleanup, older IAM group profiles were deleted. However, IAM roles assigned to these now-nonexistent groups (from previous naming conventions) still persist in GCP IAM policies.
+
+Terraform is unable to detect or remove these bindings because the groups no longer exist. As a result, this is blocking all QA deployments in Core Nonprod and Core Prod SSLC environments, since IAM validation fails due to drift and stale bindings.
+
+⸻
+
+🔥 Impact:
+	•	QA deployments are fully blocked
+	•	Terraform plan/apply fails due to orphaned IAM bindings
+	•	Manual cleanup is urgently required to proceed
+
+⸻
+
+Roles to be Removed (Manually):
+	•	roles/vpcaccess.user – Serverless VPC Access
+	•	roles/composer.sharedVpcAgent – Composer Shared VPC Agent
+	•	roles/container.hostServiceAgentUser – Container Host Service Agent
+
+⸻
+
+Scope:
+	•	Projects under Core Nonprod and Core Prod SSLC
+	•	Bindings associated with deleted or renamed groups
+
+⸻
+
+Required Actions:
+	1.	Identify all IAM role bindings referencing deleted groups.
+	2.	Manually delete the obsolete role bindings via console or gcloud.
+	3.	Confirm the cleanup and unblock Terraform deployments.
+	4.	Notify QA team and infra leads once cleanup is done.
+
+⸻
+
+Priority: Blocker 🚨
+Labels: IAM-Cleanup, QA-Blocker, Group-Rename, Terraform-Issue, Manual-Action, Core-Nonprod, Core-Prod, SSLC
+Assignee: [Assign appropriately]
+
+Due Date: [Add 1–2 business days from today if urgent]
+
+⸻
+
+Let me know if you’d like a sample gcloud command to list and delete these bindings, or if you want to attach Terraform error logs to the ticket.
 
 ---
 
