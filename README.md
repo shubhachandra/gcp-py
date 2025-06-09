@@ -1,223 +1,187 @@
-Here’s a simplified Jira ticket version with a clear description and acceptance criteria, suitable for quick submission:
-
-Title / Summary
-Update Core SDLC Network Hub Routing for US Region Expansion (us-south1 & us-east4)
-
-Description
-As part of regional expansion, we need to update the routing entries in the Core SDLC network hub to support traffic routing to new regions: us-south1 and us-east4. This is required for service communication across regions in the ad-ent environment.
-
-Change Type: Standard
-Category: Infrastructure
-Priority: High
-Engineering QA Jira: ENG-1234 (Completed in QA)
-Environment: ad-ent only (not applicable to QA)
-PR Link: PR #87
-Support Docs: N/A
-
-Acceptance Criteria
- Routing entries for us-south1 and us-east4 are added to the Core SDLC hub in ad-ent.
-
- Verified connectivity from Core SDLC to resources in us-south1 and us-east4.
-
- No disruption to existing regional routing and services.
-
- Monitoring shows no route propagation errors post-deployment.
-
-⸻
-
-🔥 Impact:
-	•	QA deployments are fully blocked
-	•	Terraform plan/apply fails due to orphaned IAM bindings
-	•	Manual cleanup is urgently required to proceed
-
-⸻
-
-Roles to be Removed (Manually):
-	•	roles/vpcaccess.user – Serverless VPC Access
-	•	roles/composer.sharedVpcAgent – Composer Shared VPC Agent
-	•	roles/container.hostServiceAgentUser – Container Host Service Agent
-
-⸻
-
-Scope:
-	•	Projects under Core Nonprod and Core Prod SSLC
-	•	Bindings associated with deleted or renamed groups
-
-⸻
-
-Required Actions:
-	1.	Identify all IAM role bindings referencing deleted groups.
-	2.	Manually delete the obsolete role bindings via console or gcloud.
-	3.	Confirm the cleanup and unblock Terraform deployments.
-	4.	Notify QA team and infra leads once cleanup is done.
-
-⸻
-
-Priority: Blocker 🚨
-Labels: IAM-Cleanup, QA-Blocker, Group-Rename, Terraform-Issue, Manual-Action, Core-Nonprod, Core-Prod, SSLC
-Assignee: [Assign appropriately]
-
-Due Date: [Add 1–2 business days from today if urgent]
-
-⸻
-
-Let me know if you’d like a sample gcloud command to list and delete these bindings, or if you want to attach Terraform error logs to the ticket.
+Here is a **clear and structured version** of Hema's work items, grouped logically and with improved grammar:
 
 ---
 
-# 🧩 Private Service Connect (PSC) Terraform Module Usage Guide
+### **Hema’s Work Items:**
 
-## 📌 Overview
+#### **1. Subnet Reclaim Automation:**
 
-This module provisions all necessary Google Cloud components to expose a service through **Private Service Connect (PSC)** using Internal TCP Load Balancing and Network Endpoint Groups. It's designed to enable secure, private access to services across projects/VPCs.
-
----
-
-## 🗺️ Key Resources Created
-
-### 🔹 `google_compute_subnetwork` - PSC Subnet for NAT
-
-This subnet is reserved for PSC NAT purposes.
-
-```hcl
-purpose = "PRIVATE_SERVICE_CONNECT"
-private_ip_google_access = true
-```
-
-* Dynamically named using region and sanitized CIDR.
-* Logging enabled via `log_config`.
+* Working on the **end-to-end subnet reclaim automation** process.
+* **Step 1:** Retrieve data from the **Grafana dashboard** – *In Progress*.
+* **Step 2:** Automate data retrieval and processing – *In Progress*.
+* **Step 3:** PR is approved.
+  Working on **CR intake procedure creation** – *In Progress*.
 
 ---
 
-### 🔹 `google_compute_region_backend_service` - Internal Load Balancer Backend
+#### **2. Resource Access Discovery:**
 
-Acts as the backend service for TCP proxy.
-
-* Uses `INTERNAL MANAGED` load balancing scheme.
-* Round-robin locality policy.
-* Backend NEG attached with `balancing_mode = CONNECTION`.
+* Identified that **shared subnets** should be accessible **only to required projects**, not to all.
+  This is currently in the **discovery phase**.
 
 ---
 
-### 🔹 `google_compute_network_endpoint_group` - PSC NEG
+#### **3. Subnet Range Updates for Composer 3:**
 
-Created for each zone using `NON_GCP_PRIVATE_IP_PORT`.
+* Completed and updated the **Subnet IP Ranges Excel sheet**.
 
-* Used to point to non-GCP backends (IP\:Port).
-* Each zone in `local.zones` gets a NEG instance.
-
----
-
-### 🔹 `google_compute_region_target_tcp_proxy` - Target TCP Proxy
-
-References the backend service and routes internal traffic to it.
+  * Includes new **/29 ranges**
+  * Covers **all SDLCs** across **all four regions**
+  * Specifically prepared for **Composer 3**
 
 ---
 
-### 🔹 `google_compute_address` - Internal IP for Load Balancer
-
-Reserves a static internal IP within the PSC subnet for the forwarding rule.
-
----
-
-### 🔹 `google_compute_forwarding_rule` - Internal Forwarding Rule
-
-Establishes internal routing using the TCP proxy.
-
-* Includes PSC subnet and internal IP.
-* Can optionally enable global access.
+Let me know if you'd like this version formatted for a sprint report or daily stand-up notes.
+Here is the **updated and grouped version of Sai’s work items**, with clear structure and improved grammar:
 
 ---
 
-### 🔹 Output: `psc_service_attachment`
+### **Sai’s Work Items:**
 
-Outputs the final **PSC Service Attachment** that can be shared with consumers.
+#### **1. Migration and Workspace Activities:**
 
----
+* **Non-Prod to Prod Migration:**
+  Migration of a single workspace is in progress.
 
-## ⚙️ Required Input Variables
+  * Expected to be completed within this sprint.
+  * Does not require prod access.
+  * Only one workspace is involved.
 
-| Variable                | Description                                  | Default       |
-| ----------------------- | -------------------------------------------- | ------------- |
-| `psc_nat_subnets`       | List of subnet CIDRs to allocate for PSC NAT | —             |
-| `project_id`            | Target project for all resources             | —             |
-| `region`                | Deployment region                            | `us-central1` |
-| `port_range`            | Port range to expose over forwarding rule    | —             |
-| `ip_protocol`           | TCP/UDP                                      | `TCP`         |
-| `global_access`         | Allow global access to forwarding rule       | `true`        |
-| `max_connections`       | Max connections per NEG                      | `500`         |
-| `tenant`, `environment` | Used to fetch shared networking info         | —             |
-| `zones`                 | List of zones for NEG deployment             | —             |
+* **Activation of Idle Networking Workspace:**
+
+  * Two workspaces were identified:
+
+    * `sandbox-snet-project-provisioning` (**does not exist**)
+    * `iam-networking-projects` (**currently being worked on**)
 
 ---
 
-## 💡 Logging Configuration (Optional)
+#### **2. Subnet Creation Follow-Up:**
 
-If `enable_log = true`, backend service flow logs will be configured:
-
-```hcl
-log_config {
-  aggregation_interval = "INTERVAL_5_SEC"
-  flow_sampling        = 0.5
-  metadata             = "INCLUDE_ALL_METADATA"
-  filter_expr          = "true"
-}
-```
+* **Subnet Creation Task:**
+  This item has been **cancelled** after multiple follow-ups with Nikitha, who did not respond.
 
 ---
 
-## 🩺 Health Check Configuration
+#### **3. Module Work and Deployment Blocker:**
 
-* `healthy_threshold`: Marks unhealthy endpoints as healthy after `n` successful probes.
-* `unhealthy_threshold`: Marks healthy endpoints as unhealthy after `n` failures.
-* `health_check_interval`: Interval in seconds between probes.
-* `health_check_timeout`: Response wait time per probe.
+* **Module Update from Sprint 10:**
 
----
-
-## 🧪 Example Usage
-
-```hcl
-module "psc_service" {
-  source              = "./modules/psc"
-  project_id          = "my-project"
-  region              = "us-central1"
-  psc_nat_subnets     = ["10.10.1.0/24"]
-  port_range          = "443"
-  ip_protocol         = "TCP"
-  global_access       = true
-  max_connections     = 1000
-  ...
-}
-```
+  * Sai is continuing work on a module that was updated in Sprint 10.
+  * **Apply is still pending** due to a role upgrade issue.
+  * This role upgrade is currently a **blocker**.
 
 ---
 
-## 📤 Output
-
-```hcl
-output "psc_service_attachment" {
-  value = google_compute_service_attachment.psc_ilb_service_attachment.id
-}
-```
-
-This value can be shared with service consumers to connect to the service privately.
+Let me know if you’d like this added to a project tracker or sent as part of a team update.
+Here is the updated and **grouped version** of Shubhachandra’s work items for better clarity and logical structure:
 
 ---
 
-## 🛡️ Validation Rules
+### **Shubhachandra’s Work Items:**
 
-* Tenant must be one of `AD-ENT` or `QA-ENT`.
-* App ID and AU must follow regex formats.
-* Health check thresholds must be between `1-10`.
+#### **1. Policy Binding and Access Management:**
+
+* **Policy Binding Code:**
+  Code is complete. Needs to be grouped with the Landing Zone (LZ) team and the PR handed over.
+
+* **AD and QA Group Creation:**
+  This is completed.
+
+* **Role Assignment Tickets:**
+  Follow-up with the Ops team is required for approval and implementation of 4 tickets related to assigning roles to the newly created groups.
+
+* **QA Role Assignments:**
+  Role assignments for QA groups are complete.
 
 ---
 
-## 📚 References
+#### **2. Third and Fourth Region Creation:**
 
-* [PSC Interface Codelab](https://codelabs.developers.google.com/codelabs/psc-interface)
-* [Terraform Google Provider Docs](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
+* **Routing Entry Update:**
+  Follow-up is required with the Ops team to add routing entries.
+
+* **Region Connector Issues:**
+  Issues in the third and fourth region connectors have been resolved, and the tickets are closed.
 
 ---
 
-Would you like me to help you **convert this to markdown**, **attach diagrams**, or create a **landing page** inside Confluence?
+#### **3. Subnet Creation Automation:**
+
+* Follow-up with Madesh and the Interem team is ongoing.
+  Provided inputs regarding `t-size` usage for Composer 2.
+  Noted that Composer 3 will not use `t-size` for implementation.
+
+---
+
+Here is your original content revised for better **clarity, grammar, and structure**, while preserving the technical detail:
+
+---
+
+### **Preetham’s Work Items:**
+
+1. **Cloud NAT (ISBL):**
+   This is being used to introduce hybrid NAT. Status: *In Progress*.
+   **ETA:** Wednesday.
+   **Dependencies:** Nigel and Richard need to approve this.
+   This also involves the Cybersecurity team, as they will validate the setup.
+
+2. **Creation of NCC NAT in Pdisco:**
+   The pull request (PR) is currently with Richard for review.
+
+3. **Terraform Code for AD Non-Prod Migration:**
+   This activity will span the entire sprint and is currently *In Progress*.
+
+4. **Enablement of MACsec Testing:**
+   Coordination is ongoing with Google.
+   Google has informed that completion is expected by the 13th.
+   If bandwidth allows, Preetham will take up additional tasks.
+
+---
+
+Here is the updated and **grouped version** of Shubhachandra’s work items for better clarity and logical structure:
+
+---
+
+### **Shubhachandra’s Work Items:**
+
+#### **1. Policy Binding and Access Management:**
+
+* **Policy Binding Code:**
+  Code is complete. Needs to be grouped with the Landing Zone (LZ) team and the PR handed over.
+
+* **AD and QA Group Creation:**
+  This is completed.
+
+* **Role Assignment Tickets:**
+  Follow-up with the Ops team is required for approval and implementation of 4 tickets related to assigning roles to the newly created groups.
+
+* **QA Role Assignments:**
+  Role assignments for QA groups are complete.
+
+---
+
+#### **2. Third and Fourth Region Creation:**
+
+* **Routing Entry Update:**
+  Follow-up is required with the Ops team to add routing entries.
+
+* **Region Connector Issues:**
+  Issues in the third and fourth region connectors have been resolved, and the tickets are closed.
+
+---
+
+#### **3. Subnet Creation Automation:**
+
+* Follow-up with Madesh and the Interem team is ongoing.
+  Provided inputs regarding `t-size` usage for Composer 2.
+  Noted that Composer 3 will not use `t-size` for implementation.
+
+---
+
+Let me know if you’d like this framed for a stand-up update, Confluence summary, or Jira task description.
+
+
+---
+
+Let me know if you'd like this in a Jira comment/email/slide format.
