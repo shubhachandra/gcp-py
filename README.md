@@ -1,5 +1,7 @@
-=TEXTJOIN("", TRUE, IF(ISNUMBER(MID(A1, ROW(INDIRECT("1"&":"&LEN(A1))), 12)+0), MID(A1, ROW(INDIRECT("1"&":"&LEN(A1))), 12), ""))
-
-
-=TEXTJOIN("", TRUE, FILTER(MID(A1, SEQUENCE(LEN(A1)-11), 12), ISNUMBER(--MID(A1, SEQUENCE(LEN(A1)-11), 12))))
-
+=LET(
+  txt, A1,
+  n, SEQUENCE(LEN(txt)-11),
+  segment, MID(txt, n, 12),
+  match, FILTER(segment, ISNUMBER(--segment)),
+  INDEX(match, 1)
+)
