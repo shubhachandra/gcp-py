@@ -1,4 +1,9 @@
-Here’s a clearer and more polite version of your message:
+As discussed, we need to make space to add 4 new group members. This may involve identifying and deleting a few existing projects.
+
+I’ve already shared the background with Prakash. Requesting your support in reviewing the current usage and helping proceed accordingly. Please also keep in mind the earlier concerns shared regarding group roles and capacity.
+
+Thanks for your support!
+
 
 ⸻
 
