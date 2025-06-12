@@ -1,47 +1,31 @@
-As discussed, we need to make space to add 4 new group members. This may involve identifying and deleting a few existing projects.
-
-I’ve already shared the background with Prakash. Requesting your support in reviewing the current usage and helping proceed accordingly. Please also keep in mind the earlier concerns shared regarding group roles and capacity.
-
-Thanks for your support!
-
+Here is a clearer and more professional version of your mail content:
 
 ⸻
 
-Revised Message:
+Subject: Request for Approval – Creation of New IAM Groups to Unblock Non-Prod Deployments
 
-Since adding or removing projects is outside the scope of the networking team, we already have the required groups for all necessary roles. The only clarification needed is around the need for a new hostvpc role—why can’t we use the existing subnet-sa group?
+Hi [Recipient’s Name],
 
-I’ll connect with Richard to understand the rationale.
+We are actively working on unblocking the non-production deployments using the solution provided by Google. As part of this, we have created IAM groups for the following roles:
+	•	Subnet Network User
+	•	VPC Service Agent
+	•	Container Host VPC Role
+	•	VPC Access User
 
-Additionally, we should involve the Ops team to identify and delete the appropriate projects. They should take ownership of this task, as the App team doesn’t typically interact with the Networking or LZ teams.
+Initially, we planned to use the same subnet-level groups with the NetworkUser role for both the subnets and the Host VPC. However, we have now revised the approach to separate the Host VPC and subnet bindings. This requires a new set of groups per SDLC environment to manage permissions at the Host VPC level.
 
-Decisions around project deletions fall under the Ops team’s responsibility—not Networking or LZ—so we cannot approach the App team directly for this. If we try to do so, Ops may push the request back to us.
+Our deployment solution is ready, and the only blocker at this point is the creation of these new IAM groups. These will be used exclusively at the Host VPC level and will be assigned the Compute NetworkUser role.
 
-Let’s clearly communicate what we need: space for four new group members, and request the Ops team’s support in enabling that.
+We request your approval to proceed with the creation of these groups on priority, along with appropriate owner assignments. An expedited change request (CR) would help us move forward without further delays.
+
+Thank you for your support.
+
+Best regards,
+[Your Name]
 
 ⸻
 
-Let me know if you want it adapted to an email format or Slack message style.
-
----
-
-## ✅ JIRA Ticket
-
-**Title**:
-Create PSC Terraform Submodules for Backend, Endpoints, and Custom Service Attachment
-
-**Type**: Story
-**Priority**: High
-**Assignee**: *\[Assign to yourself or infra team]*
-**Component**: GCP Terraform Modules
-**Labels**: `PSC`, `terraform`, `modules`, `infra`
-**Epic Link**: Private Service Connect Platform
-
----
-
-### Description:
-
-The `psc-publish-onprem-service` module is finalized and functional. To modularize PSC architecture and support varied publishing patterns, we need to split out reusable submodules based on this foundation. The following three Terraform submodules will be created:
+Let me know if you’d like it shortened or tailored further based on who you’re sending it to.
 
 1. **psc-generic-backend**
 2. **psc-generic-endpoints**
