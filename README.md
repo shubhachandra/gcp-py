@@ -1,4 +1,22 @@
-Great, Shubh! Here's a detailed **Jira ticket** and a **Confluence documentation draft** based on your goal to build three new Terraform submodules by referencing your existing and working `psc-publish-onprem-service` module.
+Here’s a clearer and more polite version of your message:
+
+⸻
+
+Revised Message:
+
+Since adding or removing projects is outside the scope of the networking team, we already have the required groups for all necessary roles. The only clarification needed is around the need for a new hostvpc role—why can’t we use the existing subnet-sa group?
+
+I’ll connect with Richard to understand the rationale.
+
+Additionally, we should involve the Ops team to identify and delete the appropriate projects. They should take ownership of this task, as the App team doesn’t typically interact with the Networking or LZ teams.
+
+Decisions around project deletions fall under the Ops team’s responsibility—not Networking or LZ—so we cannot approach the App team directly for this. If we try to do so, Ops may push the request back to us.
+
+Let’s clearly communicate what we need: space for four new group members, and request the Ops team’s support in enabling that.
+
+⸻
+
+Let me know if you want it adapted to an email format or Slack message style.
 
 ---
 
