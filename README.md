@@ -1,27 +1,182 @@
-Here’s a clearer and more professional version of your message, preserving all your key points:
+Great, Shubh! Here's a detailed **Jira ticket** and a **Confluence documentation draft** based on your goal to build three new Terraform submodules by referencing your existing and working `psc-publish-onprem-service` module.
 
 ---
 
-**Revised Version:**
+## ✅ JIRA Ticket
 
-We are facing an issue: the Non-Prod Host project has already reached the member binding limit of 2500, so no new members can be added. We attempted to add 4 new groups as members, but it failed with the same error — **“policy size is too large.”**
+**Title**:
+Create PSC Terraform Submodules for Backend, Endpoints, and Custom Service Attachment
 
-This impacts the Project Factory CR process. Here’s the proposed approach:
-
-**Option 1:**
-
-1. Release and announce the new version (v2) of the Project Factory.
-2. Migrate 20 projects to this new version. This will help free up IAM policy space in the current host project.
-3. Once some space is available, apply this CR to add the 4 new groups.
-
-**Option 2:**
-
-* Identify and delete unused/non-critical projects to free up policy space.
-* Apply the change to add the 4 new groups.
-* Then proceed with the migration to the new version.
-
-We recommend aligning the CR application **immediately after** project migration to avoid conflicts.
+**Type**: Story
+**Priority**: High
+**Assignee**: *\[Assign to yourself or infra team]*
+**Component**: GCP Terraform Modules
+**Labels**: `PSC`, `terraform`, `modules`, `infra`
+**Epic Link**: Private Service Connect Platform
 
 ---
 
-Let me know if you want to send this in an email or format it for a JIRA comment.
+### Description:
+
+The `psc-publish-onprem-service` module is finalized and functional. To modularize PSC architecture and support varied publishing patterns, we need to split out reusable submodules based on this foundation. The following three Terraform submodules will be created:
+
+1. **psc-generic-backend**
+2. **psc-generic-endpoints**
+3. **psc-publish-custom-service**
+
+Each of these will handle a distinct part of the PSC setup and can be reused individually or composed as needed.
+
+---
+
+### Tasks:
+
+* [x] Review and finalize `psc-publish-onprem-service` as reference
+* [ ] Create `psc-generic-backend` with backend service, NEG, health checks, proxy
+* [ ] Create `psc-generic-endpoints` with internal IP + forwarding rule
+* [ ] Create `psc-publish-custom-service` with `google_compute_service_attachment`
+* [ ] Write a Confluence documentation page with explanation and usage examples
+* [ ] Peer review and integrate with existing PSC Factory modules
+
+---
+
+### Acceptance Criteria:
+
+* All three modules are independently deployable and reusable
+* Variable inputs and outputs are documented clearly
+* Module dependencies are decoupled and composable
+* Confluence page includes explanation, diagrams, and code examples
+* Modules tested in sandbox environment with sample deployment
+
+---
+
+## 🧾 Confluence Page (Draft)
+
+**Title**: Google Cloud PSC Terraform Submodules
+
+**Parent Page**: Infrastructure → GCP Platform Modules → Private Service Connect
+
+---
+
+### Overview
+
+To modularize and scale our Private Service Connect (PSC) setup on GCP, we've created 4 Terraform submodules. These support use cases for publishing on-prem, internal, or partner services using Google's PSC infrastructure.
+
+---
+
+### 📦 Submodules
+
+#### 1. ✅ `psc-publish-onprem-service` (Reference Module)
+
+**Purpose**: Full stack PSC publishing module for on-prem services
+**Includes**:
+
+* PSC NAT subnet
+* NEG and Health Checks
+* Backend Service and Target TCP Proxy
+* ILB Forwarding Rule
+* Service Attachment
+
+**Usage**: End-to-end ready PSC setup for publishing private IP endpoints hosted on-prem.
+
+---
+
+#### 2. 🛠️ `psc-generic-backend` *(To Be Developed)*
+
+**Purpose**: Provision backend infrastructure required for PSC publishing
+
+**Includes**:
+
+* `google_compute_region_network_endpoint_group` (NON\_GCP\_PRIVATE\_IP\_PORT)
+* `google_compute_region_backend_service`
+* `google_compute_region_health_check`
+* `google_compute_region_target_tcp_proxy`
+
+**Input**:
+
+* `endpoints` (map of IPs + ports)
+* `health_check` settings
+* `project_id`, `region`, `tenant`, `environment`
+
+**Output**:
+
+* NEG and backend service name
+
+**Use Case**: Used when backend service and traffic routing infra are needed but not IP or service attachment.
+
+---
+
+#### 3. 🛠️ `psc-generic-endpoints` *(To Be Developed)*
+
+**Purpose**: Create an internal IP and forwarding rule for exposing a backend via PSC
+
+**Includes**:
+
+* `google_compute_address`
+* `google_compute_forwarding_rule`
+
+**Input**:
+
+* `target`: backend service or proxy
+* `port_range`, `ip_protocol`
+* `network_self_link`, `subnetwork`
+
+**Output**:
+
+* Internal IP
+* Forwarding rule name
+
+**Use Case**: Used to bind existing backend to an internal PSC-ready IP.
+
+---
+
+#### 4. 🛠️ `psc-publish-custom-service` *(To Be Developed)*
+
+**Purpose**: Attach an existing forwarding rule or target service via PSC
+
+**Includes**:
+
+* `google_compute_service_attachment`
+
+**Input**:
+
+* `target_service`
+* `psc_nat_subnets`
+* `connection_preference`, `consumer_accept_lists`
+
+**Output**:
+
+* Service attachment URL
+
+**Use Case**: Use when backend infra already exists and you only need to expose it via PSC.
+
+---
+
+### 📘 Diagrams
+
+> (Add architecture diagrams here showing module separation. E.g. `psc-generic-backend → psc-generic-endpoints → psc-publish-custom-service`)
+
+---
+
+### 📂 Repository Layout
+
+```
+terraform/
+│
+├── modules/
+│   ├── psc-publish-onprem-service/
+│   ├── psc-generic-backend/          # In progress
+│   ├── psc-generic-endpoints/        # In progress
+│   └── psc-publish-custom-service/   # In progress
+```
+
+---
+
+### ✅ Next Steps
+
+* Implement and validate each submodule in `lab` environment
+* Update this page with outputs and versioning
+* Add module examples to `wf-private-service-connect-factory`
+
+---
+
+Would you like me to generate the **`README.md` files** for each module next, including input/output tables and usage examples?
