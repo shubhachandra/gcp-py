@@ -1,88 +1,48 @@
-Thanks! Here's the **updated and corrected one-page status summary**, incorporating the **routing update escalation context** for **Shubhachandra**:
+Here is a consolidated and professionally structured version of all the notes you’ve provided, suitable for Confluence, internal documentation, or a Terraform module changelog.
 
----
+⸻
 
-### **Weekly Team Status Update**
+🛠️ Networking Terraform Module – Change Summary
 
-#### **Preetham – Task Update**
+1. AD Group Role Binding Control
+	•	In networking.tf (line 40), all relevant AD group IDs have been added.
+	•	A single boolean flag now controls whether all IAM role bindings are applied.
+	•	This is an “all-or-nothing” toggle, enabled (true) by default.
+	•	This is not meant for use in the upstream Google Landing Zone (LZ) model, where role binding is typically optional.
+	•	The old role-binding code has been commented out to clearly show changes to the LZ team for easier diff review.
 
-1. **Masec Testing:**
+2. IAM Binding Behavior
+	•	The update performs two actions:
+	•	Deletes any previously applied role bindings, and
+	•	Adds the appropriate service account(s) to the AD groups as per the new logic.
+	•	This change enforces centralized group-based IAM control, improving manageability.
 
-   * One link tested successfully; second link testing pending due to **Arista link issues**.
-2. **CR for Prod and Non-Prod Traffic Separation:**
+⸻
 
-   * Preparing CRs for **August 5, 6, 7, and 8**.
-3. **Cloud NAT ISBL Approval:**
+3. Host Project vs Subnet-Level Binding
+	•	The roles/compute.networkUser is now the only IAM role applied at the subnet level, and only for shared subnets.
+	•	All other roles continue to be bound at the host project level, as per standard practice.
+	•	The previous binding of compute.networkUser at the host project level has been removed, as it’s not recommended.
 
-   * Under review by **Cybersecurity team**, expected turnaround: **6–7 weeks**.
-4. **Network Certificate:**
+⸻
 
-   * Targeted completion by **end of July**.
+4. GKE-specific Role Handling
+	•	In the wf-custom module:
+	•	The same service account used for GKE is now bound with roles/compute.networkUser at the subnet level, but only if GKE is enabled.
+	•	GKE enablement is automatically detected by checking if the GKE API is active in the project.
+	•	If active, a Terraform flag is set, and necessary subnet-level bindings are applied.
+	•	This ensures principle of least privilege, especially in shared VPC setups.
 
----
+⸻
 
-#### **Shubhachandra – Task Update**
+5. Cloud Composer Enablement
+	•	Cloud Composer is being enabled by default for all applicable projects as part of this configuration.
 
-1. **1500 Binding Implementation:**
+⸻
 
-   * Group creation, role assignment, and PR submission completed.
-   * Final testing done by **Richard**.
-2. **PSC Modules:**
+6. Upstream Compatibility
+	•	A separate version of the module is maintained for upstream compatibility, should the changes need to be merged with the Google-managed LZ modules in future.
 
-   * Collaborating with **Dele** on module development and documentation.
-3. **Routing Updates (Core SDLC):**
+⸻
 
-   * A **minor routing change** was planned as a **single change across all SDLCs**, since **core SDLC acts as a transit**.
-   * This approach was **flagged by the Ops team**, leading to a call with **Richard, Naga, Shwetha, and Gregory**.
-   * Follow-up justification and approval shared with **Harsha, Vivek, and David Baldwin**.
-   * **Shwetha expressed concern**, partly due to prior issues with the **1500 binding rollout**.
-4. **Network Topology:**
-
-   * Working with **Hema** on updated topology diagram.
-5. **NIC / Grafana Dashboard:**
-
-   * Dashboard reviewed; working on a structured process to **revoke subnets from app teams**, in collaboration with **Ops**.
-6. **IPAM Follow-Up:**
-
-   * No intern follow-up this week.
-7. **Operational Coordination:**
-
-   * Increased involvement in ticket handling, IP usage reporting, ticket creation, and defining intake workflows for networking board submissions.
-
----
-
-#### **Hema – Task Update**
-
-1. **Subnet Reclamation Process:**
-
-   * Working through issues; currently blocked by a **proxy error**.
-2. **Composer Subnet Update:**
-
-   * **/29 for Composer 3** updated across all SDLCs; documented in a separate tracking sheet.
-3. **ISNL Control Mapping:**
-
-   * Assisting the **Sentinel team** in identifying required parameters.
-   * Mapping those parameters to **CIS control statements** for compliance.
-4. **Network Topology Diagram:**
-
-   * In progress; **ETA: Friday**.
-
----
-
-#### **Sai – Task Update**
-
-1. **DNS Delegation:**
-
-   * PR has been raised; handover to **Ops team** for implementation.
-2. **Ideal Workspace Ticket:**
-
-   * Updated Terraform version and provider versions already addressed.
-3. **TFE Workspace Migration (Non-Prod to Prod):**
-
-   * Blocked due to **lack of TFE Prod access**.
-   * Requires PR and **2 CRs**.
-   * As advised by Ops, **intake request created**; currently being handled by **Shanthipriya**.
-
----
-
-Let me know if you’d like this exported to a document, email draft, or shared on a Confluence page.
+Let me know if you want a Git commit message or a markdown version for README or changelog.
