@@ -1,4 +1,4 @@
-Here’s a **one-page consolidated status update** for **Preetham, Shubhachandra, Hema, and Sai**:
+Thanks! Here's the **updated and corrected one-page status summary**, incorporating the **routing update escalation context** for **Shubhachandra**:
 
 ---
 
@@ -30,22 +30,24 @@ Here’s a **one-page consolidated status update** for **Preetham, Shubhachandra
 2. **PSC Modules:**
 
    * Collaborating with **Dele** on module development and documentation.
-3. **Routing Updates:**
+3. **Routing Updates (Core SDLC):**
 
-   * Updated core SDLC routes; propagated to other SDLCs.
-   * Escalations involved **Richard, Shwetha, Naga, Gregory, Harsha Nippani, David, Vivek, and Poohooi**.
+   * A **minor routing change** was planned as a **single change across all SDLCs**, since **core SDLC acts as a transit**.
+   * This approach was **flagged by the Ops team**, leading to a call with **Richard, Naga, Shwetha, and Gregory**.
+   * Follow-up justification and approval shared with **Harsha, Vivek, and David Baldwin**.
+   * **Shwetha expressed concern**, partly due to prior issues with the **1500 binding rollout**.
 4. **Network Topology:**
 
-   * Working with **Hema** on diagram preparation.
+   * Working with **Hema** on updated topology diagram.
 5. **NIC / Grafana Dashboard:**
 
-   * Dashboard reviewed; building a structured process to **revoke subnets from app teams** in coordination with **Ops**.
+   * Dashboard reviewed; working on a structured process to **revoke subnets from app teams**, in collaboration with **Ops**.
 6. **IPAM Follow-Up:**
 
    * No intern follow-up this week.
 7. **Operational Coordination:**
 
-   * Increased load in tickets, IP validation, usage reports, and defining intake flow to networking board.
+   * Increased involvement in ticket handling, IP usage reporting, ticket creation, and defining intake workflows for networking board submissions.
 
 ---
 
@@ -53,13 +55,14 @@ Here’s a **one-page consolidated status update** for **Preetham, Shubhachandra
 
 1. **Subnet Reclamation Process:**
 
-   * Working on issues, currently blocked by a **proxy error**.
+   * Working through issues; currently blocked by a **proxy error**.
 2. **Composer Subnet Update:**
 
-   * **/29 for Composer 3** updated across all SDLCs; tracking via a dedicated sheet.
+   * **/29 for Composer 3** updated across all SDLCs; documented in a separate tracking sheet.
 3. **ISNL Control Mapping:**
 
-   * Supporting **Sentinel team** in identifying required parameters and mapping them to **CIS statements**.
+   * Assisting the **Sentinel team** in identifying required parameters.
+   * Mapping those parameters to **CIS control statements** for compliance.
 4. **Network Topology Diagram:**
 
    * In progress; **ETA: Friday**.
@@ -70,16 +73,16 @@ Here’s a **one-page consolidated status update** for **Preetham, Shubhachandra
 
 1. **DNS Delegation:**
 
-   * PR raised; execution handed over to the **Ops team**.
+   * PR has been raised; handover to **Ops team** for implementation.
 2. **Ideal Workspace Ticket:**
 
-   * Terraform and provider versions updated.
+   * Updated Terraform version and provider versions already addressed.
 3. **TFE Workspace Migration (Non-Prod to Prod):**
 
-   * Blocked due to lack of **TFE Prod access**.
-   * PR and **2 CRs** needed.
-   * Raised **intake request** as advised by Ops; currently handled by **Shanthipriya**.
+   * Blocked due to **lack of TFE Prod access**.
+   * Requires PR and **2 CRs**.
+   * As advised by Ops, **intake request created**; currently being handled by **Shanthipriya**.
 
 ---
 
-Let me know if you’d like this in a downloadable format (PDF, Word) or need to include more team members.
+Let me know if you’d like this exported to a document, email draft, or shared on a Confluence page.
