@@ -1,4 +1,9 @@
-Here’s a clearer and more grammatically correct version of your sentence:
+Before the current release:
+	•	Two service accounts were granted the Compute Network User role at the host project level.
+	•	Two service agents were assigned the Serverless VPC Access User role in the host project.
+	•	One service agent was part of the Composer Shared VPC Agent group.
+	•	One service agent was included in the GKE Host Service Agent User group.
+	•	Six service agents were added as members of the Subnet Access groups.
 
 ⸻
 
