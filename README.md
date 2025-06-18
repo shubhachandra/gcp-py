@@ -1,19 +1,13 @@
-Before the current release:
-	•	Two service accounts were granted the Compute Network User role at the host project level.
-	•	Two service agents were assigned the Serverless VPC Access User role in the host project.
-	•	One service agent was part of the Composer Shared VPC Agent group.
-	•	One service agent was included in the GKE Host Service Agent User group.
-	•	Six service agents were added as members of the Subnet Access groups.
+Here’s a professional and impactful referral comment you can include when referring a .NET Full Stack Developer for a Principal Engineer role:
 
 ⸻
 
-To summarize:
-When a new project is added, one service account — tf-project-id@iam.gserviceaccount.com — is granted the Compute Network User role at the host VPC level. The remaining permissions are distributed across specific groups:
-	•	1 in the Composer Shared VPC group
-	•	1 in the GKE Host Service Agent User group
-	•	2 in the Serverless VPC Access User group
-	•	6 in the Subnet Access group
+I am pleased to refer [Candidate Name] for the Principal Engineer position. [He/She/They] bring extensive experience as a .NET Full Stack Developer, with a proven track record of designing and delivering robust, scalable, and high-performing applications across both front-end and back-end layers.
+
+[Candidate Name] demonstrates deep technical expertise in .NET Core, C#, and modern JavaScript frameworks, along with strong architectural thinking and leadership qualities. [He/She/They] have consistently driven technical innovation, mentored junior developers, and contributed to improving code quality and engineering practices within teams.
+
+Given the technical depth, strategic mindset, and collaborative approach [he/she/they] bring to projects, I strongly believe [Candidate Name] will make a significant impact in the Principal Engineer role.
 
 ⸻
 
-Let me know if you’d like this rewritten as a policy note, documentation snippet, or Terraform comment.
+Let me know if you’d like it personalized with the candidate’s name, specific achievements, or domain expertise.
