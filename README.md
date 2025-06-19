@@ -1,6 +1,16 @@
-On-Prem Routing Learn Validation – GCP Route Advertisement
-1. Change Context
+Sharing this document where we can capture evidence of routing learned by on-prem as we gradually publish routes from our different SDLC environments (core, nonprod, prod, sandbox).
 
+Rather than treating it as a template, think of it as a working document to drop in:
+
+Screenshots or CLI outputs showing which prefixes were learned on-prem after each GCP publish
+
+BGP session status (to confirm peering is up)
+
+Any observations or anomalies (like route delay or partial learning)
+
+We can use this to track progress SDLC-wise and region-wise, and ensure nothing gets missed during the staggered rollout. Feel free to add sections or adapt it as needed.
+
+Let me know if you face any issues accessing or editing it.
 - SDLC Published: core / nonprod / prod / sandbox
 - Region: us-central1 / us-east1
 - GCP VPC Range Published: 10.X.0.0/18
