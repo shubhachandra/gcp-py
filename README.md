@@ -1,4 +1,17 @@
-Thanks Shubh! Here’s a clean and well-structured explanation that covers both parts: the Terraform local variable name change and the justification for ClickOps access to subnets for AI Notebooks — all while addressing the concerns raised by the engineer.
+Got it! Here’s your revised paragraph using future tense appropriately and maintaining clarity:
+
+⸻
+
+The user will request access to use BigQuery notebooks. To support this, they will create a Vertex AI Workbench instance, which will run on a virtual machine and require access to subnets. For the service to use these subnets, the compute.networkUser role will be needed to read and attach them.
+
+Since IAM roles cannot be assigned directly to individual users, all role assignments will be handled through AD groups. This PR will assign the compute.networkUser role to the appropriate AD group, ensuring compliance with our access control policies.
+
+We have previously made similar changes in the networking repository to resolve policy binding errors, with support from the Ops team. The compute.networkUser role is already used by the Project Factory and is actively leveraged by subnet-related AD groups.
+
+⸻
+
+Let me know if you’d like a shorter or more casual version.
+
 
 ⸻
 
