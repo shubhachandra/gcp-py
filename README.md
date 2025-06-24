@@ -1,77 +1,28 @@
-Here are the **Minutes of Meeting (MoM)** based on your notes:
+Here is a clearer and more structured version of your message:
 
 ---
 
-### **Minutes of Meeting**
+I can explain why you're unable to apply these roles to the service account using the service account itself.
 
-**Date:** \[Insert Date]
-**Subject:** VRF Segmentation & Network Design Alignment – GCP & On-Prem Sandbox Environments
-**Attendees:** \[List of attendees if known]
-**Prepared by:** \[Your Name]
+As per the current design, there are two service accounts used by the Terraform workspace to create resources:
 
----
+1. **`seed-app` service account** – used in the `core`, `sandbox`, and `nonprod` SDLCs.
+2. **`seed-prod-app` service account** – used in the `prod` SDLC.
 
-### **Discussion Points:**
+The `seed-app` service account has the **Security Admin** role at the hub networking host project. This is why role assignment operations work successfully in the `nonprod` and `sandbox` environments.
 
-1. **Current Environment:**
+However, in the `prod` environment, the `seed-prod-app` service account does **not** have the Security Admin role. This prevents it from assigning the required roles (e.g., `servicedirectory.networkAttacher` and `servicedirectory.pscAuthorizedService`) to other service accounts.
 
-   * GCP has a separate **sandbox**.
-   * On-prem also maintains a **sandbox** environment.
-   * Currently, **non-prod** and **sandbox** are being grouped under a **single VRF**, which is part of the existing design.
-
-2. **Desired State:**
-
-   * Proposal to **split VRFs** for **non-prod** and **sandbox** to ensure **network segmentation** and **better traffic isolation**.
-   * This separation is **not part of the current approved design**.
-   * There are **4 existing VRF segments**:
-
-     * AD-ENT PROD
-     * AD-ENT NONPROD
-     * QA-ENT PROD
-     * QA-ENT NONPROD
-   * The above segmentation approach is consistent with the **Azure** environment as well.
-
-3. **Capacity and Planning:**
-
-   * All **non-prod VRFs** will be configured with **10 Gbps links**.
-   * **Production VRFs** will have higher throughput (exact bandwidth not specified).
-   * The team noticed **non-prod and sandbox** are currently able to talk to each other, which prompted this discovery and re-evaluation.
-
-4. **Impact on Timelines:**
-
-   * Creating new, **separate VRFs for sandbox** will impact the timeline and extend it by **a few more weeks**.
-   * As of now:
-
-     * **AD-ENT** has 3 VRFs.
-     * **QA-ENT** has 3 VRFs.
-     * Discussion is ongoing if adding an **additional (fourth) VRF** later is acceptable from a design and operations standpoint.
-
-5. **Action Items & Coordination:**
-
-   * **Preetham** to collaborate with **Ops team** to initiate necessary **Change Requests (CRs)**.
-   * **Ashburn** and **Chicago** environments are fully up, with **all four links live** on both GCP and On-prem sides.
-   * For **Dallas**, coordination is needed with **Carol** to proceed further.
-   * Domain updates and communication of **target dates to SNS** teams are pending.
-   * There's a requirement to **shut down BGP on the production VRF** – timing and steps to be confirmed.
+These are **cross-project role assignments**, and since the `seed-prod-app` lacks the **Service Account Admin** role (which is part of the Security Admin role bundle), the role assignment fails.
 
 ---
 
-### **Decisions Made:**
+Regarding your second question — **why this was working earlier but is failing now**:
 
-* Agreement that **separate VRFs for sandbox and non-prod** are required for future scalability and isolation, though it's not in the current design.
-* Proceed with evaluating **impact of adding new VRFs** and how it affects timelines.
+There was a change in the service account used for the `core` environment. In the latest release, the service account was switched from `seed-prod-app` to `seed-app`, as seen in the pull request. This change was implemented by the **Landing Zone (LZ) team**.
 
----
-
-### **Next Steps / Action Items:**
-
-| **Task**                                                    | **Owner**                      | **Due Date**   |
-| ----------------------------------------------------------- | ------------------------------ | -------------- |
-| Coordinate CR submissions for VRF changes                   | Preetham                       | \[Insert Date] |
-| Collaborate with Carol for Dallas readiness                 | \[Your Name / Team]            | \[Insert Date] |
-| Share domain updates and VRF activation dates with SNS team | \[Your Name / Networking Team] | \[Insert Date] |
-| Plan and execute BGP shutdown for PROD                      | Network Team                   | \[Insert Date] |
+I’ll loop in the LZ team so they can help resolve this.
 
 ---
 
-Let me know if you'd like a polished PDF version or email template based on this MoM.
+Let me know if you'd like this in email format or if you need a diagram for better understanding.
