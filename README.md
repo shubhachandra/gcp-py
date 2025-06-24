@@ -1,75 +1,77 @@
-Here's a **professional and clear email draft** you can send to the **Ops team** about the proposed **Subnet Reclamation Process**, highlighting roles, communication flow, and expectations.
+Here are the **Minutes of Meeting (MoM)** based on your notes:
 
 ---
 
-### **Subject:** Proposal for Subnet Reclamation Process – Ops Team Collaboration Required
+### **Minutes of Meeting**
+
+**Date:** \[Insert Date]
+**Subject:** VRF Segmentation & Network Design Alignment – GCP & On-Prem Sandbox Environments
+**Attendees:** \[List of attendees if known]
+**Prepared by:** \[Your Name]
 
 ---
 
-Hi Team,
+### **Discussion Points:**
 
-We’re proposing a **structured subnet reclamation process** to optimize IP utilization and ensure hygiene across SDLC environments. This effort will require **close collaboration between the Ops team and the Networking team**, and your support will be critical in executing this initiative smoothly.
+1. **Current Environment:**
 
----
+   * GCP has a separate **sandbox**.
+   * On-prem also maintains a **sandbox** environment.
+   * Currently, **non-prod** and **sandbox** are being grouped under a **single VRF**, which is part of the existing design.
 
-### 📌 **Objective**
+2. **Desired State:**
 
-Identify and reclaim subnets that have been **idle for more than 90 days**, based on daily reports generated from Grafana. These subnets often remain unused after initial provisioning, resulting in IP fragmentation and unnecessary allocation.
+   * Proposal to **split VRFs** for **non-prod** and **sandbox** to ensure **network segmentation** and **better traffic isolation**.
+   * This separation is **not part of the current approved design**.
+   * There are **4 existing VRF segments**:
 
----
+     * AD-ENT PROD
+     * AD-ENT NONPROD
+     * QA-ENT PROD
+     * QA-ENT NONPROD
+   * The above segmentation approach is consistent with the **Azure** environment as well.
 
-### 🤝 **Roles & Communication Flow**
+3. **Capacity and Planning:**
 
-#### **1. Report Analysis (Network Team)**
+   * All **non-prod VRFs** will be configured with **10 Gbps links**.
+   * **Production VRFs** will have higher throughput (exact bandwidth not specified).
+   * The team noticed **non-prod and sandbox** are currently able to talk to each other, which prompted this discovery and re-evaluation.
 
-* The **network team** will review the daily Grafana report and **shortlist candidate subnets** that appear unused.
-* These will be shared with the **Ops team**, along with the associated project and environment details.
+4. **Impact on Timelines:**
 
-#### **2. App Team Coordination (Ops Team)**
+   * Creating new, **separate VRFs for sandbox** will impact the timeline and extend it by **a few more weeks**.
+   * As of now:
 
-* The **Ops team will help contact the respective application owners** to validate the subnet usage.
-* This outreach will include:
+     * **AD-ENT** has 3 VRFs.
+     * **QA-ENT** has 3 VRFs.
+     * Discussion is ongoing if adding an **additional (fourth) VRF** later is acceptable from a design and operations standpoint.
 
-  * Subnet name, region, and project ID
-  * Request for confirmation on whether the subnet is still in use
-  * A **response SLA of 5 business days**
+5. **Action Items & Coordination:**
 
-#### **3. No Response Policy**
-
-* If no response is received within the SLA, and there is **no known dependency** on the subnet, it will be considered **safe for auto-deletion** following a final reminder.
-
-#### **4. Intake and Deletion**
-
-* Upon confirmation from the app team or after SLA expiry:
-
-  * The **Ops team** will raise an **intake request** for subnet deletion.
-  * The **Network team** will validate and coordinate PR changes via Terraform to delete the subnet.
-
----
-
-### ✅ **Benefits of the Process**
-
-* Improved IP space management and availability
-* Clean and minimal subnet usage across SDLC
-* Reduced provisioning delays for new GKE, Composer, and notebook workloads
+   * **Preetham** to collaborate with **Ops team** to initiate necessary **Change Requests (CRs)**.
+   * **Ashburn** and **Chicago** environments are fully up, with **all four links live** on both GCP and On-prem sides.
+   * For **Dallas**, coordination is needed with **Carol** to proceed further.
+   * Domain updates and communication of **target dates to SNS** teams are pending.
+   * There's a requirement to **shut down BGP on the production VRF** – timing and steps to be confirmed.
 
 ---
 
-### 🔄 **Next Steps**
+### **Decisions Made:**
 
-We’d like to **align with Ops on the following**:
-
-1. Confirm support for application team outreach
-2. Define the **communication format** (email/slack/intake ticket) to app teams
-3. Agree on the **SLA policy and auto-deletion procedure**
-
-Please let us know if we can set up a short sync to walk through this or finalize via email. Your partnership is key to making this successful and scalable.
-
-Best regards,
-**\[Your Name]**
-Network Engineering Team
-\[Optional: Attach flowchart or reference doc]
+* Agreement that **separate VRFs for sandbox and non-prod** are required for future scalability and isolation, though it's not in the current design.
+* Proceed with evaluating **impact of adding new VRFs** and how it affects timelines.
 
 ---
 
-Let me know if you want to customize this by adding an attachment, or if you're writing on behalf of a team or manager.
+### **Next Steps / Action Items:**
+
+| **Task**                                                    | **Owner**                      | **Due Date**   |
+| ----------------------------------------------------------- | ------------------------------ | -------------- |
+| Coordinate CR submissions for VRF changes                   | Preetham                       | \[Insert Date] |
+| Collaborate with Carol for Dallas readiness                 | \[Your Name / Team]            | \[Insert Date] |
+| Share domain updates and VRF activation dates with SNS team | \[Your Name / Networking Team] | \[Insert Date] |
+| Plan and execute BGP shutdown for PROD                      | Network Team                   | \[Insert Date] |
+
+---
+
+Let me know if you'd like a polished PDF version or email template based on this MoM.
