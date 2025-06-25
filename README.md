@@ -1,22 +1,44 @@
-Here’s a refined and professional version of your follow-up statement and question for clarity and communication with your team:
+Here is a cleaned-up and structured version of your feature update request, formatted for clarity and professionalism. You can use this directly in your feature tracking tool (like Jira, Aha!, etc.).
 
-⸻
+---
 
-This issue arises when using the Dialogflow API, which requires assigning the following two roles at the core host VPC project:
-	•	roles/servicedirectory.networkAttacher
-	•	roles/servicedirectory.pscAuthorizedService
+### **Feature Update**
 
-These roles must be granted via cross-project IAM bindings, which requires Security Admin or Service Account Admin permissions—currently missing from the seed-prod-app service account.
+**Title:** Enable `us-east4` Region in GCP for Cloud Workloads
+**Role:** Cloud Networking Engineer
 
-⸻
+---
 
-Questions for Clarification:
-	1.	Is there any architectural change regarding Dialogflow usage?
-	•	If Dialogflow is still part of the architecture, we need confirmation on where it is currently being used and in which GCP project(s).
-	2.	Why was the seed-prod-app service account changed to seed-app in the core environment?
-	•	Was this part of a broader standardization or consolidation initiative by the Landing Zone (LZ) team?
-	•	Did this change go through architecture/security review, considering the impact on IAM permissions?
+**Description:**
+As a **Cloud Networking Engineer**, I want to **enable the `us-east4` region in GCP** so that **application teams can deploy workloads closer to users in the eastern United States**, thereby improving **performance, redundancy, and scalability**.
 
-⸻
+---
 
-Let me know if you’d like this framed as an email or comment in a PR.
+**Business Driver / OKR (Value Statement & Outcome):**
+
+* **Improved Performance:** Reduces latency by placing workloads geographically closer to users on the East Coast.
+* **Enhanced Disaster Recovery:** Adds an additional region for failover, strengthening business continuity and resilience.
+* **Scalability:** Increases capacity for future growth in a high-demand region.
+* **Compliance & Regulatory Support:** Supports workloads requiring data residency in the eastern U.S., aligning with specific regulatory and compliance needs.
+
+---
+
+**Milestones:**
+
+* **Pending:** Awaiting written confirmation of implementation timelines from the SNS team.
+* **Planned:** Region enablement to be carried out in coordination with **PBGPL-3** project deliverables.
+
+---
+
+**Labels:**
+
+* `us-east4`
+* `regional-expansion`
+* `performance`
+* `scalability`
+* `compliance`
+* `2025-July` (or whichever month the implementation is expected)
+
+---
+
+Let me know if you'd like this adapted for a specific tool like Jira, Confluence, or a roadmap tracker.
