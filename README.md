@@ -1,4 +1,18 @@
-You’re right—the main alert flow is to BigPanda and ServiceNow, as shown in the diagram. However, as mentioned in the last point of the document, we also need to configure email notifications to ensure alerts are properly actioned.
+Here’s a clearer and more professional version of your two points:
+
+⸻
+
+1. Observability Module Alerts:
+
+For the observability module, alerts are sent to BigPanda and ServiceNow, where they are actionable and result in incident creation. Email notifications are optional, as per the documentation, and can be added if you want direct notifications.
+
+2. Dialogflow API Issue:
+
+The service account used by the production workspace doesn’t have the required permissions to assign roles in the core host project. Dialogflow is used in the core host project as per the design. Assigning the Security Admin role to the production seed account would resolve the issue.
+
+⸻
+
+Let me know if you want a more technical tone or if this will go to a non-technical audience.
 
 The reason I’m highlighting this is because most subnet creation is handled by your team (Ops), and it’s important that the networking team is also alerted when such changes occur. Email notifications help ensure relevant teams are looped in, especially in cases where automated integrations might not notify all stakeholders.
 ⸻
