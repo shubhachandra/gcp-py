@@ -1,5 +1,6 @@
-Got it! Here’s a revised version that makes it sound like you’re asking whether the alerts should go to the Ops team, while keeping the message clear and professional:
+You’re right—the main alert flow is to BigPanda and ServiceNow, as shown in the diagram. However, as mentioned in the last point of the document, we also need to configure email notifications to ensure alerts are properly actioned.
 
+The reason I’m highlighting this is because most subnet creation is handled by your team (Ops), and it’s important that the networking team is also alerted when such changes occur. Email notifications help ensure relevant teams are looped in, especially in cases where automated integrations might not notify all stakeholders.
 ⸻
 
 Subject: Clarification on Alert Notification Recipient
