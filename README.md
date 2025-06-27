@@ -1,4 +1,49 @@
-💡 Let’s break this down carefully based on your architecture:
+Great — let’s break this down carefully, step by step, since this is a common scenario in hub-and-spoke or core-vpc patterns:
+
+✅ Your setup
+	•	Prod Project
+	•	Hosts the Dialogflow API / Dialogflow CX agents
+	•	Exposes them via Private Service Connect
+	•	Core Project
+	•	Acts as a network hub, connected to on-prem
+	•	Contains Shared VPC or routing infrastructure
+	•	Workloads or clients in on-prem connect via the core project to Dialogflow in prod
+
+⸻
+
+Why would a service account in the prod project need these roles in the core project?
+
+👉 Reason 1: Private Service Connect Authorization
+	•	The Dialogflow API in prod project is published through PSC.
+	•	But clients in on-prem, connected through core project, want to reach Dialogflow.
+	•	That means the PSC service attachment in prod must explicitly authorize connections from the consumer VPCs — including the core project’s VPC or spoke VPCs routed via the core.
+	•	So, the service account in the prod project needs permission to authorize those consumer networks in the core project:
+	•	roles/pscauthorizedservice
+→ so it can allow the core project VPC (and by extension, on-prem clients) to connect to Dialogflow.
+
+⸻
+
+👉 Reason 2: Service Directory Namespace Attachments
+	•	Dialogflow uses Service Directory to register its PSC endpoint.
+	•	That Service Directory namespace needs to be attached to a VPC so that your workloads can resolve it privately.
+	•	Since the core project hosts the networking to on-prem, you might attach that Service Directory namespace to a VPC in the core project.
+	•	The service account from prod will need
+	•	roles/servicedirectory.networkAttacher
+→ so it can attach the Service Directory namespace to the correct VPC in core, letting on-prem workloads discover Dialogflow privately.
+
+⸻
+
+🎯 In summary:
+
+✅ Prod project’s service account needs roles on the core project because:
+	•	PSC needs to authorize the core project VPC as a consumer
+	•	Service Directory needs to attach to the core project’s VPC so that on-prem resources routed via the core can resolve Dialogflow
+
+Otherwise, on-prem traffic coming through the core project would not be allowed to connect, or would fail service discovery.
+
+⸻
+
+If you’d like, I can help you diagram this out or write an IAM policy snippet to grant these roles properly — just ask!
 
 ⸻
 
