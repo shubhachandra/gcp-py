@@ -1,4 +1,40 @@
-Got it — here’s a Jira ticket draft to actually request creation of the Terraform workspace and Git repo, not just naming conventions. You can copy this straight into your Jira:
+✅ Makes sense — let’s make it as obvious and self-documenting as possible, so any team member immediately knows what each repo/workspace does, even years later.
+
+Here’s a crystal-clear, plain-language naming scheme:
+
+⸻
+
+1️⃣ Firewall Virtual Machines
+	•	Name: firewall-vm-deployment
+	•	➡️ “firewall” makes it clear, “vm” specifies virtual appliances, “deployment” is action-oriented
+
+2️⃣ Firewall Infrastructure Resources
+	•	Name: firewall-infra-resources
+	•	➡️ “infra” for infrastructure, “resources” is broader than “management” and covers subnets, routes, IPs, etc.
+
+3️⃣ Firewall Security Policies
+	•	Name: firewall-security-policies
+	•	➡️ “security policies” is explicit, no vendor mention, universally understood
+
+⸻
+
+✅ Summary Table
+
+Purpose	Suggested Name
+Virtual firewall appliance setup	firewall-vm-deployment
+Infra pieces supporting firewalls	firewall-infra-resources
+Firewall rules & security configs	firewall-security-policies
+
+
+⸻
+
+✅ Why these are obvious?
+	•	Consistently start with firewall
+	•	Use clear, familiar words (vm, infra, policies)
+	•	Work for any future vendor
+	•	Easily understood by anyone who reads them, no acronyms to decode
+
+If you want, I can also draft a short naming convention doc you could add to your README to explain these — just say the word!
 
 ⸻
 
