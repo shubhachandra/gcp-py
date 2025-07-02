@@ -1,4 +1,5 @@
-=IFERROR(
-  INDEX(Sheet2!A:A, MATCH(LOWER(A1), LOWER(Sheet2!A:A), 0)),
-  ""
+=LET(
+  keywords, FILTER(Sheet2!B:B, Sheet2!B:B<>""), 
+  found, FILTER(keywords, ISNUMBER(SEARCH(keywords, A1))),
+  IFERROR(INDEX(found, 1), "")
 )
