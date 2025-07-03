@@ -1,11 +1,31 @@
-Hi Team,
+Sure — here’s a **crisp and clear** Jira ticket draft you can copy-paste and adapt:
 
-The Network Connectivity service account (gcp-sa-networkconnectivity) is a Google-managed identity considered external by our group policies.
+---
 
-There is no way to exempt just this account without opening the group to all external members, which we cannot allow under current org policy.
+**Title:** Provision folder and service projects for Palo Alto deployment in GCP
 
-Dataflow’s service agent was allowed because our policy treats project-level service agents (like dataflow-service-producer-prod) as acceptable external members, while gcp-sa- service accounts are classified as fully Google-controlled and therefore blocked.
+**Description:**
+As part of implementing Palo Alto VM firewalls in GCP, we need to provision a new folder and create two service projects under this folder. These service projects will act as service projects connected to the core host project through Shared VPC.
 
-As you have already tested, assigning the Subnet User role directly works. We can proceed by applying this in the wf-custom module using the required flag.
+**Acceptance Criteria:**
 
-Since the number of Dialogflow projects is low, adding the policy binding directly should not hit IAM policy limits.
+* Create a dedicated folder in the specified GCP parent folder for Palo Alto resources
+* Provision two service projects within this folder
+
+  * Project 1: `<insert project name>`
+  * Project 2: `<insert project name>`
+* Attach these service projects to the core host project’s Shared VPC
+* Add multiple core subnets from the host project as Shared VPC subnets to these service projects
+* Confirm permissions and IAM bindings are in place for the Palo Alto deployment
+
+**Additional Notes:**
+
+* The provisioning will be done using the project provisioning repo
+* Ensure naming conventions and organization policies are followed
+* Validate connectivity between the service projects and the Shared VPC
+
+**Priority:** High
+
+---
+
+If you’d like, I can help you expand it with more technical details (like subnet names, IAM roles, folder IDs, etc.) — just let me know!
