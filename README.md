@@ -1,9 +1,11 @@
 Hi Team,
 
-We usually see this issue specifically with the Network Connectivity service account. Since Google Groups does not support exceptions for a single external member, and updating the group to allow external members would open membership to all domains, we cannot modify the org policy to permit this.
+The Network Connectivity service account (gcp-sa-networkconnectivity) is a Google-managed identity considered external by our group policies.
 
-As you have already tested assigning the Subnet User role directly, we can proceed with that approach. Let’s incorporate this change into the wf-custom module using the module’s required flag.
+There is no way to exempt just this account without opening the group to all external members, which we cannot allow under current org policy.
 
-Given that the number of projects leveraging Dialogflow is minimal, adding this service account directly to the subnet IAM policy should not cause any policy binding limit issues.
+Dataflow’s service agent was allowed because our policy treats project-level service agents (like dataflow-service-producer-prod) as acceptable external members, while gcp-sa- service accounts are classified as fully Google-controlled and therefore blocked.
 
-Please let me know if you have any concerns, otherwise we can move forward with these updates.
+As you have already tested, assigning the Subnet User role directly works. We can proceed by applying this in the wf-custom module using the required flag.
+
+Since the number of Dialogflow projects is low, adding the policy binding directly should not hit IAM policy limits.
