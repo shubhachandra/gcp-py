@@ -1,20 +1,24 @@
-The network-py2y.json file is enabling logging for DNS managed zones. Ruth Icon was working on this, but since the applied changes failed, they had to revert them, and I will coordinate with him further.
+Of course — here’s a clear, concise, and professional email draft you can send, summarizing all the points you mentioned about the different files:
 
-On networking-1fd7, most of the firewall rules were created by GKE, and logging is disabled by default. We should add Terraform code to enable firewall logging at the time of creation, ensuring logging is enabled by default. This task should be moved to the Landing Zone team, as they manage the default logging values.
+⸻
 
-For GKE-created firewall rules,
+Subject: Updates on Network JSON Files and Firewall Logging
 
-In network-c510.json, we 
+Hi Team,
 
+Please find the updates and next steps regarding the network configuration files and firewall logging below:
+	•	network-py2y.json:
+This file is currently enabling logging for DNS managed zones. Ruth Icon was working on this, but the recent apply failed, so the changes had to be reverted. I will coordinate with him further to fix and reapply the changes.
+	•	networking-1fd7:
+Most firewall rules here were created by GKE, and logging is disabled by default. We should add Terraform code to enable firewall logging during rule creation, so that logging is enabled by default. This task should be transitioned to the Landing Zone team, as they own the default logging configurations.
+	•	network-c510.json:
+We can proceed to enable logging for all subnets defined in the main.tf of each SDLC environment.
 
+Please let me know if you have any questions or would like me to set up a follow-up discussion.
 
+Thanks,
+[Your Name]
 
-* The provisioning will be done using the project provisioning repo
-* Ensure naming conventions and organization policies are followed
-* Validate connectivity between the service projects and the Shared VPC
+⸻
 
-**Priority:** High
-
----
-
-If you’d like, I can help you expand it with more technical details (like subnet names, IAM roles, folder IDs, etc.) — just let me know!
+If you’d like, I can also help you adjust this for a Jira ticket or a formal change request — just let me know!
