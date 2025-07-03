@@ -1,24 +1,13 @@
-Sure — here’s a **crisp and clear** Jira ticket draft you can copy-paste and adapt:
+The network-py2y.json file is enabling logging for DNS managed zones. Ruth Icon was working on this, but since the applied changes failed, they had to revert them, and I will coordinate with him further.
 
----
+On networking-1fd7, most of the firewall rules were created by GKE, and logging is disabled by default. We should add Terraform code to enable firewall logging at the time of creation, ensuring logging is enabled by default. This task should be moved to the Landing Zone team, as they manage the default logging values.
 
-**Title:** Provision folder and service projects for Palo Alto deployment in GCP
+For GKE-created firewall rules,
 
-**Description:**
-As part of implementing Palo Alto VM firewalls in GCP, we need to provision a new folder and create two service projects under this folder. These service projects will act as service projects connected to the core host project through Shared VPC.
+In network-c510.json, we 
 
-**Acceptance Criteria:**
 
-* Create a dedicated folder in the specified GCP parent folder for Palo Alto resources
-* Provision two service projects within this folder
 
-  * Project 1: `<insert project name>`
-  * Project 2: `<insert project name>`
-* Attach these service projects to the core host project’s Shared VPC
-* Add multiple core subnets from the host project as Shared VPC subnets to these service projects
-* Confirm permissions and IAM bindings are in place for the Palo Alto deployment
-
-**Additional Notes:**
 
 * The provisioning will be done using the project provisioning repo
 * Ensure naming conventions and organization policies are followed
