@@ -1,24 +1,59 @@
-Of course — here’s a clear, concise, and professional email draft you can send, summarizing all the points you mentioned about the different files:
+Sure — here’s a clean, consolidated status summary capturing the updates for Preetham, Shubhachandra, Hema, and Sai, with all the details you mentioned:
 
 ⸻
 
-Subject: Updates on Network JSON Files and Firewall Logging
+Status Summary
 
-Hi Team,
-
-Please find the updates and next steps regarding the network configuration files and firewall logging below:
-	•	network-py2y.json:
-This file is currently enabling logging for DNS managed zones. Ruth Icon was working on this, but the recent apply failed, so the changes had to be reverted. I will coordinate with him further to fix and reapply the changes.
-	•	networking-1fd7:
-Most firewall rules here were created by GKE, and logging is disabled by default. We should add Terraform code to enable firewall logging during rule creation, so that logging is enabled by default. This task should be transitioned to the Landing Zone team, as they own the default logging configurations.
-	•	network-c510.json:
-We can proceed to enable logging for all subnets defined in the main.tf of each SDLC environment.
-
-Please let me know if you have any questions or would like me to set up a follow-up discussion.
-
-Thanks,
-[Your Name]
+Preetham
+	•	Published the Cloud NAT module.
+	•	Raised a change request (CR) for Dataproc cluster creation using Cloud NAT.
+	•	Niguel is working on ISBL approval from the cybersecurity team.
+	•	Preetham will handle the subnet requirements, while the network team will raise the associated CR, expected to complete today.
+	•	Raised CR for Ashburn routing entries (PR), collaborating with Shubh on the same.
+	•	All three region routing update CRs and the BGP turn-off CR have been raised with Ops.
+	•	ETA for these CRs: 22nd, 23rd, and 25th.
+	•	Will work with Shika to raise any further required CRs.
+	•	MASEC testing has been completed.
+	•	Dallas link issue has been escalated with Google and is being tracked via the account manager.
+	•	Cable issue targeted to be resolved within this week.
+	•	Awaiting CR lock-in confirmation.
 
 ⸻
 
-If you’d like, I can also help you adjust this for a Jira ticket or a formal change request — just let me know!
+Shubhachandra
+	•	Working with Richard on the Palo Alto setup:
+	•	Created 3 repositories and 3 workspaces.
+	•	Currently working on creating 2 service projects to support the setup.
+	•	Also working on the Ashburn routing entries PR along with Preetham.
+	•	Following up on AU Notebook subnet creation for production, pending end of change freeze.
+	•	Supporting subnet reclamation activities:
+	•	Manual reclamation process has been approved by Niguel.
+	•	Pitching the process to the Ops team (Shwet) today, then sending the document for broadcast to the entire Ops team via Kelly.
+	•	Official FYI email will go to the relevant teams to reclaim unused subnets — targeting 50 subnets this week and another 50 next week.
+	•	Working with Hema on automation, documentation, and presentations.
+	•	Worked on various issues, including Dialog API and service agent concerns.
+	•	Addressed repeated cybersecurity alerts, despite evidence and multiple clarifications provided. These include:
+	1.	Logging cannot be added to private DNS zones.
+	2.	Logging cannot be enabled for GKE-created firewalls as these are not under our control.
+	3.	Subnets with PSC regional proxy are also outside our control.
+	•	Pending:
+	•	Adding stories to the new board, awaiting Niguel’s approval.
+
+⸻
+
+Hema
+	•	Working on the network topology diagram (aligned with the Azure design).
+	•	Handling delegated DNS design.
+	•	Supporting the subnet reclamation process together with Shubhachandra, Dele, and Sai.
+	•	Collaborating on the automation, documentation, and presentation aspects for subnet reclamation.
+
+⸻
+
+Sai
+	•	Working on separating prod and non-prod workspaces.
+	•	Assisting with the network topology diagram.
+	•	Helping in the subnet reclamation process along with Hema and Shubhachandra.
+
+⸻
+
+If you’d like, I can help you polish this further into an email update or status slide for leadership — just let me know!
