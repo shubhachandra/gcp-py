@@ -1,116 +1,32 @@
-Of course! Here’s a complete, detailed Confluence page draft you can copy-paste directly into your Confluence workspace. It is structured clearly with headings, tables, and actionable details.
+✅ Here’s a clean and structured JIRA Feature write-up with the requested elements included in the Description field, fully formatted for copy-paste:
 
 ⸻
 
-🛰️ Subnet Reclamation Framework
-
-Purpose
-
-This page documents the Subnet Reclamation Framework to recover unused subnet IP ranges across SDLC environments. The objective is to maintain a sustainable, efficient, and future-proof IP address management process in response to growing IP shortages.
+JIRA Feature Title:
+Subnet Reclamation Framework and Automation Roadmap
 
 ⸻
 
-Background
-	•	Our IP address pools are nearing exhaustion, impacting our ability to onboard new services such as GKE clusters, Composer, and AI Notebooks.
-	•	A recent audit identified 230 unused subnets across SDLC environments.
-	•	These subnets need to be reclaimed in a phased and controlled manner.
+Description:
 
 ⸻
 
-Objectives
+Business Driver
 
-✅ Optimize and recover valuable IP address ranges
-✅ Support faster provisioning of future workloads
-✅ Maintain a clean and secure network environment
-✅ Build a foundation for future automation
+Our IP address pools across SDLC environments are nearing exhaustion, which is delaying or blocking onboarding of new workloads including GKE clusters, Composer, and AI Notebooks. Currently, 230+ subnets are identified as unused for over 90 days, resulting in waste of valuable IP resources.
 
-⸻
-
-Process Overview
-
-Below is the detailed step-by-step process:
-
-1️⃣ Subnet Usage Report Generation
-	•	Daily subnet consumption reports generated from Grafana or equivalent
-	•	Highlight subnets with no resources attached for 90+ days
+By implementing a systematic subnet reclamation process, we can free up these unused ranges, improving our ability to provision critical workloads quickly while maintaining a sustainable, secure, and efficient network footprint.
 
 ⸻
 
-2️⃣ Candidate Subnet Shortlisting
-	•	Networking team reviews the report
-	•	Shortlists candidate subnets for potential reclamation
+OKR (Value Statement / Outcome)
 
-⸻
-
-3️⃣ App Team Validation
-	•	Networking team directly contacts the application team
-	•	Provides subnet details:
-	•	Subnet name
-	•	IP range
-	•	SDLC environment
-	•	Service project
-	•	Days since last update
-	•	Planned deletion timeline
-	•	App team has 5 business days to respond with justification
-	•	If no response and no active workloads, proceed with reclamation
-
-⸻
-
-4️⃣ Delinking Subnet from Service Project
-
-Important prerequisite step before deletion:
-	•	The subnet must be delinked from its associated service project
-	•	This is done in the project provisioning repository, involving:
-	•	Update the repo
-	•	Commit and push changes
-	•	Raise a Pull Request (PR)
-	•	Raise an intake request
-	•	Ops team creates a CR (Change Request)
-	•	CR approved, merged, and applied
-	•	Only once delinked, proceed to subnet deletion
-
-Estimated time per subnet (for delinking + reclaim flow): ~1 hour 30 minutes
-
-⸻
-
-5️⃣ Subnet Reclamation (Delete)
-	•	Network team raises an intake request for subnet deletion after delinking
-	•	Ops team creates a CR for deletion of the subnet from Terraform
-	•	CR is approved, merged, and applied
-	•	Subnet is officially reclaimed
-
-⸻
-
-Roles & Responsibilities
-
-Team	Responsibilities
-Networking	Identify candidates, contact app teams, validate, raise intake requests
-Ops	Create CRs, approve/merge/apply changes
-App Teams	Respond to validation emails within 5 business days
-
-
-⸻
-
-Batching & Scheduling
-	•	Initial volume: ~230 unused subnets
-	•	Target: 15 subnets reclaimed per week (based on estimated processing effort)
-	•	Proposed: dedicate one day per week (e.g., Wednesdays) for subnet reclamation
-	•	CR lead times for production: currently 7 days
-	•	Suggest to discuss possible lead time adjustment for faster execution
-
-⸻
-
-Future Automation Vision
-
-Long-term, the goal is to fully automate this end-to-end process, including:
-
-✅ Automated subnet reporting
-✅ Automated validation with app owners
-✅ Automated delinking workflow from the repo
-✅ Automated PR generation and intake request
-✅ Automated CR creation, approval, and apply
-✅ Integrated dashboards for tracking status
-✅ Audit trail and rollback support
+✅ Objective: Reclaim and optimize IP ranges to ensure smooth onboarding of future projects and support the organization’s growth
+✅ Key Result: Successfully reclaim a minimum of 15 subnets per week, achieving at least 90% utilization of freed IP ranges within the next 3 sprints
+✅ Outcome:
+	•	Reduced IP shortages and provisioning delays
+	•	More efficient and secure network architecture
+	•	Faster time-to-market for application teams requesting new services
 
 ⸻
 
@@ -118,47 +34,17 @@ Milestones
 
 Milestone	Target Sprint
 Process design and stakeholder sign-off	Sprint X
-Pilot batch of 15 subnets	Sprint X+1
-Weekly cadence established	Sprint X+2
-Reporting dashboard creation	Sprint X+3
-Automation PoC planning	Sprint X+4
-Automation rollout	Sprint X+5 onward
+Pilot execution for 15 subnets	Sprint X+1
+Weekly reclaim cadence established	Sprint X+2
+Reporting dashboard available	Sprint X+3
+Automation PoC requirements documented	Sprint X+4
+Automation PoC execution	Sprint X+5 onward
 
 
 ⸻
 
-Questions for Ops Team
+If you want, I can also help you break this into JIRA stories and subtasks with acceptance criteria — just say:
 
-1️⃣ Should subnet deletion intake requests be:
-	•	one consolidated intake per SDLC
-	•	or multiple intake requests per subnet?
+“Break into JIRA stories”
 
-2️⃣ Can we dedicate one weekday (Wednesday) for all subnet reclamation?
-
-3️⃣ Would you support adjusting lead time (currently 7 days for production) if we dedicate a specific day for these activities?
-
-4️⃣ Should we stick to 15 subnets per week or consider larger batch sizes?
-
-⸻
-
-Next Steps
-
-✅ Gather Ops team feedback on above questions
-✅ Schedule a discussion meeting
-✅ Finalize the approach and stakeholder sign-off
-✅ Start pilot execution
-
-⸻
-
-Contacts
-	•	Networking Team: [name / email / Slack channel]
-	•	Ops Team: [name / email / Slack channel]
-	•	Project Owner: [name / email]
-
-⸻
-
-If you’d like, I can help you make this even more visually formatted for Confluence with tables, info panels, and status macros — just say:
-
-“Format for Confluence with macros”
-
-and I’ll adjust it for you!
+and I’ll build those for you!
