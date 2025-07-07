@@ -1,97 +1,63 @@
-Here’s a polished, professional email version of what you described, keeping it formal and clear:
+Here’s how you could build on the previous email, adding these new discussion points clearly and professionally. You can copy this directly or adapt it:
 
 ⸻
 
-Subject: [FYI] Subnet Reclamation Notification for FNDD Application – Action Required Within 5 Business Days
+Subject: Introduction of Subnet Reclamation Process – Ops Team Support & Clarification
 
 ⸻
 
-Hi FNDD Application Team,
+Hi Ops Team,
 
-As part of our subnet reclamation initiative, we have identified two subnets under your project that have been unused for more than 90 days and appear to have no active resources attached. Please review the details below:
-
-⸻
-
-Subnet Details:
-
-1️⃣ Subnet Name: subnet1
-	•	IP Range: 100.123.78.0/24
-	•	SDLC Environment: sandbox
-	•	App ID: fndd
-	•	Service Project Name: fndd-nonprod-786
-	•	Days Since Last Update: 103 days
-	•	Planned Deletion Date: 5 business days from today
-
-2️⃣ Subnet Name: subnet2
-	•	IP Range: 100.123.76.0/24
-	•	SDLC Environment: nonprod
-	•	App ID: fndd
-	•	Service Project Name: fndd-nonprod-786
-	•	Days Since Last Update: 103 days
-	•	Planned Deletion Date: 5 business days from today
+As part of our ongoing network hygiene and IP address optimization efforts, we are introducing a subnet reclamation process starting this sprint. This initiative will help us recover unused IP ranges to fulfill current and future provisioning demands, as our IP pool is nearing exhaustion.
 
 ⸻
 
-Important Notes:
-	•	These subnets will be deleted after 5 business days from today unless you provide a valid justification for retaining them.
-	•	If you believe these subnets are still required, please reply with your justification within this period.
-	•	In the absence of a response, and no active resources detected, we will proceed with deletion as planned.
+Process Overview
 
-Your prompt cooperation is appreciated to ensure efficient use of our IP address resources.
+✅ Networking Team responsibilities
+	•	Analyze subnet usage reports
+	•	Identify subnets unused for more than 90 days
+	•	Communicate directly with the application teams for validation
+	•	Raise intake requests with confirmed subnet details
 
-If you have any questions or concerns, please let us know.
-
-Thank you,
-
-[Your Name]
-Networking Team
-[Your Contact Information]
+✅ Ops Team responsibilities
+	•	Create and manage the Change Requests (CRs) to remove these subnets from Terraform once the intake request is submitted
+	•	There is no need for the Ops team to reach out to application teams, as the Networking team will coordinate directly
 
 ⸻
 
-If you like, I can help you turn this into a reusable template for future subnet notifications — just say the word!
+Questions and Discussion Points for Ops
+
+👉 1. Intake Request Strategy
+Would you prefer to handle subnet deletions through:
+	•	one consolidated intake request per SDLC environment covering multiple subnets, or
+	•	separate intake requests for each subnet?
+
+👉 2. Dedicated Reclamation Day
+Can we dedicate one day of the week (e.g., every Wednesday) to process all subnet reclamation activities? This will help us streamline the process and build predictability into planning.
+
+👉 3. Lead Time Adjustments
+Since the lead time for CR approval is currently 7 days for production changes, can this be reviewed or optimized if we dedicate a specific day for this activity, to avoid unnecessary delays?
+
+👉 4. Batch Strategy
+We have currently identified around 230 unused subnets across SDLC environments.
+	•	We propose reclaiming these in batches of about 50 per week or per sprint to manage the workload.
+	•	Alternatively, would you suggest going all out in a single batch? Please share your preference.
+
+👉 5. Future Automation Goal
+Our future goal is to fully automate this process, including:
+	•	Subnet identification
+	•	PR creation
+	•	Intake request generation
+	•	CR creation
+	•	PR approval, merge, and apply
+We will collaborate with you to build this pipeline in a phased approach.
 
 ⸻
 
-Subject: [Important] New Process for Unused Subnet Reclamation – Starting This Sprint
+Your feedback on these points will help us build an effective and sustainable process. Please let us know your thoughts or if you would like to set up a discussion to align.
 
-⸻
-
-Hi All,
-
-As part of our network optimization and sustainability efforts, we are implementing a subnet reclamation process starting this sprint. This initiative is critical because IP address ranges are a limited resource, and we are currently experiencing shortages that affect our ability to provision new services and meet ongoing demands.
-
-⸻
-
-What will happen?
-	•	From this sprint onward, the Networking and Ops teams will review subnets that have not been used for more than 90 days.
-	•	You will receive a separate communication if any such subnets are identified under your projects.
-	•	These notifications will include:
-	•	Subnet name
-	•	Associated SDLC environment
-	•	Service project name
-	•	Planned deletion timeline
-
-⸻
-
-What you need to do:
-
-✅ Review the subnet details provided in those emails.
-✅ If you still need any of these subnets, please respond within 5 business days with a valid justification for retaining them.
-✅ If no response is received within that time frame, and no active resources are detected, we will assume the subnet is safe to delete and proceed with reclamation.
-
-⸻
-
-Why are we doing this?
-	•	The pool of available IP address ranges is limited and close to exhaustion.
-	•	By reclaiming unused subnets, we can free up IP capacity to fulfill current and future project needs, including critical deployments for GKE clusters, Composer, and AI Notebooks.
-	•	This process will help maintain a clean, efficient, and sustainable network environment.
-
-⸻
-
-We appreciate your support and cooperation to ensure this initiative is successful. Please reach out if you have any questions or would like to discuss this further.
-
-Thank you for working with us to keep our infrastructure healthy and future-ready.
+Thanks for your cooperation and support!
 
 Best regards,
 [Your Name]
@@ -100,6 +66,4 @@ Networking Team
 
 ⸻
 
-If you want, I can help you adapt this for a Confluence announcement or an internal newsletter as well — just say the word!
-
-
+If you’d like, I can also help you format this as a Confluence proposal or attach it to a project charter — just let me know!
