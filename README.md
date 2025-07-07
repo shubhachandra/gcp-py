@@ -1,82 +1,164 @@
-Absolutely — here’s a clear JIRA feature definition you can directly paste into a JIRA story or feature ticket, with milestones and a future automation plan included.
+Of course! Here’s a complete, detailed Confluence page draft you can copy-paste directly into your Confluence workspace. It is structured clearly with headings, tables, and actionable details.
 
 ⸻
 
-JIRA Feature Title:
-Subnet Reclamation Framework and Automation Roadmap
+🛰️ Subnet Reclamation Framework
+
+Purpose
+
+This page documents the Subnet Reclamation Framework to recover unused subnet IP ranges across SDLC environments. The objective is to maintain a sustainable, efficient, and future-proof IP address management process in response to growing IP shortages.
 
 ⸻
 
-Feature Description:
-Implement a subnet reclamation framework to identify, validate, and reclaim subnets unused for more than 90 days to optimize IP address usage across SDLC environments. The initiative will start with a semi-manual process involving Ops and Network teams, with a roadmap to full automation.
+Background
+	•	Our IP address pools are nearing exhaustion, impacting our ability to onboard new services such as GKE clusters, Composer, and AI Notebooks.
+	•	A recent audit identified 230 unused subnets across SDLC environments.
+	•	These subnets need to be reclaimed in a phased and controlled manner.
 
 ⸻
 
-Objectives:
-	•	Reclaim idle subnets to free up scarce IP address resources
-	•	Maintain a clean and efficient network environment
-	•	Reduce time to provision new workloads
-	•	Build a scalable framework to support future automation
+Objectives
+
+✅ Optimize and recover valuable IP address ranges
+✅ Support faster provisioning of future workloads
+✅ Maintain a clean and secure network environment
+✅ Build a foundation for future automation
 
 ⸻
 
-Scope & Process Steps:
+Process Overview
 
-✅ Phase 1 (Manual with Process Coordination):
-	•	Generate daily subnet usage reports (Grafana or equivalent)
-	•	Network team shortlists candidate subnets
-	•	Network team validates with application owners via email (5 business days SLA)
-	•	Network team raises an intake request after validation
-	•	Ops team creates the CR (change request) for subnet deletion
-	•	Network team merges and applies changes via Terraform
+Below is the detailed step-by-step process:
 
-✅ Phase 2 (Process Enhancements):
-	•	Establish a weekly subnet reclaim day (e.g., Wednesdays)
-	•	Agree on batch sizes (initially 50 per week)
-	•	Track and report reclaimed subnet counts per sprint
-
-✅ Phase 3 (Automation Roadmap):
-	•	Automate subnet usage reporting and validation
-	•	Automate intake request generation
-	•	Automate CR creation and PR workflow
-	•	Automate PR approval (where possible) and apply in Terraform
-	•	Provide dashboards with status tracking of reclaim progress
-	•	Implement audit logs for compliance
+1️⃣ Subnet Usage Report Generation
+	•	Daily subnet consumption reports generated from Grafana or equivalent
+	•	Highlight subnets with no resources attached for 90+ days
 
 ⸻
 
-Milestones:
+2️⃣ Candidate Subnet Shortlisting
+	•	Networking team reviews the report
+	•	Shortlists candidate subnets for potential reclamation
+
+⸻
+
+3️⃣ App Team Validation
+	•	Networking team directly contacts the application team
+	•	Provides subnet details:
+	•	Subnet name
+	•	IP range
+	•	SDLC environment
+	•	Service project
+	•	Days since last update
+	•	Planned deletion timeline
+	•	App team has 5 business days to respond with justification
+	•	If no response and no active workloads, proceed with reclamation
+
+⸻
+
+4️⃣ Delinking Subnet from Service Project
+
+Important prerequisite step before deletion:
+	•	The subnet must be delinked from its associated service project
+	•	This is done in the project provisioning repository, involving:
+	•	Update the repo
+	•	Commit and push changes
+	•	Raise a Pull Request (PR)
+	•	Raise an intake request
+	•	Ops team creates a CR (Change Request)
+	•	CR approved, merged, and applied
+	•	Only once delinked, proceed to subnet deletion
+
+Estimated time per subnet (for delinking + reclaim flow): ~1 hour 30 minutes
+
+⸻
+
+5️⃣ Subnet Reclamation (Delete)
+	•	Network team raises an intake request for subnet deletion after delinking
+	•	Ops team creates a CR for deletion of the subnet from Terraform
+	•	CR is approved, merged, and applied
+	•	Subnet is officially reclaimed
+
+⸻
+
+Roles & Responsibilities
+
+Team	Responsibilities
+Networking	Identify candidates, contact app teams, validate, raise intake requests
+Ops	Create CRs, approve/merge/apply changes
+App Teams	Respond to validation emails within 5 business days
+
+
+⸻
+
+Batching & Scheduling
+	•	Initial volume: ~230 unused subnets
+	•	Target: 15 subnets reclaimed per week (based on estimated processing effort)
+	•	Proposed: dedicate one day per week (e.g., Wednesdays) for subnet reclamation
+	•	CR lead times for production: currently 7 days
+	•	Suggest to discuss possible lead time adjustment for faster execution
+
+⸻
+
+Future Automation Vision
+
+Long-term, the goal is to fully automate this end-to-end process, including:
+
+✅ Automated subnet reporting
+✅ Automated validation with app owners
+✅ Automated delinking workflow from the repo
+✅ Automated PR generation and intake request
+✅ Automated CR creation, approval, and apply
+✅ Integrated dashboards for tracking status
+✅ Audit trail and rollback support
+
+⸻
+
+Milestones
 
 Milestone	Target Sprint
 Process design and stakeholder sign-off	Sprint X
-Initial pilot of 50 subnets	Sprint X+1
-Weekly reclaim cadence implemented	Sprint X+2
-Reporting dashboard created	Sprint X+3
+Pilot batch of 15 subnets	Sprint X+1
+Weekly cadence established	Sprint X+2
+Reporting dashboard creation	Sprint X+3
 Automation PoC planning	Sprint X+4
 Automation rollout	Sprint X+5 onward
 
 
 ⸻
 
-Acceptance Criteria:
+Questions for Ops Team
 
-✅ Subnet reclamation process is documented and signed off
-✅ Communication templates are approved and shared
-✅ Ops and Network teams aligned on intake/CR responsibilities
-✅ Intake and CR handling confirmed for at least one SDLC
-✅ Pilot reclaim of 50 subnets executed successfully
-✅ Automation PoC requirements defined and ready for backlog
+1️⃣ Should subnet deletion intake requests be:
+	•	one consolidated intake per SDLC
+	•	or multiple intake requests per subnet?
 
-⸻
+2️⃣ Can we dedicate one weekday (Wednesday) for all subnet reclamation?
 
-Future Automation Vision:
-	•	A self-service reclaim dashboard for subnet owners
-	•	Automated notifications with approval workflows
-	•	Integration with Terraform pipelines for end-to-end subnet removal
-	•	Policy-as-code rules to identify eligible subnets dynamically
-	•	Automated rollback (if required)
+3️⃣ Would you support adjusting lead time (currently 7 days for production) if we dedicate a specific day for these activities?
+
+4️⃣ Should we stick to 15 subnets per week or consider larger batch sizes?
 
 ⸻
 
-If you’d like, I can also help you break this down into JIRA stories and subtasks to feed into your backlog — just say yes and I’ll draft them!
+Next Steps
 
+✅ Gather Ops team feedback on above questions
+✅ Schedule a discussion meeting
+✅ Finalize the approach and stakeholder sign-off
+✅ Start pilot execution
+
+⸻
+
+Contacts
+	•	Networking Team: [name / email / Slack channel]
+	•	Ops Team: [name / email / Slack channel]
+	•	Project Owner: [name / email]
+
+⸻
+
+If you’d like, I can help you make this even more visually formatted for Confluence with tables, info panels, and status macros — just say:
+
+“Format for Confluence with macros”
+
+and I’ll adjust it for you!
