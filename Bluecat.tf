@@ -1,107 +1,55 @@
-resource "google_project_organization_policy" "allow_public_marketplace" {
-  project    = "your-project-id"
-  constraint = "constraints/commerceorggovernance.disablePublicMarketplace"
+variable "lookup_project_numbers" {
+  type = bool
+}
 
-  restore_policy {
-    default = true
+variable "service_project_id" {
+  type = string
+}
+
+variable "service_project_number" {
+  type = string
+}
+
+data "google_project" "service_project" {
+  count      = var.lookup_project_numbers ? 1 : 0
+  project_id = var.service_project_id
+}
+
+# Step 1: Derive the service project number
+locals {
+  service_project_number = var.lookup_project_numbers ? data.google_project.service_project[0].number : var.service_project_number
+
+  # Step 2: Define all possible service agent mappings
+  all_apis = {
+    "container.googleapis.com"         = format("service-%s@container-engine-robot.iam.gserviceaccount.com",        local.service_project_number)
+    "dataproc.googleapis.com"          = format("service-%s@dataproc-accounts.iam.gserviceaccount.com",             local.service_project_number)
+    "dataflow.googleapis.com"          = format("service-%s@dataflow-service-producer-prod.iam.gserviceaccount.com",local.service_project_number)
+    "datafusion.googleapis.com"        = format("service-%s@gcp-sa-datafusion.iam.gserviceaccount.com",             local.service_project_number)
+    "composer.googleapis.com"          = format("service-%s@cloudcomposer-accounts.iam.gserviceaccount.com",        local.service_project_number)
+    "vpcaccess.googleapis.com"         = format("service-%s@gcp-sa-vpcaccess.iam.gserviceaccount.com",              local.service_project_number)
+    "datastream.googleapis.com"        = format("service-%s@gcp-sa-datastream.iam.gserviceaccount.com",             local.service_project_number)
+    "notebooks.googleapis.com"         = format("service-%s@gcp-sa-notebooks.iam.gserviceaccount.com",              local.service_project_number)
+    "networkconnectivity.googleapis.com" = format("service-%s@gcp-sa-networkconnectivity.iam.gserviceaccount.com",  local.service_project_number)
   }
 }
 
+# Step 3: Lookup each service account (if it exists)
+data "google_service_account" "agents" {
+  for_each   = local.all_apis
+  account_id = each.value
+  project    = var.service_project_id
+}
 
-resource "google_project_organization_policy" "allow_specific_marketplace_services" {
-  project    = "your-project-id"
-  constraint = "constraints/commerceorggovernance.marketplaceServices"
-
-  list_policy {
-    allow {
-      values = [
-        "marketplace.gcr.io"
-      ]
-    }
-    suggested_value = "marketplace.gcr.io"
+# Step 4: Filter only the APIs with existing service agents
+locals {
+  apis = {
+    for api, sa_email in local.all_apis :
+    api => sa_email
+    if try(data.google_service_account.agents[api].email, null) != null
   }
 }
 
-
-provider "google" {
-  project = "your-project-id"
-  region  = "us-central1"
-}
-
-# Allow external IPs
-resource "google_project_organization_policy" "ext_ip" {
-  project    = "your-project-id"
-  constraint = "constraints/compute.vmExternalIpAccess"
-
-  restore_policy {
-    default = true
-  }
-}
-
-# Allow public image projects (e.g., BlueCat, Bitnami, etc.)
-resource "google_project_organization_policy" "trusted_images" {
-  project    = "your-project-id"
-  constraint = "constraints/compute.trustedImageProjects"
-
-  list_policy {
-    allow {
-      values = [
-        "projects/bluecatnetworks-public",
-        "projects/bitnami-launchpad"
-        # Add more image projects as needed
-      ]
-    }
-  }
-}
-
-# Allow enabling required services
-resource "google_project_organization_policy" "allow_services" {
-  project    = "your-project-id"
-  constraint = "constraints/serviceuser.services"
-
-  restore_policy {
-    default = true
-  }
-}
-
-# Allow external load balancers
-resource "google_project_organization_policy" "load_balancer" {
-  project    = "your-project-id"
-  constraint = "constraints/compute.restrictLoadBalancerCreationForTypes"
-
-  list_policy {
-    allow {
-      values = ["EXTERNAL"]
-    }
-  }
-}
-
-# Allow IP forwarding
-resource "google_project_organization_policy" "ip_forwarding" {
-  project    = "your-project-id"
-  constraint = "constraints/compute.vmCanIpForward"
-
-  restore_policy {
-    default = true
-  }
-}
-
-# Allow vendor IAM domains
-resource "google_project_organization_policy" "iam_domains" {
-  project    = "your-project-id"
-  constraint = "constraints/iam.allowedPolicyMemberDomains"
-
-  restore_policy {
-    default = true
-  }
-}
-
-# Allow marketplace procurement (BYOL/Billing-enabled)
-resource "google_project_organization_policy" "marketplace" {
-  project    = "your-project-id"
-  constraint = "constraints/cloudcommerceprocurement.Purchasing"
-
-  restore_policy {
-    default = true
-  }
+# Optional: Output to verify
+output "filtered_existing_apis" {
+  value = local.apis
 }
