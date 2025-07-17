@@ -1,39 +1,86 @@
-Thanks, Shubh! Here’s the updated Point 2, rewritten for clarity and integrated into the full structure:
+Certainly, Shubh! Here’s the updated Confluence page with the open question removed, and the answer integrated into Point 4 — including a clear explanation of the action taken: using a custom module to add service agents to the group profile.
 
 ⸻
 
-Clarification on Shared VPC Host Projects and IAM Bindings
+🧾 IAM Binding Strategy for Shared VPC Host Projects (Post Project Factory v4.2.2)
 
-Point 1:
-The statement “Shared VPC host projects have principals with access to all subnets” is outdated.
-	•	Starting from Project Factory version 4.2.2, this was addressed during the policy binding changes.
-	•	We no longer assign the compute.networkUser role at the host VPC level.
-	•	Instead, we provide subnet-level IAM access specifically for shared subnets, using Google Groups:
-	•	A group is created in each networking spoke repository.
-	•	Subnet-level IAM roles are assigned to these groups.
-	•	Service agents are automatically added to these groups by Project Factory v4.2.2+.
+📌 Overview
 
-Point 2:
-The statement “219 service projects have access to all subnets” is no longer true.
-	•	We now use four shared dedicated subnets located in:
-	•	us-central1, us-east1, us-east4, and us-south1.
-	•	These subnets are managed through Google-native groups, with subnet IAM roles defined in the networking repo.
-	•	When a new service project is created (e.g., hosting GKE or Composer):
-	•	It is assigned its own dedicated subnet from the predefined regional subnets.
-	•	The project’s service agent receives IAM binding only to that specific subnet, not to all subnets.
-
-Point 3:
-The statement “821 principals with compute.networkUser on host projects (acting as service project admins)” is outdated.
-	•	In the updated model, no principal receives compute.networkUser at the host project level.
-	•	IAM roles are applied only at the subnet level, via group-based bindings to maintain least privilege.
-
-Point 4:
-There are approximately 7,538 subnet-level compute.networkUser bindings, implemented via Google Group membership.
-	•	These groups have access only to shared subnets, not to application-specific dedicated subnets.
-	•	The key point for discussion is:
-“Why do service projects require access to shared subnets?”
-— which should be clearly documented and justified.
+This document outlines the updated IAM binding strategy applied to Shared VPC host and service projects starting from Project Factory version 4.2.2 and above. These changes address legacy access concerns, enforce least privilege, and introduce a Google-native group-based subnet access model.
 
 ⸻
 
-Let me know if you’d like this formatted as a formal comment, email, or attached to a review note.
+✅ Key Changes & Clarifications
+
+⸻
+
+1. Host Project Access — No More compute.networkUser at Host Level
+
+Previous Behavior:
+Shared VPC host projects had broad compute.networkUser bindings at the project level, granting access to all subnets.
+
+Current Behavior (Post v4.2.2):
+	•	We no longer assign compute.networkUser at the host VPC level.
+	•	Subnet-level IAM roles are used instead.
+	•	Google-native groups are created in each networking spoke repository and granted access to specific shared subnets.
+	•	During provisioning, Project Factory v4.2.2+ automatically adds the required service agents to these groups based on the project’s needs.
+
+⸻
+
+2. Subnet Access in Service Projects — Region-Specific and Strictly Scoped
+
+Previous Behavior:
+All shared subnets were passed using a common locals block, giving service projects access to all subnets by default.
+
+Current Behavior:
+	•	We now maintain four dedicated shared subnets in:
+	•	us-central1, us-east1, us-east4, and us-south1
+	•	Subnet IAM roles are defined in the networking repo, and mapped to Google-native groups.
+	•	Instead of using locals, we define dedicated variables per project in the provisioning code.
+	•	When a new service project is created (e.g., for GKE or Composer):
+	•	It uses a region-specific subnet, explicitly passed in code.
+	•	Only the assigned subnet’s IAM role is granted to the project’s service agent — not all subnets.
+
+⸻
+
+3. Deprecated Use of Host Project IAM Bindings for Principals
+
+Previous Behavior:
+About 821 principals were granted the compute.networkUser role on Shared VPC host projects, acting as de facto service project admins.
+
+Current Behavior:
+	•	This model has been deprecated.
+	•	No direct IAM bindings exist at the host project level.
+	•	IAM roles are applied only at the subnet level, via group-based bindings, enforcing better separation of duties and scope.
+
+⸻
+
+4. Subnet-Level IAM Bindings — Group-Based (~7,538 Bindings)
+	•	We currently maintain approximately 7,538 subnet-level compute.networkUser IAM bindings.
+	•	These are enforced using Google-native groups, with each group mapped to a specific shared subnet.
+	•	These groups are:
+	•	Populated with required service agents during project provisioning.
+	•	Scoped only to shared subnets, not application-specific or dedicated subnets.
+
+Implementation Detail:
+To support this model, we have implemented a custom Terraform module that:
+	•	Detects active service APIs in the project (e.g., Composer, Dataflow, Dataproc, Serverless VPC).
+	•	Identifies the corresponding Google-managed service agents.
+	•	Automatically adds those service agents to the appropriate group profile that has subnet-level IAM permissions.
+
+This ensures that:
+	•	Only required service agents have access to specific subnets.
+	•	Access is tightly scoped to subnet boundaries.
+	•	IAM policies remain minimal, secure, and audit-friendly.
+
+⸻
+
+📌 References
+	•	Project Factory v4.2.2 Release Notes (Insert link)
+	•	Networking IAM Configuration Template
+	•	Subnet Allocation Policy
+	•	GKE/Composer Onboarding Guide
+
+⸻
+
+Let me know if you want this version exported to PDF, Markdown, or Word, or formatted in Confluence Storage Format for direct import.
