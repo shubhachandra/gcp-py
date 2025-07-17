@@ -1,110 +1,39 @@
-Here’s a clearer and more professional version of your message:
+Thanks, Shubh! Here’s the updated Point 2, rewritten for clarity and integrated into the full structure:
 
----
+⸻
 
-**Hi Hema,**
+Clarification on Shared VPC Host Projects and IAM Bindings
 
-Just a small correction: when we raise an intake request, we actually create a Jira ticket in the **Ops board**—it’s not a **CR**. The Ops team reviews the ticket and requests us to fill in all the required details as per their format/template. Once evaluated, they provide a **CR number** and a **scheduled date** for the change.
+Point 1:
+The statement “Shared VPC host projects have principals with access to all subnets” is outdated.
+	•	Starting from Project Factory version 4.2.2, this was addressed during the policy binding changes.
+	•	We no longer assign the compute.networkUser role at the host VPC level.
+	•	Instead, we provide subnet-level IAM access specifically for shared subnets, using Google Groups:
+	•	A group is created in each networking spoke repository.
+	•	Subnet-level IAM roles are assigned to these groups.
+	•	Service agents are automatically added to these groups by Project Factory v4.2.2+.
 
-The CR window typically remains open for 1 hour, during which they handle the approval, merge, and apply processes.
+Point 2:
+The statement “219 service projects have access to all subnets” is no longer true.
+	•	We now use four shared dedicated subnets located in:
+	•	us-central1, us-east1, us-east4, and us-south1.
+	•	These subnets are managed through Google-native groups, with subnet IAM roles defined in the networking repo.
+	•	When a new service project is created (e.g., hosting GKE or Composer):
+	•	It is assigned its own dedicated subnet from the predefined regional subnets.
+	•	The project’s service agent receives IAM binding only to that specific subnet, not to all subnets.
 
-So, we should phrase it as: "**An automated intake request has been created, and corresponding Jira tickets exist on the Ops board.**" We need to follow up with them for the CR number, CR date, and ensure all fields in the intake request are filled accurately.
+Point 3:
+The statement “821 principals with compute.networkUser on host projects (acting as service project admins)” is outdated.
+	•	In the updated model, no principal receives compute.networkUser at the host project level.
+	•	IAM roles are applied only at the subnet level, via group-based bindings to maintain least privilege.
 
----
+Point 4:
+There are approximately 7,538 subnet-level compute.networkUser bindings, implemented via Google Group membership.
+	•	These groups have access only to shared subnets, not to application-specific dedicated subnets.
+	•	The key point for discussion is:
+“Why do service projects require access to shared subnets?”
+— which should be clearly documented and justified.
 
-Let me know if you'd like this shortened or tailored for email.
+⸻
 
-Here is a **Jira Change Description Template** that cleanly addresses each of the questions you listed. You can copy-paste this into your Jira issue under the **Description** field.
-
----
-
-### 🔧 **Change Description Template – Subnet Reclamation**
-
----
-
-**1. Description:**
-Reclaiming unused subnets (no attached resources for 90+ days) across sandbox, nonprod, and production GCP projects. This includes delinking subnets from service projects and removing them from Terraform state. Subnet details (name, IP range, SDLC, app ID) have been validated with app teams prior to deletion.
-
----
-
-**2. Change Justification:**
-GCP IP address pools are nearing exhaustion. Reclaiming unused subnets is essential to recover space, reduce clutter, and support new service provisioning (e.g., GKE, Composer, AI Notebooks).
-
----
-
-**3. Benefits & Impact If Not Implemented:**
-
-* **Benefits:** Frees up IP ranges, avoids quota exhaustion, enables faster provisioning, reduces Terraform state complexity.
-* **Impact If Not Done:** Resource provisioning delays, subnet quota issues, unmanaged network bloat, and security risks from stale subnets.
-
----
-
-**4. Known Defects:**
-No code defects are associated with this change.
-
----
-
-**5. Monitoring/Alerting Adjustments:**
-No monitoring/alerting changes are required as subnets are idle and not in use.
-
----
-
-**6. Blast Radius (Potential Impact):**
-Minimal. Only stale subnets with no resources are being removed. App teams have validated all deletions. Any prod subnets reclaimed have confirmed sign-off.
-
----
-
-**7. Post-Change Validation Plan:**
-
-* Confirm subnet removal from GCP console and Terraform state
-* Verify updated project provisioning repo
-* Confirm no impact on active services (via monitoring)
-* Update IP allocation tracker
-
----
-
-**8. Communications Plan:**
-
-* App teams notified via email (with 5 business days to respond)
-* Approved subnet deletions logged and shared with Ops/NetEng
-* No customer/business-facing impact expected
-
----
-
-**9. Implementation Plan (Steps):**
-
-1. Identify and validate subnets
-2. Delink subnets from service project (project provisioning repo)
-3. Raise and merge PR in networking repo
-4. Raise CR and apply change post-approval
-5. Update subnet/IP sheet post-implementation
-
----
-
-**10. Backout Plan (High-Level):**
-If required, subnet can be re-provisioned via intake request. No irreversible infra changes. Detailed rollback documented in network team wiki: `LINK_TO_BACKOUT_DOC`.
-
----
-
-**11. Rollback Limitations:**
-No major limitations. Subnets are safely reprovisionable as needed.
-
----
-
-**12. Fail-Forward Deployment:**
-No. This change is not designed to fail forward. Full rollback is possible.
-
----
-
-### 📦 **Components (Add all applicable):**
-
-* GCP Subnets
-* Terraform Networking
-* Project Provisioning Repository
-* Intake/CR Workflow
-* App Team Coordination
-* IP Management
-
----
-
-Let me know if you'd like this exported as a Jira-compatible `.txt` or markdown template.
+Let me know if you’d like this formatted as a formal comment, email, or attached to a review note.
