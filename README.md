@@ -1,49 +1,105 @@
-Here’s a well-structured JIRA story for your patch solution to suppress Prisma alerts (you can title it as Patch Solution 1 – Remove Unnecessary Viewer Role from Notebook Instances):
+Here is a JIRA Description Template tailored for your Prisma alert mitigation (Patch Solution 1) change request. It follows your provided questions and can be directly pasted into the JIRA “Description” field for clarity and completeness:
 
 ⸻
 
-Story Title:
-
-Patch Solution 1 – Remove Unnecessary Viewer Role from Notebook Instances to Mitigate Prisma Alerts
+🔧 Change Description Template – Patch Solution 1: Remove Unnecessary Notebook Viewer Role
 
 ⸻
 
-Story Description:
+1. Description:
 
-Prisma alerts have been observed for notebook instances across environments (sandbox, non-prod, and prod-ad-ent) due to service accounts having an unnecessary roles/notebooks.viewer IAM role. These accounts already have the roles/notebooks.runner role, which includes all required permissions.
-
-This JIRA story aims to implement a patch solution by removing the redundant role and verifying the resolution with the Prisma team.
-
-⸻
-
-Scope:
-	•	Identify affected notebook instances with the roles/notebooks.viewer role:
-	•	Notebooks in prod-ad-ent: Instances ending with 737c, abc9, and 89e7
-	•	Similar patterns observed in sandbox and non-prod
-	•	Remove roles/notebooks.viewer IAM role from the attached service accounts
+This change involves removing the roles/notebooks.viewer IAM role from service accounts attached to specific Vertex AI notebook instances in sandbox, non-prod, and prod environments. These service accounts already possess roles/notebooks.runner, which includes the necessary permissions provided by the viewer role, making the viewer role redundant.
+Target instances include those ending with 737c, abc9, and 89e7 in prod-ad-ent, and similarly configured notebooks in sandbox and non-prod.
 
 ⸻
 
-Tasks:
-	1.	✅ Identify all affected notebook instances across environments
-	2.	🛠 Create a PR to remove roles/notebooks.viewer from the identified service accounts
-	3.	🧪 Apply changes in sandbox environment
-	4.	🤝 Coordinate with Prisma team to validate if alerts are resolved post-change
-	5.	📝 Submit intake request and CR to proceed with non-prod and production:
-	•	Sandbox/Non-prod: Immediate resolution
-	•	Production: Minimum 2-day lead time
-	6.	🚀 Apply changes to non-prod and prod after validation
-	7.	📘 Document the resolution and lessons learned
+2. Change Justification:
+
+The Prisma alerts are being triggered due to unnecessary elevated IAM permissions. The removal of the redundant role aligns with the principle of least privilege and ensures IAM compliance.
 
 ⸻
 
-Acceptance Criteria:
-	•	roles/notebooks.viewer removed from all identified service accounts
-	•	Prisma alerts no longer triggered for the impacted notebook instances
-	•	Verified with Prisma team post-change in sandbox
-	•	Changes successfully rolled out to non-prod and prod
-	•	CR records attached and deployment timelines followed
+3. Benefits and Impact if Not Implemented:
+
+Benefits:
+	•	Eliminates unnecessary IAM permissions
+	•	Reduces Prisma security alert noise
+	•	Improves compliance with internal IAM best practices
+
+Impact if not implemented:
+	•	Continuous Prisma alerts for non-compliant permissions
+	•	Increased operational overhead in managing false positives
+	•	Security posture deviation from least privilege principle
 
 ⸻
 
-Let me know if you’d like a sub-task breakdown or if you’re using a specific JIRA template (like EPIC > Story > Task).
+4. Code Defects:
+
+No code changes or defects are involved. This change is limited to IAM policy adjustments only.
+
+⸻
+
+5. Alerting and Monitoring Adjustments:
+
+No changes to application-level alerting/monitoring. Prisma alert status will be used to validate the effectiveness of the IAM role removal.
+
+⸻
+
+6. Blast Radius:
+
+Minimal. The changes only affect notebook instances’ service accounts. Since roles/notebooks.runner remains intact, notebook functionality will not be impacted.
+
+⸻
+
+7. Post-Change Validation and Checkout Plan:
+	•	Post-change validation in sandbox with Prisma team to ensure alert suppression
+	•	Verify notebook access and usability post IAM role removal
+	•	Proceed with non-prod and prod changes only after successful validation
+
+⸻
+
+8. Communications:
+	•	Notify GCP IAM governance team, Prisma monitoring team
+	•	Communicate change window and status via Slack/Teams channels used by Operations and Command Centers
+	•	Include summary update in the daily change call
+
+⸻
+
+9. High-Level Implementation Plan:
+	1.	Identify service accounts with redundant roles
+	2.	Create and approve PR to remove roles/notebooks.viewer
+	3.	Apply changes to sandbox
+	4.	Validate with Prisma team
+	5.	Raise CR and apply changes to non-prod
+	6.	Apply to prod with 2-day lead time post-approval
+
+⸻
+
+10. Backout Plan:
+
+If any issues arise, reassign the roles/notebooks.viewer role to the impacted service accounts via a rollback script or reapply the original IAM bindings.
+Reference rollback steps: [Confluence/Runbook link or Git repo]
+
+⸻
+
+11. Rollback Constraints:
+
+No known constraints. IAM bindings can be re-applied without downtime.
+
+⸻
+
+12. Fail-Forward:
+
+No. This is not a fail-forward change. The system can be safely rolled back without impact.
+
+⸻
+
+📦 Components Involved:
+	•	Vertex AI Notebook Instances
+	•	GCP IAM Policies
+	•	Prisma Security Monitoring
+	•	Change Management System (CR intake)
+
+⸻
+
+Let me know if you’d like this formatted into a JIRA Story + linked Sub-Tasks format or need a markdown/confluence version.
