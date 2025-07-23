@@ -1,20 +1,39 @@
-Here’s a clear and professional version of your message:
+In Terraform, lists (or any values) cannot be used reliably if they are unknown during the plan phase because Terraform must evaluate all expressions, conditions, and loops at plan time, not at apply time. Here’s a clear explanation of why lists cannot be unknown:
 
 ⸻
 
-Subject: Task Rescheduled Due to Prod Change Restrictions
+🔍 Why Lists Cannot Be Unknown in Terraform
 
-Hi [Recipient’s Name],
+Terraform evaluates all expressions during the plan phase to generate an execution plan. If a list is marked as unknown, Terraform does not know its contents or even its length at that time. This causes problems in two key scenarios:
 
-This task cannot be completed today and has been moved to tomorrow. As per the EMEA/APAC cautionary period guidelines, no production changes should be scheduled before 9 AM EST on Mondays.
+1. Using List Values in Conditions
 
-It appears the original schedule was set before 9 AM, which will lead to the change being rejected. Hence, the team will need to reschedule it for tomorrow.
+count = local.my_list[0] == "abc" ? 1 : 0
 
-Please let me know if you have any questions.
+If local.my_list is unknown, Terraform cannot determine whether local.my_list[0] == "abc" is true or false. This leads to a plan-time error because the count value becomes ambiguous.
 
-Best regards,
-[Your Name]
+2. Using List in Loops (for, count, etc.)
+
+[for item in local.my_list : item.name]
+
+Terraform must know the list length to unroll the loop. If the list is unknown, it can’t iterate over it — resulting in an error or invalid plan.
 
 ⸻
 
-Let me know if you want it to be more formal or addressed to a specific team.
+✅ Why This Happens
+
+Terraform’s execution model is declarative and static:
+	•	It must determine all resources and their dependencies before applying any changes.
+	•	It does not support dynamic code execution at apply time, which means all variables used in logic or resource meta-arguments (count, for_each, etc.) must be fully known at plan time.
+
+⸻
+
+✅ Best Practice
+	•	Avoid constructing lists based on values from data blocks unless those data outputs are guaranteed to be known at plan time.
+	•	Consider using count or for_each conditionally outside of unknown-dependent logic.
+
+⸻
+
+If you’re generating a list based on the existence of a service account (which is fetched via data.google_service_account), that data source may not return a known result at plan time (especially if the service account does not yet exist or depends on another resource).
+
+Let me know if you want a Terraform-safe workaround.
