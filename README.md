@@ -1,39 +1,28 @@
-In Terraform, lists (or any values) cannot be used reliably if they are unknown during the plan phase because Terraform must evaluate all expressions, conditions, and loops at plan time, not at apply time. Here’s a clear explanation of why lists cannot be unknown:
+Got it! Here’s the revised version including your new point about involving the Prisma team:
 
 ⸻
 
-🔍 Why Lists Cannot Be Unknown in Terraform
+Issue Summary:
 
-Terraform evaluates all expressions during the plan phase to generate an execution plan. If a list is marked as unknown, Terraform does not know its contents or even its length at that time. This causes problems in two key scenarios:
+Prisma alerts are being triggered for three notebook instances in the prod-ad-ent environment — instances ending with 737c, abc9, and 89e7. These instances have the Notebook Viewer role assigned to their service accounts, which is inconsistent with other notebook instances across environments.
 
-1. Using List Values in Conditions
+Similar issues have also been observed in non-prod and sandbox environments.
 
-count = local.my_list[0] == "abc" ? 1 : 0
+Root Cause:
 
-If local.my_list is unknown, Terraform cannot determine whether local.my_list[0] == "abc" is true or false. This leads to a plan-time error because the count value becomes ambiguous.
+The service accounts attached to these notebook instances have an additional roles/notebooks.viewer role. This is redundant because the service accounts already have the Notebook Runner role (roles/notebooks.runner), which includes all the necessary permissions from the Viewer role.
 
-2. Using List in Loops (for, count, etc.)
+Proposed Solution:
 
-[for item in local.my_list : item.name]
+Remove the roles/notebooks.viewer role from the affected service accounts. This change will not impact notebook operations, as the roles/notebooks.runner role provides the required permissions.
 
-Terraform must know the list length to unroll the loop. If the list is unknown, it can’t iterate over it — resulting in an error or invalid plan.
-
-⸻
-
-✅ Why This Happens
-
-Terraform’s execution model is declarative and static:
-	•	It must determine all resources and their dependencies before applying any changes.
-	•	It does not support dynamic code execution at apply time, which means all variables used in logic or resource meta-arguments (count, for_each, etc.) must be fully known at plan time.
+Next Steps:
+	1.	Create a PR to remove the roles/notebooks.viewer role from the affected service accounts.
+	2.	Submit an intake request along with a change record (CR) for applying the changes:
+	•	Sandbox and Non-prod: Request immediate resolution.
+	•	Production: Plan changes with a 2-day lead time.
+	3.	After applying the changes in sandbox, we’ll need support from the Prisma team to validate if the alerts have been resolved. This will help confirm we are on the right resolution track before proceeding to non-prod and production.
 
 ⸻
 
-✅ Best Practice
-	•	Avoid constructing lists based on values from data blocks unless those data outputs are guaranteed to be known at plan time.
-	•	Consider using count or for_each conditionally outside of unknown-dependent logic.
-
-⸻
-
-If you’re generating a list based on the existence of a service account (which is fetched via data.google_service_account), that data source may not return a known result at plan time (especially if the service account does not yet exist or depends on another resource).
-
-Let me know if you want a Terraform-safe workaround.
+Let me know if you’d like this in email format or confluence-ready text.
