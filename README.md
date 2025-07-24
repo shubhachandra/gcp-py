@@ -1,4 +1,12 @@
-Thanks for the detailed context, Shubh. Based on your role, experience, and reporting structure, you’re in a strong position to shape your next 1–2 year roadmap. Since you’re functioning as a Lead Software Engineer focused on GCP networking, reporting into a cloud-heavy org structure, here’s a strategic roadmap and career goal suggestions tailored to your current position and aspirations.
+Here’s an updated version with your input included:
+
+⸻
+
+The subnet reclamation process has officially taken flight! We’ve connected with 11 application IDs so far and received approvals to reclaim 15 subnets. We’ve also raised change requests (CRs) for a few of them. Our automation is in place — scripts are now generating pull requests and intake requests across both the networking spoke repositories and the project provisioning repository, streamlining the entire workflow.
+
+⸻
+
+Let me know if you’d like to highlight any specific teams or contributions.Thanks for the detailed context, Shubh. Based on your role, experience, and reporting structure, you’re in a strong position to shape your next 1–2 year roadmap. Since you’re functioning as a Lead Software Engineer focused on GCP networking, reporting into a cloud-heavy org structure, here’s a strategic roadmap and career goal suggestions tailored to your current position and aspirations.
 
 ⸻
 
