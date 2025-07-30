@@ -1,92 +1,124 @@
-Here’s the Jira change description template filled out based on your Palo Alto network implementation in GCP and your provisioning repo:
+Here's a structured Jira description template to request creation of **3 repositories and 3 workspaces** in **AD-ENT** for vendor-neutral firewall infrastructure management and deployment (currently targeting Palo Alto), answering each of the required questions:
 
 ---
 
-### **Change Description**
+### **Jira Title**
 
-**1. Description:**
-This change provisions a new GCP folder and two service projects to support the implementation of Palo Alto firewall VMs. The service projects will be attached to an existing core host project as Shared VPC service projects. Multiple core subnets will be shared with these new service projects. The provisioning is handled via an automated Terraform-based project provisioning repository.
+**Create 3 Git Repositories and Workspaces for Firewall Infrastructure Projects in AD-ENT**
 
-**2. Change Justification:**
-This setup is required to deploy Palo Alto VM-Series firewalls in a dedicated, isolated environment while still maintaining connectivity with the core network via Shared VPC. Creating separate service projects ensures modular deployment, least privilege access control, and operational separation.
+---
 
-**3. Benefits and Impact if Not Implemented:**
+### **Change Description:**
 
-* **Benefits:**
+#### 1. **Description:**
 
-  * Enables secure and scalable firewall deployment
-  * Supports centralized firewalling with distributed service projects
-  * Ensures adherence to network segmentation and compliance requirements
-* **Impact if Not Implemented:**
+We propose to create the following 3 repositories and their corresponding workspaces in the AD-ENT organization:
 
-  * Delays Palo Alto firewall deployment in GCP
-  * Security posture may remain weak due to lack of centralized firewall
-  * Inability to route traffic through required inspection points
+* **Repo & Workspace 1**: `firewall-vm-deployment` – for VM-based firewall deployment configurations.
+* **Repo & Workspace 2**: `firewall-infra-resources` – for general infrastructure resource provisioning related to firewall deployments.
+* **Repo & Workspace 3**: `firewall-security-appliance` (Workspace: `firewall-security-management`) – for firewall security policies, shared modules, and appliance configuration management.
 
-**4. Known Defects and Sign-off:**
-No known defects in the provisioning code. The Terraform code has been peer-reviewed and tested in a lower environment.
+These repositories will enable modular and environment-specific deployments and support automation pipelines for provisioning and configuration. While the current use case involves Palo Alto firewalls, the design is vendor-neutral for future extensibility.
 
-**5. Alerting and Monitoring Adjustments:**
-No immediate monitoring changes as this phase involves project and subnet provisioning only. Alerts and logs related to firewall VMs will be configured in subsequent phases.
+---
 
-**6. Blast Radius if Change Fails:**
+#### 2. **Change Justification:**
 
-* Scope is limited to a new folder and two new service projects.
-* Shared VPC host project may experience IAM binding or subnet-sharing issues if the change misconfigures roles.
-* No existing production resources are directly impacted.
+The existing firewall-related infrastructure components are spread across multiple repositories without a clear separation of deployment, infra, and security policy logic. This initiative aims to organize the codebase, align with IaC best practices, and enable clean pipelines for each concern area.
 
-**7. Post-change Validation & Checkout Plan:**
+Additionally, Palo Alto has recently become the focal point of firewall deployment; however, by using abstracted modules, we intend to remain vendor-agnostic.
 
-* Validate the creation of the folder and both service projects
-* Confirm the service projects are attached to the Shared VPC host
-* Ensure intended subnets are correctly shared
-* Verify IAM roles are assigned properly for deployment and network access
-* Run a dry-run of Palo Alto provisioning to confirm pre-requisites
+---
 
-**8. Communications to Business, Operations, and Command Centers:**
+#### 3. **Benefits and Impact if Not Implemented:**
 
-* Email summary and Slack notification will be sent post-deployment
-* Documented in weekly status update to Network Engineering team
-* No customer-facing communication required for this backend setup
+**Benefits:**
 
-**9. High-level Implementation Steps:**
+* Improved CI/CD pipeline manageability.
+* Modular repository structure simplifies ownership, auditing, and scaling.
+* Enables vendor-neutral policy management.
 
-1. Trigger Terraform pipeline from provisioning repo
-2. Create folder under specified parent
-3. Create two service projects under the new folder
-4. Attach each project to the Shared VPC host
-5. Share required subnets with each service project
-6. Apply IAM bindings
-7. Perform validation steps
+**Impact if not implemented:**
 
-**10. Backout Plan (Non-technical):**
+* Code complexity and risk of misconfiguration.
+* Delay in automation and deployment of firewall appliances.
+* Lack of clear separation between security management and VM deployment.
 
-* Manually delete the service projects and folder via gcloud or GCP Console
-* Remove any VPC attachments or IAM bindings
-* Terraform state will be preserved for cleanup
-* Reference: Backout steps in provisioning repo under `docs/backout.md`
+---
 
-**11. Rollback Limitations:**
+#### 4. **Known Defects in Code Deployment:**
 
-* Once projects are created, they cannot be renamed (only deleted)
-* IAM bindings can be reverted
-* Subnet sharing can be removed
-* No irreversible changes expected in this phase
+No known defects are present at the time of repository and workspace creation. The repositories will be initialized with baseline `README.md` files and empty Terraform module structures. Further commits will follow a standard PR review process.
 
-**12. Fail-forward Deployment:**
-No, this is not a fail-forward deployment. Full rollback is possible by removing the created resources.
+---
+
+#### 5. **Alerting and Monitoring Adjustments:**
+
+No immediate alerting or monitoring changes as this is an initial repository and workspace creation. However, pipeline-level alerts will be configured once GitOps workflows are defined and integrated.
+
+---
+
+#### 6. **Blast Radius (Client or System Impact if Failed):**
+
+As this change only involves creation of new repositories and workspaces with no immediate deployment, there is **no impact** on any production systems or clients. This is a preparatory action.
+
+---
+
+#### 7. **Post-Change Validation Plan:**
+
+* Verify successful creation of repositories and workspaces in AD-ENT.
+* Validate appropriate permissions and branching policies.
+* Confirm workspace integration with Terraform Cloud backend (if applicable).
+* Conduct initial dummy plan/test to ensure the workspace is operational.
+
+---
+
+#### 8. **Communication Plan:**
+
+* Notify DevOps team and Infra-as-Code (IaC) stakeholders post repository and workspace creation.
+* Update Confluence documentation with repository structure and usage guidelines.
+* Notify Network and Security Operations teams to align future contributions.
+
+---
+
+#### 9. **High-Level Implementation Plan:**
+
+1. Create 3 repositories under the AD-ENT GitHub organization.
+2. Create corresponding Terraform Cloud workspaces.
+3. Apply repository-level access policies and branch protections.
+4. Add `README.md` and `.gitignore` files to initialize repositories.
+5. Configure baseline `main.tf` files and backend configurations.
+6. Validate all actions with project leads.
+
+---
+
+#### 10. **Backout Process (High-Level):**
+
+Repositories and workspaces can be archived or deleted from the UI or CLI if required. No code or environment changes are involved.
+Detailed GitHub and Terraform Cloud backout documentation is maintained under \[Confluence → Repo Management → Archive/Delete Process].
+
+---
+
+#### 11. **Rollback Limitations:**
+
+No limitations as no production systems are affected. Rollback simply involves deleting the created repositories and workspaces.
+
+---
+
+#### 12. **Fail-Forward Deployment:**
+
+No. This is not a fail-forward deployment. Change is incremental and reversible at each step.
 
 ---
 
 ### **Components:**
 
-* Terraform Project Provisioning Repo
-* GCP Organization and Folders
-* Shared VPC (Core Host Project)
-* GCP IAM
-* Google Cloud Networking
-* Palo Alto Deployment (future dependent component)
+* GitHub: AD-ENT Organization
+* Terraform Cloud: Workspace Configuration
+* Firewall Automation
+* Network Infrastructure
+* Security Policy Management
 
 ---
 
-Let me know if you'd like me to include project names, folder ID, or subnet ranges — I can refine this further for submission.
+Let me know if you'd like a Confluence version, email summary, or if you want to assign this to a particular project or epic.
