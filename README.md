@@ -1,156 +1,69 @@
-Here’s a comprehensive design document for your **Homegrown IPAM Tool**, including the **functional requirements**, **database design**, and **workflow explanations**:
+Great idea, Shubh. Here’s an **enhanced version** of your IPAM tool design doc with a **project task tracker** that includes deliverables, responsible parties, and testing phases.
 
 ---
 
-## ✅ IPAM Tool – Design Document
+## ✅ IPAM Tool – Full Design + Project Tracker
 
-### 🔹 Purpose
+### 📌 Recap: Modules Covered
 
-To manage, allocate, and track IP subnets within predefined ranges based on region, SDLC environment, and CIDR sizes.
-
----
-
-## 📦 1. Master Database Design (`master_ipam` table)
-
-| Column Name   | Data Type     | Description                                                             |
-| ------------- | ------------- | ----------------------------------------------------------------------- |
-| `cidr_range`  | VARCHAR (20)  | CIDR range e.g., `100.124.0.0/18` — **Primary Key**                     |
-| `size`        | VARCHAR (5)   | Subnet size `/17`, `/18`, etc. — used for grouping                      |
-| `subnet_name` | VARCHAR (255) | Name of the subnet in GCP (or any cloud); can be NULL if unallocated    |
-| `no_of_ips`   | INTEGER       | Calculated from size — number of usable IPs                             |
-| `region`      | VARCHAR (100) | GCP region like `us-central1`, `us-east1`                               |
-| `sdlc`        | VARCHAR (50)  | Environment type: `prod`, `nonprod`, `sandbox`, `core`, `pdisco`, `paa` |
-| `date`        | DATE          | Date of allocation; NULL if not allocated                               |
-| `status`      | VARCHAR (20)  | `available`, `reserved`, `unavailable`, `planned`                       |
-
-#### Additional Notes:
-
-* Supernetting and subnetting logic should ensure no conflicting overlaps.
-* Every subnet creation will check and track parent-child relationships in logic (not stored explicitly in DB).
+1. **Master DB schema**
+2. **Functional requirements**
+3. **System components**
+4. **Supernetting/subnetting logic**
+5. **Dashboard & reporting**
+6. **Planning & reclamation workflows**
 
 ---
 
-## 🛠️ 2. Functional Requirements
+## 📋 1. Project Task & Feature Tracker
 
-### A. Subnet Generator (UI Function #1)
-
-**Purpose:** To generate all possible subnets between a given range (e.g. `/17` to `/29`), and insert them into the DB.
-
-#### Input Parameters:
-
-* `CIDR Range`: e.g., `100.126.0.0/17`
-* `Smallest Subnet`: e.g., `/29`
-* `Region`: user-specified
-* `SDLC`: user-specified
-
-#### Behavior:
-
-* Auto-calculate all valid subnets from /17 to /29 (inclusive).
-* Insert into `master_ipam` with `status = 'available'`, `date = NULL`, `subnet_name = NULL`.
-* Calculate number of IPs based on CIDR using: `2^(32 - subnet_size) - 2`.
+| #  | Feature/Module                      | Task Description                                                   | Owner      | Status         | ETA         | Remarks                      |
+| -- | ----------------------------------- | ------------------------------------------------------------------ | ---------- | -------------- | ----------- | ---------------------------- |
+| 1  | DB Schema Setup                     | Create `master_ipam` table with all required fields                | Dev        | ✅ Done         | -           | Base schema                  |
+| 2  | Subnet Generator UI                 | UI to take CIDR + /n input and create all child ranges             | Frontend   | 🟡 In Progress | 3 Aug 2025  | Needs backend integration    |
+| 3  | Subnet Generator Logic              | Generate subnets from /17 to /29, calculate IPs, insert into DB    | Backend    | 🟡 In Progress | 4 Aug 2025  | Logic ready, needs testing   |
+| 4  | CSV Upload                          | Parse and validate CSV, update DB with subnet reservations         | Backend    | ⬜ Not Started  | 6 Aug 2025  | Includes validations         |
+| 5  | Single Reservation (UI + Logic)     | Select one subnet → mark reserved, update supernets/subnets        | Fullstack  | ⬜ Not Started  | 7 Aug 2025  | Logic based on relationships |
+| 6  | Reclaim Logic                       | Reverse logic of reservation, free up subnet and its dependencies  | Backend    | ⬜ Not Started  | 8 Aug 2025  | Must sync with status table  |
+| 7  | Dashboard UI                        | Show available/used IPs by CIDR size, filter by region/SDLC/status | Frontend   | ⬜ Not Started  | 9 Aug 2025  | Group by size                |
+| 8  | Reporting API                       | API for dashboard data aggregation                                 | Backend    | ⬜ Not Started  | 9 Aug 2025  | Query with aggregation       |
+| 9  | List + Hold as Planned (UI + Logic) | List IPs with filters, allow marking as ‘planned’                  | Fullstack  | ⬜ Not Started  | 10 Aug 2025 | status = planned             |
+| 10 | Supernet/Subnet Availability Logic  | Custom logic to detect parent/child subnets and adjust status      | Backend    | 🟡 In Progress | 5 Aug 2025  | Core component               |
+| 11 | Testing Framework                   | Unit test for all subnet functions (reserve, reclaim, create)      | QA/Backend | ⬜ Not Started  | 12 Aug 2025 | Use pytest or Postman tests  |
+| 12 | Audit Trail Table                   | Optional: Track who made changes and when                          | DevOps     | ⬜ Optional     | TBD         | Stretch goal                 |
 
 ---
 
-### B. IPAM Management Functions
+## 🧪 2. Testing Checklist
 
-#### 1. **Reserve a Single Range** (UI Function #2b)
-
-* User selects an `available` CIDR range.
-* System:
-
-  * Sets selected range `status = 'reserved'`, `date = today()`, `subnet_name = input`.
-  * Finds all supernets and subnets → marks them as `unavailable`.
-
-#### 2. **Bulk Update via CSV** (UI Function #2a)
-
-* CSV Format:
-
-  * `cidr_range`, `subnet_name`, `region`, `sdlc`, `date`, `status`
-* Validations:
-
-  * Only `available` ranges should be updated to `reserved`.
-  * Related subnets/supernets updated accordingly.
-
-#### 3. **Reclaim Function**
-
-* Reverse the allocation:
-
-  * Target range marked `available`, `subnet_name = NULL`, `date = NULL`, `status = available`
-  * Also update all subnets and supernets that were made unavailable due to this.
+| Feature               | Test Scenario                                 | Expected Outcome                                 | Status     |
+| --------------------- | --------------------------------------------- | ------------------------------------------------ | ---------- |
+| Subnet Generation     | Enter `100.126.0.0/17`, smallest `/29`        | Inserts \~16K rows with correct sizes            | ⬜ Not Done |
+| Reservation (Single)  | Reserve `/24` subnet                          | Status = reserved, related parents = unavailable | ⬜ Not Done |
+| Reclaim               | Reclaim a `/24`                               | Status = available, parents/subnets updated      | ⬜ Not Done |
+| CSV Upload            | Upload 10 records with mixed sizes            | All 10 updated, invalid skipped with error       | ⬜ Not Done |
+| Dashboard CIDR Report | Query for `/24`, `/25`, etc.                  | Count shown accurately per filter                | ⬜ Not Done |
+| Hold as Planned       | Mark `/26` as planned                         | status = planned                                 | ⬜ Not Done |
+| Conflict Prevention   | Reserve `/23` → try to reserve `/24` under it | Should block due to parent being reserved        | ⬜ Not Done |
+| Reclaim after planned | Mark planned → reclaim                        | Should become available                          | ⬜ Not Done |
 
 ---
 
-### C. Dashboard & Analytics
+## 🔧 Next Steps
 
-#### 1. **CIDR Summary Dashboard (UI Function #3)**
+### Optional Features to Consider:
 
-* Filters:
-
-  * Region, SDLC, Status
-* Output:
-
-  * `/24: 10 available`
-  * `/25: 5 reserved`
-  * `/29: 8 planned`
-  * ... grouped by `size`
-
-#### 2. **List Ranges**
-
-* Filter by:
-
-  * Region, SDLC, CIDR size, Status
-* Display IP ranges
-* Action: Mark selected IPs as "planned" (status = `planned`)
+* **Excel/VBA version of UI** for offline reservation tracking
+* **Role-based access** (e.g., only admins can reclaim)
+* **Notification system** for planned reservations expiring soon
+* **IP utilization heatmap** (future visual feature)
 
 ---
 
-## 🧩 3. System Components
+Let me know if you'd like:
 
-| Component               | Description                                                                |
-| ----------------------- | -------------------------------------------------------------------------- |
-| **UI/Frontend**         | Web interface (React/Angular) to interact with DB and perform CRUD actions |
-| **Backend/API**         | REST API (Python Flask / NodeJS / Go) for logic, CSV parsing, validation   |
-| **Database**            | PostgreSQL / MySQL — host `master_ipam` table                              |
-| **IP Calculator Logic** | Library/function to calculate subnets, supernets, and IP availability      |
+* A **Kanban board (Notion / Trello template)** for this tracker
+* Exportable **CSV of tasks**
+* Sample data for test ranges (e.g., generate test `/24` to `/29` entries)
 
----
-
-## 🔄 Supernet & Subnet Status Logic
-
-When **reserving** a CIDR block:
-
-* Set that CIDR to `reserved`
-* Mark all subnets and supernets of this CIDR as `unavailable`
-
-When **reclaiming** a CIDR block:
-
-* Set that CIDR to `available`
-* If no overlapping CIDRs are reserved → mark subnets/supernets also as `available`
-
----
-
-## 🧪 Example Entry
-
-| cidr\_range     | size | subnet\_name  | no\_of\_ips | region      | sdlc | date       | status      |
-| --------------- | ---- | ------------- | ----------- | ----------- | ---- | ---------- | ----------- |
-| 100.124.0.0/18  | /18  | subnet-prod-1 | 16382       | us-central1 | prod | 2025-08-01 | reserved    |
-| 100.124.0.0/19  | /19  |               | 8190        | us-central1 | prod |            | unavailable |
-| 100.124.64.0/19 | /19  |               | 8190        | us-central1 | prod |            | available   |
-
----
-
-## 🔧 Optional Enhancements
-
-* **Audit Log Table**: For every update (reserve, reclaim, plan).
-* **History Tracking**: Show previous subnet\_name, date of change.
-* **Tagging**: Add optional tags like `owner`, `project`.
-
----
-
-Would you like:
-
-* The **ER diagram** for DB design?
-* Sample **CSV template**?
-* **UI mockup** or **VBA integration** for your Excel version?
-
-Let me know what you'd like to build next.
+Would you like to begin implementing with Excel/VBA first or jump to a web-based backend (Flask/Django/etc.)?
