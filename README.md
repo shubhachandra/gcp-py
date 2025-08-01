@@ -1,152 +1,156 @@
-Option Explicit
+Here’s a comprehensive design document for your **Homegrown IPAM Tool**, including the **functional requirements**, **database design**, and **workflow explanations**:
 
-Sub GenerateAllSubnetsFromBase()
-    Dim ws As Worksheet
-    Set ws = ThisWorkbook.Sheets("MasterDB")
-    
-    Dim baseIP As String: baseIP = "100.126.0.0"
-    Dim basePrefix As Integer: basePrefix = 17
-    Dim targetPrefix As Integer
-    
-    Dim rowIndex As Long: rowIndex = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row + 1
-    
-    For targetPrefix = basePrefix To 29
-        Dim subnets As Collection
-        Set subnets = GetSubnets(baseIP, basePrefix, targetPrefix)
-        
-        Dim s As Variant
-        For Each s In subnets
-            ws.Cells(rowIndex, 1).Value = "/" & targetPrefix                          ' Size
-            ws.Cells(rowIndex, 2).Value = s                                           ' Subnet/Resource
-            ws.Cells(rowIndex, 3).Value = ""                                          ' Code Range
-            ws.Cells(rowIndex, 4).Value = 2 ^ (32 - targetPrefix)                     ' No of IPs
-            ws.Cells(rowIndex, 5).Value = "us-central1"                               ' Region
-            ws.Cells(rowIndex, 6).Value = ""                                          ' Description
-            ws.Cells(rowIndex, 7).Value = "Available"                                 ' Status
-            rowIndex = rowIndex + 1
-        Next s
-    Next targetPrefix
+---
 
-    MsgBox "Subnets from /17 to /29 generated under 100.126.0.0/17", vbInformation
-End Sub
+## ✅ IPAM Tool – Design Document
 
-Function GetSubnets(baseIP As String, basePrefix As Integer, targetPrefix As Integer) As Collection
-    Dim numSubnets As Long
-    Dim baseIPLong As Double
-    Dim increment As Double
-    Dim i As Long
-    Dim result As New Collection
-    
-    baseIPLong = IPToLong(baseIP)
-    numSubnets = 2 ^ (targetPrefix - basePrefix)
-    increment = 2 ^ (32 - targetPrefix)
-    
-    For i = 0 To numSubnets - 1
-        result.Add LongToIP(baseIPLong + (i * increment)) & "/" & targetPrefix
-    Next i
-    
-    Set GetSubnets = result
-End Function
+### 🔹 Purpose
 
-Function IPToLong(ip As String) As Double
-    Dim parts() As String
-    parts = Split(ip, ".")
-    IPToLong = parts(0) * 16777216# + parts(1) * 65536# + parts(2) * 256# + parts(3)
-End Function
+To manage, allocate, and track IP subnets within predefined ranges based on region, SDLC environment, and CIDR sizes.
 
-Function LongToIP(ipLong As Double) As String
-    LongToIP = Int(ipLong \ 16777216#) & "." & Int((ipLong Mod 16777216#) \ 65536#) & "." & Int((ipLong Mod 65536#) \ 256#) & "." & (ipLong Mod 256#)
-End Function
+---
 
+## 📦 1. Master Database Design (`master_ipam` table)
 
-To generate all subnets from 100.126.0.0/17 with sizes ranging from /17 to /29, you’ll be generating progressively smaller subnet blocks from the same base range.
+| Column Name   | Data Type     | Description                                                             |
+| ------------- | ------------- | ----------------------------------------------------------------------- |
+| `cidr_range`  | VARCHAR (20)  | CIDR range e.g., `100.124.0.0/18` — **Primary Key**                     |
+| `size`        | VARCHAR (5)   | Subnet size `/17`, `/18`, etc. — used for grouping                      |
+| `subnet_name` | VARCHAR (255) | Name of the subnet in GCP (or any cloud); can be NULL if unallocated    |
+| `no_of_ips`   | INTEGER       | Calculated from size — number of usable IPs                             |
+| `region`      | VARCHAR (100) | GCP region like `us-central1`, `us-east1`                               |
+| `sdlc`        | VARCHAR (50)  | Environment type: `prod`, `nonprod`, `sandbox`, `core`, `pdisco`, `paa` |
+| `date`        | DATE          | Date of allocation; NULL if not allocated                               |
+| `status`      | VARCHAR (20)  | `available`, `reserved`, `unavailable`, `planned`                       |
 
-🔧 What this VBA will do:
-	•	Generate all subnets starting from /17 to /29 within the block 100.126.0.0/17
-	•	Populate each generated subnet into the MasterDB sheet
-	•	Set:
-	•	Size = CIDR (e.g., /17, /18, …)
-	•	Subnet/Resource = CIDR notation (e.g., 100.126.0.0/17)
-	•	Code Range = (optional – you can fill later or adjust)
-	•	Number of IPs = based on prefix
-	•	Region = us-central1
-	•	Description = (left blank)
-	•	Status = Available
+#### Additional Notes:
 
-⸻
+* Supernetting and subnetting logic should ensure no conflicting overlaps.
+* Every subnet creation will check and track parent-child relationships in logic (not stored explicitly in DB).
 
-✅ VBA Code to Generate All /17 to /29 Subnets from 100.126.0.0/17
+---
 
-Paste this in a new module:
+## 🛠️ 2. Functional Requirements
 
-Option Explicit
+### A. Subnet Generator (UI Function #1)
 
-Sub GenerateAllSubnetsFromBase()
-    Dim ws As Worksheet
-    Set ws = ThisWorkbook.Sheets("MasterDB")
-    
-    Dim baseIP As String: baseIP = "100.126.0.0"
-    Dim basePrefix As Integer: basePrefix = 17
-    Dim targetPrefix As Integer
-    
-    Dim rowIndex As Long: rowIndex = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row + 1
-    
-    For targetPrefix = basePrefix To 29
-        Dim subnets As Collection
-        Set subnets = GetSubnets(baseIP, basePrefix, targetPrefix)
-        
-        Dim s As Variant
-        For Each s In subnets
-            ws.Cells(rowIndex, 1).Value = "/" & targetPrefix                          ' Size
-            ws.Cells(rowIndex, 2).Value = s                                           ' Subnet/Resource
-            ws.Cells(rowIndex, 3).Value = ""                                          ' Code Range
-            ws.Cells(rowIndex, 4).Value = 2 ^ (32 - targetPrefix)                     ' No of IPs
-            ws.Cells(rowIndex, 5).Value = "us-central1"                               ' Region
-            ws.Cells(rowIndex, 6).Value = ""                                          ' Description
-            ws.Cells(rowIndex, 7).Value = "Available"                                 ' Status
-            rowIndex = rowIndex + 1
-        Next s
-    Next targetPrefix
+**Purpose:** To generate all possible subnets between a given range (e.g. `/17` to `/29`), and insert them into the DB.
 
-    MsgBox "Subnets from /17 to /29 generated under 100.126.0.0/17", vbInformation
-End Sub
+#### Input Parameters:
 
-Function GetSubnets(baseIP As String, basePrefix As Integer, targetPrefix As Integer) As Collection
-    Dim numSubnets As Long
-    Dim baseIPLong As Double
-    Dim increment As Double
-    Dim i As Long
-    Dim result As New Collection
-    
-    baseIPLong = IPToLong(baseIP)
-    numSubnets = 2 ^ (targetPrefix - basePrefix)
-    increment = 2 ^ (32 - targetPrefix)
-    
-    For i = 0 To numSubnets - 1
-        result.Add LongToIP(baseIPLong + (i * increment)) & "/" & targetPrefix
-    Next i
-    
-    Set GetSubnets = result
-End Function
+* `CIDR Range`: e.g., `100.126.0.0/17`
+* `Smallest Subnet`: e.g., `/29`
+* `Region`: user-specified
+* `SDLC`: user-specified
 
-Function IPToLong(ip As String) As Double
-    Dim parts() As String
-    parts = Split(ip, ".")
-    IPToLong = parts(0) * 16777216# + parts(1) * 65536# + parts(2) * 256# + parts(3)
-End Function
+#### Behavior:
 
-Function LongToIP(ipLong As Double) As String
-    LongToIP = Int(ipLong \ 16777216#) & "." & Int((ipLong Mod 16777216#) \ 65536#) & "." & Int((ipLong Mod 65536#) \ 256#) & "." & (ipLong Mod 256#)
-End Function
+* Auto-calculate all valid subnets from /17 to /29 (inclusive).
+* Insert into `master_ipam` with `status = 'available'`, `date = NULL`, `subnet_name = NULL`.
+* Calculate number of IPs based on CIDR using: `2^(32 - subnet_size) - 2`.
 
+---
 
-⸻
+### B. IPAM Management Functions
 
-📌 How to Run:
-	1.	Go to Developer tab → Click Insert → Add a Button
-	2.	Assign macro: GenerateAllSubnetsFromBase
-	3.	Press the button and the script will generate subnets from /17 to /29 under 100.126.0.0/17.
+#### 1. **Reserve a Single Range** (UI Function #2b)
 
-⸻
+* User selects an `available` CIDR range.
+* System:
 
-Do you want me to also auto-fill the Code Range column (e.g., start-end IP)? I can add that too.
+  * Sets selected range `status = 'reserved'`, `date = today()`, `subnet_name = input`.
+  * Finds all supernets and subnets → marks them as `unavailable`.
+
+#### 2. **Bulk Update via CSV** (UI Function #2a)
+
+* CSV Format:
+
+  * `cidr_range`, `subnet_name`, `region`, `sdlc`, `date`, `status`
+* Validations:
+
+  * Only `available` ranges should be updated to `reserved`.
+  * Related subnets/supernets updated accordingly.
+
+#### 3. **Reclaim Function**
+
+* Reverse the allocation:
+
+  * Target range marked `available`, `subnet_name = NULL`, `date = NULL`, `status = available`
+  * Also update all subnets and supernets that were made unavailable due to this.
+
+---
+
+### C. Dashboard & Analytics
+
+#### 1. **CIDR Summary Dashboard (UI Function #3)**
+
+* Filters:
+
+  * Region, SDLC, Status
+* Output:
+
+  * `/24: 10 available`
+  * `/25: 5 reserved`
+  * `/29: 8 planned`
+  * ... grouped by `size`
+
+#### 2. **List Ranges**
+
+* Filter by:
+
+  * Region, SDLC, CIDR size, Status
+* Display IP ranges
+* Action: Mark selected IPs as "planned" (status = `planned`)
+
+---
+
+## 🧩 3. System Components
+
+| Component               | Description                                                                |
+| ----------------------- | -------------------------------------------------------------------------- |
+| **UI/Frontend**         | Web interface (React/Angular) to interact with DB and perform CRUD actions |
+| **Backend/API**         | REST API (Python Flask / NodeJS / Go) for logic, CSV parsing, validation   |
+| **Database**            | PostgreSQL / MySQL — host `master_ipam` table                              |
+| **IP Calculator Logic** | Library/function to calculate subnets, supernets, and IP availability      |
+
+---
+
+## 🔄 Supernet & Subnet Status Logic
+
+When **reserving** a CIDR block:
+
+* Set that CIDR to `reserved`
+* Mark all subnets and supernets of this CIDR as `unavailable`
+
+When **reclaiming** a CIDR block:
+
+* Set that CIDR to `available`
+* If no overlapping CIDRs are reserved → mark subnets/supernets also as `available`
+
+---
+
+## 🧪 Example Entry
+
+| cidr\_range     | size | subnet\_name  | no\_of\_ips | region      | sdlc | date       | status      |
+| --------------- | ---- | ------------- | ----------- | ----------- | ---- | ---------- | ----------- |
+| 100.124.0.0/18  | /18  | subnet-prod-1 | 16382       | us-central1 | prod | 2025-08-01 | reserved    |
+| 100.124.0.0/19  | /19  |               | 8190        | us-central1 | prod |            | unavailable |
+| 100.124.64.0/19 | /19  |               | 8190        | us-central1 | prod |            | available   |
+
+---
+
+## 🔧 Optional Enhancements
+
+* **Audit Log Table**: For every update (reserve, reclaim, plan).
+* **History Tracking**: Show previous subnet\_name, date of change.
+* **Tagging**: Add optional tags like `owner`, `project`.
+
+---
+
+Would you like:
+
+* The **ER diagram** for DB design?
+* Sample **CSV template**?
+* **UI mockup** or **VBA integration** for your Excel version?
+
+Let me know what you'd like to build next.
