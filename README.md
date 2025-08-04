@@ -1,69 +1,130 @@
-Great idea, Shubh. Here’s an **enhanced version** of your IPAM tool design doc with a **project task tracker** that includes deliverables, responsible parties, and testing phases.
+Here’s a structured capture of your update regarding Preetham’s involvement and the current status:
 
----
+⸻
 
-## ✅ IPAM Tool – Full Design + Project Tracker
+Update: Preetham - Week of Aug 4, 2025
 
-### 📌 Recap: Modules Covered
+Key Activities:
+	•	Production & Non-Production Separation:
+	•	This week is focused on the separation of prod and non-prod environments.
+	•	A new scheduling Change Request (CR) is being coordinated with the Ops and SNS teams.
+	•	Shweta has requested proper documentation before final approval.
 
-1. **Master DB schema**
-2. **Functional requirements**
-3. **System components**
-4. **Supernetting/subnetting logic**
-5. **Dashboard & reporting**
-6. **Planning & reclamation workflows**
+Notebook Instances:
+	•	All notebook instances are available for Richard to begin testing.
 
----
+Milestones:
+	•	Target closure date: 22nd August 2025
+	•	Current schedule has been shared with Preetham.
+	•	Preetham to share the same schedule with Harsha.
 
-## 📋 1. Project Task & Feature Tracker
+MASEC Implementation:
+	•	Non-Prod MASEC: Scheduled for 18th and 20th August.
+	•	Prod MASEC: Scheduled for 21st and 22nd August.
+	•	MASEC is being executed in parallel with the environment separation.
 
-| #  | Feature/Module                      | Task Description                                                   | Owner      | Status         | ETA         | Remarks                      |
-| -- | ----------------------------------- | ------------------------------------------------------------------ | ---------- | -------------- | ----------- | ---------------------------- |
-| 1  | DB Schema Setup                     | Create `master_ipam` table with all required fields                | Dev        | ✅ Done         | -           | Base schema                  |
-| 2  | Subnet Generator UI                 | UI to take CIDR + /n input and create all child ranges             | Frontend   | 🟡 In Progress | 3 Aug 2025  | Needs backend integration    |
-| 3  | Subnet Generator Logic              | Generate subnets from /17 to /29, calculate IPs, insert into DB    | Backend    | 🟡 In Progress | 4 Aug 2025  | Logic ready, needs testing   |
-| 4  | CSV Upload                          | Parse and validate CSV, update DB with subnet reservations         | Backend    | ⬜ Not Started  | 6 Aug 2025  | Includes validations         |
-| 5  | Single Reservation (UI + Logic)     | Select one subnet → mark reserved, update supernets/subnets        | Fullstack  | ⬜ Not Started  | 7 Aug 2025  | Logic based on relationships |
-| 6  | Reclaim Logic                       | Reverse logic of reservation, free up subnet and its dependencies  | Backend    | ⬜ Not Started  | 8 Aug 2025  | Must sync with status table  |
-| 7  | Dashboard UI                        | Show available/used IPs by CIDR size, filter by region/SDLC/status | Frontend   | ⬜ Not Started  | 9 Aug 2025  | Group by size                |
-| 8  | Reporting API                       | API for dashboard data aggregation                                 | Backend    | ⬜ Not Started  | 9 Aug 2025  | Query with aggregation       |
-| 9  | List + Hold as Planned (UI + Logic) | List IPs with filters, allow marking as ‘planned’                  | Fullstack  | ⬜ Not Started  | 10 Aug 2025 | status = planned             |
-| 10 | Supernet/Subnet Availability Logic  | Custom logic to detect parent/child subnets and adjust status      | Backend    | 🟡 In Progress | 5 Aug 2025  | Core component               |
-| 11 | Testing Framework                   | Unit test for all subnet functions (reserve, reclaim, create)      | QA/Backend | ⬜ Not Started  | 12 Aug 2025 | Use pytest or Postman tests  |
-| 12 | Audit Trail Table                   | Optional: Track who made changes and when                          | DevOps     | ⬜ Optional     | TBD         | Stretch goal                 |
+Hybrid NAT Setup:
+	•	No AppID is requested for prod and non-prod environments at this point.
+	•	Hybrid NAT is only implemented in sandbox for now; will extend to prod/non-prod upon request.
 
----
+⸻
 
-## 🧪 2. Testing Checklist
+Here’s a structured update for Sai’s tasks this week:
 
-| Feature               | Test Scenario                                 | Expected Outcome                                 | Status     |
-| --------------------- | --------------------------------------------- | ------------------------------------------------ | ---------- |
-| Subnet Generation     | Enter `100.126.0.0/17`, smallest `/29`        | Inserts \~16K rows with correct sizes            | ⬜ Not Done |
-| Reservation (Single)  | Reserve `/24` subnet                          | Status = reserved, related parents = unavailable | ⬜ Not Done |
-| Reclaim               | Reclaim a `/24`                               | Status = available, parents/subnets updated      | ⬜ Not Done |
-| CSV Upload            | Upload 10 records with mixed sizes            | All 10 updated, invalid skipped with error       | ⬜ Not Done |
-| Dashboard CIDR Report | Query for `/24`, `/25`, etc.                  | Count shown accurately per filter                | ⬜ Not Done |
-| Hold as Planned       | Mark `/26` as planned                         | status = planned                                 | ⬜ Not Done |
-| Conflict Prevention   | Reserve `/23` → try to reserve `/24` under it | Should block due to parent being reserved        | ⬜ Not Done |
-| Reclaim after planned | Mark planned → reclaim                        | Should become available                          | ⬜ Not Done |
+⸻
 
----
+Update: Sai - Week of Aug 4, 2025
 
-## 🔧 Next Steps
+1. Reclamation Script Enhancement
+	•	Assisting Hema in enhancing the reclamation scripts.
+	•	Coordinating with application teams to obtain their approval for the updated logic.
 
-### Optional Features to Consider:
+2. Process & Intake Activities
+	•	Opening intake requests as part of the approval and execution process.
+	•	Updating PRs and maintaining mail approvals within the respective JIRA tickets.
 
-* **Excel/VBA version of UI** for offline reservation tracking
-* **Role-based access** (e.g., only admins can reclaim)
-* **Notification system** for planned reservations expiring soon
-* **IP utilization heatmap** (future visual feature)
+3. Utilization Improvement
+	•	Improved resource utilization compared to the last 2 weeks through better tracking and coordination.
 
----
+4. TFE Migration
+	•	Engaged in Terraform Enterprise (TFE) migration efforts.
+	•	Encountered issues: Workspace in error state due to changes in grantable roles.
+	•	Collaborating with Dele to resolve the role-based access problems.
+	•	In the process of enabling roles and bringing the workspace to a stable migration state.
 
-Let me know if you'd like:
+⸻
 
-* A **Kanban board (Notion / Trello template)** for this tracker
-* Exportable **CSV of tasks**
-* Sample data for test ranges (e.g., generate test `/24` to `/29` entries)
+Here’s a structured summary of Hema’s tasks for the week:
 
-Would you like to begin implementing with Excel/VBA first or jump to a web-based backend (Flask/Django/etc.)?
+⸻
+
+Update: Hema - Week of Aug 4, 2025
+
+1. Networking Diagram
+	•	Working on the networking diagram.
+	•	A draft version has been shared with Richard.
+	•	Feedback from Richard: “Diagram is looking good.”
+
+2. IPAM (IP Address Management)
+	•	Currently working on IPAM requirements.
+	•	A task tracker has been created and is being actively maintained.
+
+3. Automation Cleanup
+	•	Performing cleanup activities in automation scripts as part of ongoing improvements and optimizations.
+
+⸻
+
+Here’s a structured and professional summary of Shubh’s tasks and issues for the week:
+
+⸻
+
+Update: Shubh - Week of Aug 4, 2025
+
+1. Prod Discovery & Environment Setup
+	•	Prod discovery is in progress.
+	•	Project creation is complete.
+	•	VPC creation, including subnets and firewall rules, has been completed.
+	•	Logging project and VPC Service Controls (VPC-SC) are pending.
+	•	Meetings scheduled with both the VPC-SC team and Landing Zone team to proceed.
+	•	CI environment for Prod Discovery is ready.
+	•	PDisco environment is still pending.
+
+2. Palo Alto Networking Setup
+	•	Working on repo and workspace creation in AD-Ent for Palo Alto deployments.
+	•	Post this, will initiate service project creation for Panorama.
+
+⸻
+
+3. Issue Tracking & Resolution
+
+COTS:
+	•	COTS team provided a solution excluding the Network Connectivity API.
+	•	Rekha has ensured this exclusion in the implementation.
+
+Prisma:
+	•	All notebooks have been replaced.
+	•	Workbench instances are ready and available for Richard.
+	•	Service account deletion task completed to mitigate Prisma alerts, especially the account dedicated for Infoblox IPAM.
+
+Sentinel:
+	•	Encountered an issue with hard mandatory Sentinel enforcement.
+	•	Discussed with Shashank and raised a ticket; the team is actively working on a fix.
+
+Workspace Tag Change:
+	•	Sentinel team requested to change the workspace tag from ad-ent-prod to ad-ent-sandbox.
+	•	Richard approved the change.
+	•	Ravi had a different view; clarification is being sought from the security team.
+
+⸻
+
+4. IPAM Work & Collaboration
+	•	Continued work on the in-house IPAM tool:
+	•	Requirement documentation completed.
+	•	Tracker created.
+	•	Collaborating with Hema on design and logic.
+	•	Finalized the network topology diagram based on Richard’s feedback: “Looks good.”
+	•	Collaborating with Hema and Sai for IP range requirements as part of the migration:
+	•	App teams have requested 200+ subnets.
+	•	Emphasis placed on subnet reclamation processes to meet demand.
+
+⸻
