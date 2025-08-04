@@ -1,130 +1,168 @@
-Here’s a structured capture of your update regarding Preetham’s involvement and the current status:
+Here’s a detailed Design Document for your IPAM Tool implementation, incorporating your updated tech stack and architecture.
 
 ⸻
 
-Update: Preetham - Week of Aug 4, 2025
+🧾 IPAM Tool – Detailed Design Document
 
-Key Activities:
-	•	Production & Non-Production Separation:
-	•	This week is focused on the separation of prod and non-prod environments.
-	•	A new scheduling Change Request (CR) is being coordinated with the Ops and SNS teams.
-	•	Shweta has requested proper documentation before final approval.
+📌 Purpose
 
-Notebook Instances:
-	•	All notebook instances are available for Richard to begin testing.
-
-Milestones:
-	•	Target closure date: 22nd August 2025
-	•	Current schedule has been shared with Preetham.
-	•	Preetham to share the same schedule with Harsha.
-
-MASEC Implementation:
-	•	Non-Prod MASEC: Scheduled for 18th and 20th August.
-	•	Prod MASEC: Scheduled for 21st and 22nd August.
-	•	MASEC is being executed in parallel with the environment separation.
-
-Hybrid NAT Setup:
-	•	No AppID is requested for prod and non-prod environments at this point.
-	•	Hybrid NAT is only implemented in sandbox for now; will extend to prod/non-prod upon request.
+To manage, allocate, track, and visualize IP address usage for a given range across SDLC environments and GCP regions. This solution will help prevent subnetting conflicts, enable precise allocations, and support reporting and automation.
 
 ⸻
 
-Here’s a structured update for Sai’s tasks this week:
+⚙️ 1. Technology Stack
+
+Layer	Tool/Tech
+Backend	Python (subnet logic, APIs)
+Database	SQLite
+Cloud Integration	gcloud CLI / REST APIs
+Reporting	Python CLI or Web (Flask, Optional)
+CSV Ops	pandas, csv modules
+
 
 ⸻
 
-Update: Sai - Week of Aug 4, 2025
+🗃️ 2. Master Table – master_ipam
 
-1. Reclamation Script Enhancement
-	•	Assisting Hema in enhancing the reclamation scripts.
-	•	Coordinating with application teams to obtain their approval for the updated logic.
+Column	Type	Notes
+cidr_range	TEXT (PK)	Unique subnet block (e.g., 100.124.0.0/24)
+size	TEXT	Derived from CIDR (e.g., /24)
+subnet_name	TEXT	Optional GCP subnet name
+no_of_ips	INTEGER	Based on CIDR (e.g., /24 → 256)
+region	TEXT	GCP region
+sdlc	TEXT	SDLC (prod, nonprod, sandbox, etc.)
+date	TEXT (ISO)	Allocation date
+status	TEXT	One of: available, reserved, unavailable, planned
 
-2. Process & Intake Activities
-	•	Opening intake requests as part of the approval and execution process.
-	•	Updating PRs and maintaining mail approvals within the respective JIRA tickets.
-
-3. Utilization Improvement
-	•	Improved resource utilization compared to the last 2 weeks through better tracking and coordination.
-
-4. TFE Migration
-	•	Engaged in Terraform Enterprise (TFE) migration efforts.
-	•	Encountered issues: Workspace in error state due to changes in grantable roles.
-	•	Collaborating with Dele to resolve the role-based access problems.
-	•	In the process of enabling roles and bringing the workspace to a stable migration state.
 
 ⸻
 
-Here’s a structured summary of Hema’s tasks for the week:
+🔗 3. Architecture Overview
+
+              +-------------------------+
+              |      User Input (CLI)   |
+              +-------------------------+
+                         |
+                         v
+       +--------------------------+
+       |  Python Subnet Logic     | ← uses ipaddress, netaddr libs
+       +--------------------------+
+            |          |
+            |          v
+            |    +------------+
+            |    | SQLite DB  |
+            |    +------------+
+            |
+            v
++------------------------------+
+| Google Cloud API (gcloud CLI)|
+| - Fetch IP range usage       |
+| - Validate current allocation|
++------------------------------+
+
 
 ⸻
 
-Update: Hema - Week of Aug 4, 2025
+🧠 4. Implementation Modules
 
-1. Networking Diagram
-	•	Working on the networking diagram.
-	•	A draft version has been shared with Richard.
-	•	Feedback from Richard: “Diagram is looking good.”
+📌 A. Subnet Generator
+	•	Inputs: CIDR block (e.g., 100.126.0.0/17), smallest subnet (e.g., /29), region, SDLC
+	•	Generates: All subnets from /17 to /29 and inserts to master_ipam with:
+	•	status = 'available'
+	•	subnet_name = NULL, date = NULL
 
-2. IPAM (IP Address Management)
-	•	Currently working on IPAM requirements.
-	•	A task tracker has been created and is being actively maintained.
-
-3. Automation Cleanup
-	•	Performing cleanup activities in automation scripts as part of ongoing improvements and optimizations.
+Key Libraries: ipaddress, sqlite3
 
 ⸻
 
-Here’s a structured and professional summary of Shubh’s tasks and issues for the week:
+📌 B. Reservation Logic
+	•	Input: CIDR to reserve, subnet name
+	•	Actions:
+	•	Check in DB → ensure status = available
+	•	Mark selected range as reserved
+	•	Update all supernets and subnets as unavailable
+	•	Log allocation date
+
+Conflict Detection:
+	•	If subnet or supernet is already reserved → error
 
 ⸻
 
-Update: Shubh - Week of Aug 4, 2025
-
-1. Prod Discovery & Environment Setup
-	•	Prod discovery is in progress.
-	•	Project creation is complete.
-	•	VPC creation, including subnets and firewall rules, has been completed.
-	•	Logging project and VPC Service Controls (VPC-SC) are pending.
-	•	Meetings scheduled with both the VPC-SC team and Landing Zone team to proceed.
-	•	CI environment for Prod Discovery is ready.
-	•	PDisco environment is still pending.
-
-2. Palo Alto Networking Setup
-	•	Working on repo and workspace creation in AD-Ent for Palo Alto deployments.
-	•	Post this, will initiate service project creation for Panorama.
+📌 C. Reclamation Logic
+	•	Input: CIDR to reclaim
+	•	Actions:
+	•	Mark CIDR as available
+	•	If no overlapping sub/supernets are reserved, set them to available
 
 ⸻
 
-3. Issue Tracking & Resolution
+📌 D. CSV Upload/Update
+	•	Read CSV with columns: cidr_range, subnet_name, region, sdlc, status
+	•	Validate against DB
+	•	Bulk insert or update
 
-COTS:
-	•	COTS team provided a solution excluding the Network Connectivity API.
-	•	Rekha has ensured this exclusion in the implementation.
-
-Prisma:
-	•	All notebooks have been replaced.
-	•	Workbench instances are ready and available for Richard.
-	•	Service account deletion task completed to mitigate Prisma alerts, especially the account dedicated for Infoblox IPAM.
-
-Sentinel:
-	•	Encountered an issue with hard mandatory Sentinel enforcement.
-	•	Discussed with Shashank and raised a ticket; the team is actively working on a fix.
-
-Workspace Tag Change:
-	•	Sentinel team requested to change the workspace tag from ad-ent-prod to ad-ent-sandbox.
-	•	Richard approved the change.
-	•	Ravi had a different view; clarification is being sought from the security team.
+Library: pandas or Python csv
 
 ⸻
 
-4. IPAM Work & Collaboration
-	•	Continued work on the in-house IPAM tool:
-	•	Requirement documentation completed.
-	•	Tracker created.
-	•	Collaborating with Hema on design and logic.
-	•	Finalized the network topology diagram based on Richard’s feedback: “Looks good.”
-	•	Collaborating with Hema and Sai for IP range requirements as part of the migration:
-	•	App teams have requested 200+ subnets.
-	•	Emphasis placed on subnet reclamation processes to meet demand.
+📌 E. Google Cloud Integration
+	•	Script uses gcloud compute networks subnets list or REST API
+	•	Compares against local master_ipam
+	•	Marks mismatches or confirms current usage
+
+Goal:
+	•	Track real-time GCP allocations
+	•	Confirm if CIDR is truly in use
 
 ⸻
+
+📊 5. Reporting Module
+
+Summary Report CLI
+	•	Query: Show available/reserved counts by CIDR size
+	•	Output:
+
+/24: 10 available
+/25: 5 reserved
+/29: 2 planned
+
+
+
+Planned Report
+	•	List all status = planned
+	•	Option to reserve or reclaim
+
+⸻
+
+✅ 6. Example CLI Flow
+
+$ python ipam.py generate --cidr 100.126.0.0/17 --min /29 --region us-central1 --sdlc prod
+
+$ python ipam.py reserve --cidr 100.126.10.0/24 --name subnet-prod-1
+
+$ python ipam.py reclaim --cidr 100.126.10.0/24
+
+$ python ipam.py upload --csv updates.csv
+
+$ python ipam.py report --filter prod --status available
+
+
+⸻
+
+🔍 7. Testing Strategy
+
+Test Type	Tool	Description
+Unit Testing	pytest	Subnet generation, overlap detection
+CLI Testing	Bash	Simulate flows and check DB consistency
+GCP Validation	gcloud	Compare local vs actual GCP usage
+Data Consistency	SQL query	Validate DB entries post-reservation
+
+
+⸻
+
+Would you like:
+	•	A Python CLI starter template?
+	•	Sample test cases with mock data?
+	•	A README structure to document usage?
+
+Let me know how you want to proceed.
