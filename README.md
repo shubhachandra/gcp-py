@@ -1,26 +1,18 @@
 
-Here’s the updated version of the meeting notes with the new point about the PO:
+Here’s a combined and polished version of both updates in one email:
 
 ⸻
 
-📝 Meeting Notes – LZ Team Updates
-	•	Workload Testing & Perimeter Integration
-	•	The LZ team is actively testing some workloads.
-	•	These workloads are being evaluated for inclusion into the VPC Service Controls (VPC SC) perimeter.
-	•	Workspace Request for PDISCO VPC SC
-	•	A request has been made to create a new workspace for the PDISCO environment’s VPC Service Control configuration.
-	•	The LZ team will assist with creating this workspace.
-	•	Original ETA for the workspace setup: August 15.
-	•	The LZ team has requested an extension until August 30.
-	•	Reason for Workspace Split
-	•	The team is splitting the existing VPC SC into a dedicated workspace for improved manageability and isolation.
-	•	This is part of a broader initiative to segregate environments and enhance security posture.
-	•	Testing & Deployment Plan
-	•	All changes will be tested in the qa-Ent workspace.
-	•	Deployment to the ad-Ent workspace is planned for September.
-	•	Milestone & Ticket Tracking
-	•	The Product Owner (PO) has created and updated milestones and tickets for the Landing Zone (LZ) team to track progress and deliverables.
+Subject: Subnet Quota & Environment Status Update
+
+The total number of subnets, including both primary and secondary, is shown in the following table.
+The quota set in each host VPC is 275. Based on current usage, this quota counts only primary subnets, not secondary ranges. This is a soft quota and can typically be increased — up to 15,000 subnet IP ranges — if required.
+
+Our sandbox environment is ready, but the nonprod environment is not yet available.
+If the issue with /29 subnets persists, the /17 range will become available once the change request is approved.
+
+Testing in the sandbox environment has been completed successfully. If required, we can direct the 1IBD app team to use the broader /17 subnet.
 
 ⸻
 
-Let me know if you want this formatted for Confluence or if you’d like to add ownership or action items.
+Do you want me to also add a small diagram showing /29 as part of /17 so the recipients can visually understand the relationship? That often helps with subnet discussions.
