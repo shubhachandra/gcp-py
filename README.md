@@ -1,89 +1,156 @@
+Got it 👍 — I’ll capture the **team’s week update** with all the details you’ve shared, keeping Preetham and Sai’s as-is, and updating Hema’s and Shubh’s parts properly.
 
-Got it — you want a clear, structured onboarding Confluence page for new GCP networking team members that explains the process for entitlement requests (AIMS & ART), dependencies, environment access, required tools, and approval follow-ups.
+---
 
-Here’s a refined and structured draft you can directly paste into Confluence (with headings, bullet points, and instructions for better readability).
+# **Team Weekly Update – Week of Aug 18, 2025**
 
-⸻
+---
 
-GCP Networking Team – Onboarding Guide
+### **Preetham**
 
-Welcome to the ACT GCP Networking Team. This guide outlines the steps and required access for working in our AD ENT and QA-ENT (Sandbox) environments.
+* Update remains the same.
+* **Prod and Non-Prod separation** has been completed.
+* We are ready for **MACsec implementation** in the coming week.
 
-⸻
+---
 
-1. AD ENT Environment – Entitlement Request Process (AIMS)
+### **Sai**
 
-In the AD ENT environment, you will need to request several entitlements via the AIMS portal.
-Some entitlements have dependencies and must be requested in a specific order.
+* Helping **Hema** in enhancing the **reclamation scripts**.
+* Communicating with **application teams** for approval.
+* Opening **intake requests**.
+* Updating **PRs** and capturing **mail approvals** in JIRA.
+* Improved **utilization** compared to the last two weeks.
+* Working on **TFE migration**:
 
-Step-by-Step Process:
-	1.	Access the AIMS portal and add all required entitlements from the provided entitlement table into your cart.
-	2.	Attempt to submit the request.
-	•	If you receive an error due to entitlement dependency, remove the conflicting entitlements from the cart.
-	3.	Submit the remaining entitlements that do not trigger errors.
-	4.	Track your submitted entitlements in the provided Excel tracker.
-	5.	Once your manager approves these, repeat the process:
-	•	Add the next set of entitlements to your cart.
-	•	Submit and repeat until all entitlements are approved.
-	6.	You can view your approved entitlements via the Group Grader link provided here.
+  * Workspace is in **error state** due to change in **grantable roles**.
+  * Collaborating with **Dele** to fix.
+  * Enabling roles and progressing towards a **stable migration state**.
 
-Justification format for AIMS requests:
-"As a part of ACT GCP Networking Team, I need these access permissions for my daily tasks."
+---
 
-⸻
+### **Hema**
 
-2. QA-ENT (Sandbox) Environment – ART Requests
+* **Networking Diagram**:
 
-The QA-ENT environment is used for various testing activities.
-To work in this environment:
-	1.	Create an account via the ART request link provided here.
-	2.	Request the required roles listed in the entitlement table for QA-ENT.
-	3.	Ensure you are part of the correct entitlement groups (list provided here).
+  * Tried reaching out to **Pavan**, no response received.
+  * Last iteration received feedback from **Richard** – “bit okay”.
+* **Service Directory**:
 
-Justification format for ART requests:
-"As a part of ACT GCP Networking Team, I need these access permissions for my daily tasks."
+  * Working with **Vijaya and team** (Thu–Fri).
+  * **Vijaya tested** from her side.
+  * Provided a solution for **Senthil alerts**.
+  * Later, **PE team communicated** and Hema educated them on **Service Directory usage**.
+  * Helped create a **Load Balancer**.
+  * Fixed **observability issues**.
+  * Requested access to their **repo** to work on **end-to-end deployment**.
+* **IPAM**:
 
-⸻
+  * Put on **hold** due to Service Directory priorities.
+  * Reviewed **documentation on Host Connect**.
+  * **Subnet reclamation code handed over to Sai**.
 
-3. Required Applications & Tools
+---
 
-You will need the following tools installed on your Cloud PC:
-	•	VS Code – for editing and configuration
-	•	Terraform (Enterprise) – for resource creation
-	•	Google Cloud SDK – built on Python for CLI-based GCP operations
-	•	Git – for version control
-	•	Python – for scripting and SDK usage
+### **Shubh**
 
-Installation Process:
+* **Shared Subnet Work**:
 
-Request installation via the Software Market on your Cloud PC.
+  * Created shared subnets for **Dataproc, Dataflow, Composer3**.
+  * Completed **subnet creation, group binding, Hybrid NAT setup, and firewall rules**.
+  * **Sandbox and Non-Prod** completed last week, with **customer confirmation** on successful usage.
+  * **Prod CR scheduled today**, onboarding customers using **HNAT**.
 
-Setup Guides:
-	•	Terraform Setup Guide
-	•	Git Setup Guide
-	•	Python Setup Guide
-	•	Google Cloud SDK Setup Guide
+* **Prod Discovery**:
 
-⸻
+  * Taking a **backseat** while awaiting **VPC-SC team & Landing Zone team**.
+  * Updated **JIRA tickets** with VPC-SC dependencies.
+  * Teams working on **Prod Discovery VPC-SC separation**, **environment = Prod Discovery**, and **seed account creation**.
+  * ETA: **End of August for QA**, **Sep 15 for AD-Ent** (may slip to **end of September**).
 
-4. Working with CLI & Terraform
-	•	Access to Enterprise Terraform is required to deploy GCP resources.
-	•	You will primarily work via CLI commands and Terraform scripts.
-	•	Ensure your Google Cloud SDK is authenticated with your approved entitlements before running commands.
+* **Palo Alto Implementation**:
 
-⸻
+  * **Richard** working in **AD-Ent**:
 
-5. Approval Follow-Up Best Practices
-	•	After submitting requests, check your email for first-level and second-level approvers.
-	•	Reach out to approvers via Teams chat or a short email note to expedite approvals.
-	•	Keep your manager updated about pending requests.
+    * Created **3 workspaces, repo, and VM project**.
+    * Testing implementation.
+  * Tried to **replicate in AD-Ent**, but during **CR window**, Richard requested to **delay by a week**.
 
-⸻
+* **Prisma Alerts**:
 
-✅ Once you complete all steps, you will have access to both AD ENT and QA-ENT environments, required tools, and the ability to work on GCP networking tasks using Terraform, CLI, and other team tools.
+  * Actively working with Prisma team.
+  * **40 alerts in QA-Ent**:
 
-⸻
+    * 12 requests raised to **retain till Ashburn implementation** (scripts under testing).
+    * 2 redirected to **IAM team**.
+    * 8 to be **suppressed** (not under control, created by Cloud Build).
+    * **IPAM SQL instance & some notebook instances** are under **Richard’s control** → asked him to check.
+    * **1 PSC alert** mitigated successfully.
+    * Alerts also on **Richard’s roles** → requested him to review.
 
-If you want, I can also add a dependency flow diagram for the entitlement request process so new hires can see the approval chain visually. This would make the guide even easier to follow.
+* **Ashburn 100G Connection**:
 
-Do you want me to create that diagram next?
+  * Coordinated with **Preetham**.
+  * Raised **intake request & CR** for changes.
+  * **Scheduled on 26th Aug**.
+
+---
+Perfect — I’ll add that new **Palo Alto channel/coordination update** under your section. Here’s the refined capture for **Shubh** with the new details included:
+
+---
+
+### **Shubh**
+
+* **Shared Subnet Work**:
+
+  * Created shared subnets for **Dataproc, Dataflow, Composer3**.
+  * Completed **subnet creation, group binding, Hybrid NAT setup, and firewall rules**.
+  * **Sandbox and Non-Prod** completed last week, with **customer confirmation** on successful usage.
+  * **Prod CR scheduled today**, onboarding customers using **HNAT**.
+
+* **Prod Discovery**:
+
+  * Taking a **backseat** while awaiting **VPC-SC team & Landing Zone team**.
+  * Updated **JIRA tickets** with VPC-SC dependencies.
+  * Teams working on **Prod Discovery VPC-SC separation**, **environment = Prod Discovery**, and **seed account creation**.
+  * ETA: **End of August for QA**, **Sep 15 for AD-Ent** (may slip to **end of September**).
+
+* **Palo Alto Implementation**:
+
+  * **Richard** working in **AD-Ent**:
+
+    * Created **3 workspaces, repo, and VM project**.
+    * Testing implementation.
+  * Tried to **replicate in AD-Ent**, but during **CR window**, Richard requested to **delay by a week**.
+  * **Harsh created a dedicated Palo Alto channel** with **weekly Friday meetings**.
+
+    * Richard added me to the same.
+    * In the session, Harsh defined **expectations for leads vs. PEs**.
+    * This channel helps keep everyone **active in discussions**, **asking questions**, and **understanding implementations**.
+    * It also ensures **documentation readiness** from the networking team before **application onboarding**.
+
+* **Prisma Alerts**:
+
+  * Actively working with Prisma team.
+  * **40 alerts in QA-Ent**:
+
+    * 12 requests raised to **retain till Ashburn implementation** (scripts under testing).
+    * 2 redirected to **IAM team**.
+    * 8 to be **suppressed** (not under control, created by Cloud Build).
+    * **IPAM SQL instance & some notebook instances** are under **Richard’s control** → asked him to check.
+    * **1 PSC alert** mitigated successfully.
+    * Alerts also on **Richard’s roles** → requested him to review.
+
+* **Ashburn 100G Connection**:
+
+  * Coordinated with **Preetham**.
+  * Raised **intake request & CR** for changes.
+  * **Scheduled on 26th Aug**.
+
+---
+
+Would you like me to now **combine Preetham, Sai, Hema, and Shubh into one clean weekly status report (ready-to-send)**, or keep them as individual updates for your tracking?
+
+✅ This way, each member’s contribution is clearly tracked with dependencies, blockers, and progress.
+
+Do you want me to **merge this into a single email draft** (to send as weekly status) or keep it in this structured note format?
