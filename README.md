@@ -1,156 +1,121 @@
-Got it 👍 — I’ll capture the **team’s week update** with all the details you’ve shared, keeping Preetham and Sai’s as-is, and updating Hema’s and Shubh’s parts properly.
+Got it 👍 You want a Terraform module that:
+	1.	Requests a new subnet (CIDR) from BlueCat IPAM.
+	2.	Captures that subnet in an output variable.
+	3.	Uses that subnet to create a GCP subnet (or another cloud subnet) with a name convention like:
 
----
+sandbox-netb-fwd-0212364-1x1-usc1-100-120-24-0-24
 
-# **Team Weekly Update – Week of Aug 18, 2025**
+Where:
+	•	sandbox → environment
+	•	netb → network code/prefix
+	•	fwd → usage/type (forwarding, workload, etc.)
+	•	0212364 → request ID / ticket / unique identifier
+	•	1x1 → size/shape code (could be tied to CIDR size)
+	•	usc1 → region
+	•	100-120-24-0-24 → sanitized CIDR (replace . with -)
 
----
+⸻
 
-### **Preetham**
+Step 1: BlueCat Terraform Provider
 
-* Update remains the same.
-* **Prod and Non-Prod separation** has been completed.
-* We are ready for **MACsec implementation** in the coming week.
+BlueCat provides a Terraform provider (bluecatlabs/bluecat).
+Example to request a new subnet:
 
----
+terraform {
+  required_providers {
+    bluecat = {
+      source  = "bluecatlabs/bluecat"
+      version = "~> 1.0"
+    }
+  }
+}
 
-### **Sai**
+provider "bluecat" {
+  url      = var.bluecat_url
+  username = var.bluecat_username
+  password = var.bluecat_password
+}
 
-* Helping **Hema** in enhancing the **reclamation scripts**.
-* Communicating with **application teams** for approval.
-* Opening **intake requests**.
-* Updating **PRs** and capturing **mail approvals** in JIRA.
-* Improved **utilization** compared to the last two weeks.
-* Working on **TFE migration**:
 
-  * Workspace is in **error state** due to change in **grantable roles**.
-  * Collaborating with **Dele** to fix.
-  * Enabling roles and progressing towards a **stable migration state**.
+⸻
 
----
+Step 2: Request a new subnet from BlueCat
 
-### **Hema**
+resource "bluecat_ip4_block" "new_subnet" {
+  parent_block = var.parent_block     # e.g. "100.120.0.0/16"
+  cidr         = var.subnet_size      # e.g. 24
+  name         = "requested-subnet"
+  properties   = "state=ALLOCATED"
+}
 
-* **Networking Diagram**:
+This will allocate a new /24 from BlueCat under the given parent block.
 
-  * Tried reaching out to **Pavan**, no response received.
-  * Last iteration received feedback from **Richard** – “bit okay”.
-* **Service Directory**:
+⸻
 
-  * Working with **Vijaya and team** (Thu–Fri).
-  * **Vijaya tested** from her side.
-  * Provided a solution for **Senthil alerts**.
-  * Later, **PE team communicated** and Hema educated them on **Service Directory usage**.
-  * Helped create a **Load Balancer**.
-  * Fixed **observability issues**.
-  * Requested access to their **repo** to work on **end-to-end deployment**.
-* **IPAM**:
+Step 3: Capture the allocated CIDR in an output
 
-  * Put on **hold** due to Service Directory priorities.
-  * Reviewed **documentation on Host Connect**.
-  * **Subnet reclamation code handed over to Sai**.
+output "allocated_subnet" {
+  value = bluecat_ip4_block.new_subnet.cidr
+}
 
----
+Example output → 100.120.24.0/24
 
-### **Shubh**
+⸻
 
-* **Shared Subnet Work**:
+Step 4: Generate GCP subnet name dynamically
 
-  * Created shared subnets for **Dataproc, Dataflow, Composer3**.
-  * Completed **subnet creation, group binding, Hybrid NAT setup, and firewall rules**.
-  * **Sandbox and Non-Prod** completed last week, with **customer confirmation** on successful usage.
-  * **Prod CR scheduled today**, onboarding customers using **HNAT**.
+Terraform format() + replace() can build the subnet name:
 
-* **Prod Discovery**:
+locals {
+  sanitized_cidr = replace(bluecat_ip4_block.new_subnet.cidr, ".", "-")
+  subnet_name    = format(
+    "%s-%s-%s-%s-%s-%s",
+    var.env,                # sandbox
+    var.network_code,       # netb
+    var.type,               # fwd
+    var.request_id,         # 0212364
+    var.size_code,          # 1x1
+    var.region,             # usc1
+  )
 
-  * Taking a **backseat** while awaiting **VPC-SC team & Landing Zone team**.
-  * Updated **JIRA tickets** with VPC-SC dependencies.
-  * Teams working on **Prod Discovery VPC-SC separation**, **environment = Prod Discovery**, and **seed account creation**.
-  * ETA: **End of August for QA**, **Sep 15 for AD-Ent** (may slip to **end of September**).
+  full_subnet_name = "${local.subnet_name}-${local.sanitized_cidr}"
+}
 
-* **Palo Alto Implementation**:
+This produces:
 
-  * **Richard** working in **AD-Ent**:
+sandbox-netb-fwd-0212364-1x1-usc1-100-120-24-0-24
 
-    * Created **3 workspaces, repo, and VM project**.
-    * Testing implementation.
-  * Tried to **replicate in AD-Ent**, but during **CR window**, Richard requested to **delay by a week**.
+⸻
 
-* **Prisma Alerts**:
+Step 5: Create subnet in GCP
 
-  * Actively working with Prisma team.
-  * **40 alerts in QA-Ent**:
+resource "google_compute_subnetwork" "requested" {
+  name          = local.full_subnet_name
+  ip_cidr_range = bluecat_ip4_block.new_subnet.cidr
+  region        = var.region
+  network       = var.vpc_self_link
+}
 
-    * 12 requests raised to **retain till Ashburn implementation** (scripts under testing).
-    * 2 redirected to **IAM team**.
-    * 8 to be **suppressed** (not under control, created by Cloud Build).
-    * **IPAM SQL instance & some notebook instances** are under **Richard’s control** → asked him to check.
-    * **1 PSC alert** mitigated successfully.
-    * Alerts also on **Richard’s roles** → requested him to review.
 
-* **Ashburn 100G Connection**:
+⸻
 
-  * Coordinated with **Preetham**.
-  * Raised **intake request & CR** for changes.
-  * **Scheduled on 26th Aug**.
+✅ Final Outputs
 
----
-Perfect — I’ll add that new **Palo Alto channel/coordination update** under your section. Here’s the refined capture for **Shubh** with the new details included:
+output "subnet_name" {
+  value = google_compute_subnetwork.requested.name
+}
 
----
+output "subnet_cidr" {
+  value = google_compute_subnetwork.requested.ip_cidr_range
+}
 
-### **Shubh**
 
-* **Shared Subnet Work**:
+⸻
 
-  * Created shared subnets for **Dataproc, Dataflow, Composer3**.
-  * Completed **subnet creation, group binding, Hybrid NAT setup, and firewall rules**.
-  * **Sandbox and Non-Prod** completed last week, with **customer confirmation** on successful usage.
-  * **Prod CR scheduled today**, onboarding customers using **HNAT**.
+👉 Shubh, before I polish this into a reusable module structure (variables.tf, outputs.tf, main.tf), do you want:
+	1.	The BlueCat allocation + GCP subnet creation together in one module
+(end-to-end automation),
 
-* **Prod Discovery**:
-
-  * Taking a **backseat** while awaiting **VPC-SC team & Landing Zone team**.
-  * Updated **JIRA tickets** with VPC-SC dependencies.
-  * Teams working on **Prod Discovery VPC-SC separation**, **environment = Prod Discovery**, and **seed account creation**.
-  * ETA: **End of August for QA**, **Sep 15 for AD-Ent** (may slip to **end of September**).
-
-* **Palo Alto Implementation**:
-
-  * **Richard** working in **AD-Ent**:
-
-    * Created **3 workspaces, repo, and VM project**.
-    * Testing implementation.
-  * Tried to **replicate in AD-Ent**, but during **CR window**, Richard requested to **delay by a week**.
-  * **Harsh created a dedicated Palo Alto channel** with **weekly Friday meetings**.
-
-    * Richard added me to the same.
-    * In the session, Harsh defined **expectations for leads vs. PEs**.
-    * This channel helps keep everyone **active in discussions**, **asking questions**, and **understanding implementations**.
-    * It also ensures **documentation readiness** from the networking team before **application onboarding**.
-
-* **Prisma Alerts**:
-
-  * Actively working with Prisma team.
-  * **40 alerts in QA-Ent**:
-
-    * 12 requests raised to **retain till Ashburn implementation** (scripts under testing).
-    * 2 redirected to **IAM team**.
-    * 8 to be **suppressed** (not under control, created by Cloud Build).
-    * **IPAM SQL instance & some notebook instances** are under **Richard’s control** → asked him to check.
-    * **1 PSC alert** mitigated successfully.
-    * Alerts also on **Richard’s roles** → requested him to review.
-
-* **Ashburn 100G Connection**:
-
-  * Coordinated with **Preetham**.
-  * Raised **intake request & CR** for changes.
-  * **Scheduled on 26th Aug**.
-
----
-
-Would you like me to now **combine Preetham, Sai, Hema, and Shubh into one clean weekly status report (ready-to-send)**, or keep them as individual updates for your tracking?
-
-✅ This way, each member’s contribution is clearly tracked with dependencies, blockers, and progress.
-
-Do you want me to **merge this into a single email draft** (to send as weekly status) or keep it in this structured note format?
+or
+	2.	Separate modules: one for BlueCat allocation, another for GCP subnet creation, linked via outputs?
+ 
