@@ -1,4 +1,32 @@
-Here’s a full Terraform BlueCat provider block including all the required arguments you mentioned (api_version, port, server, transport).
+Here’s a professional draft you can send to your team or compliance/security group explaining the situation:
+
+⸻
+
+Subject: Justification for Unlabeled GKE-Managed Resources
+
+Hi [Recipient/Team],
+
+During recent Prisma scans, we noticed alerts for missing labels on certain Google Cloud resources, such as Cloud DNS managed zones, which are automatically created when a GKE cluster is provisioned.
+
+We want to highlight that these resources are “under-the-hood” components managed by GKE and are not explicitly created or controlled by our Terraform code. Google Kubernetes Engine automatically provisions and manages these objects (e.g., DNS zones, firewall rules, IP addresses) to support cluster operations. Currently, Google Cloud does not provide a native way to apply labels during cluster creation for these dependent resources.
+
+Action taken / Mitigation steps:
+	•	We have documented these GKE-managed resources as exceptions to our tagging policy.
+	•	Where possible, we are implementing post-provisioning scripts (using gcloud/Terraform null_resource) to add labels after resource creation, but these labels may not always stay in sync with GKE lifecycle changes.
+	•	These resources are ephemeral and GKE-owned, and any manual modification may cause drift or unintended issues.
+
+Request:
+We propose to treat these specific GKE-managed resources as policy exceptions for labeling requirements and mark them accordingly in Prisma or our compliance dashboards.
+
+Please confirm if you agree with this approach, or let us know if additional documentation is required.
+
+Thanks & Regards,
+[Your Name]
+[Your Team]
+
+⸻
+
+Would you like me to make a shorter version for senior management or a more technical version with Terraform script reference for engineering teams?
 
 Example Provider Block
 
