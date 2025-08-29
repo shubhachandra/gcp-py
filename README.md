@@ -1,59 +1,46 @@
-Yes — you can use a self-signed certificate for BlueCat BAM and still connect Terraform over HTTPS, but there are some important caveats. Here’s how it works:
+Here’s a structured summary of the **pending actions, ownership, and ETA for Prod Discovery** based on your notes:
 
-⸻
+---
 
-1️⃣ Create a self-signed certificate
+### ✅ Completed
 
-You can generate it on the BlueCat server or your local machine:
+* **Folder, Project, VPC & Subnet, Firewall** → **Networking Team**
+* **CI Environment & Environment readiness** → **Landing Zone Team** (completed, but needs higher version of folder factory)
 
-# Generate private key
-openssl genrsa -out server.key 2048
+---
 
-# Generate self-signed certificate
-openssl req -new -x509 -key server.key -out server.crt -days 365 \
-  -subj "/C=IN/ST=Karnataka/L=Bengaluru/O=YourOrg/OU=IT/CN=100.120.34.96"
+### ⏳ Pending Actions
 
-	•	CN must match the IP address or hostname of your BlueCat instance.
-	•	This creates server.crt (public certificate) and server.key (private key).
+1. **VPC SC Creation**
 
-⸻
+   * **Owner**: VPC SC Team
+   * **ETA**: **Sep 15**
+   * **Notes**: Jira details available; team is also separating **Prod Discovery workspace** for VPC SC ETA.
 
-2️⃣ Upload to BlueCat
-	•	GUI: Admin → Server Administration → Manage HTTPS Certificates → Upload cert + private key.
-	•	CLI/SSH: Copy server.crt and server.key to /data/bam/certs/ and restart BAM:
+2. **Logging Project Creation**
 
-service bam restart
+   * **Owner**: Landing Zone Team
+   * **ETA**: Pending (dependent on other tasks)
+   * **Dependencies**: Networking-related setup.
 
+3. **Seed Account Creation**
 
-⸻
+   * **Owner**: Networking Team
+   * **ETA**: Pending
+   * **References**: PR and BLNC ticket shared.
 
-3️⃣ Configure Terraform with self-signed cert
+4. **DNS & Networking (Enabling Various Services)**
 
-Since it’s self-signed, Terraform will reject it unless you explicitly trust it:
+   * **Owner**: Networking Team
+   * **ETA**: Pending
+   * **References**: PR and BLNC ticket shared.
 
-provider "bluecat" {
-  server      = "100.120.34.96"
-  port        = 443
-  transport   = "https"
-  username    = "admin"
-  password    = "your-password"
-  cacert_file = "/path/to/server.crt" # Trust the self-signed cert
-  insecure    = false                 # Keep false for security
-}
+5. **Upgrade Folder Factory (Higher Version)**
 
-	•	cacert_file points to your self-signed cert so Terraform can trust it.
-	•	insecure = true is a workaround if you don’t want to use cacert_file, but it’s not recommended for production.
+   * **Owner**: Landing Zone Team
+   * **ETA**: Pending (no date provided)
+   * **Notes**: Required for CI/Environment readiness.
 
-⸻
+---
 
-✅ Notes / Caveats
-	1.	Self-signed certificates are fine for sandbox, lab, or testing environments.
-	2.	For production, it’s recommended to use a certificate signed by a trusted CA.
-	3.	Make sure the IP/hostname in the certificate matches what you use in Terraform; otherwise, you’ll get x509 errors.
-
-⸻
-
-If you want, I can write a step-by-step command sequence to generate a self-signed cert specifically for your BAM IP 100.120.34.96 and configure Terraform with it — ready to use.
-
-Do you want me to do that
-?
+👉 Would you like me to prepare this as a **status tracker table** (Action | Owner | ETA | Status | Dependencies/Notes) so you can drop it directly into Confluence/Jira?
