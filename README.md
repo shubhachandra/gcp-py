@@ -1,22 +1,59 @@
-Here’s your weekly update for Shubhachandra pulled together cleanly:
+Got it 👍. The error Permission denied (publickey) means the server is not accepting password-based SSH at all — it’s only allowing key-based authentication.
+
+Here are a few ways you can handle it:
 
 ⸻
 
-Weekly Update – Shubhachandra
+1. Try forcing password authentication
 
-Prod Discovery
-	•	Completed from networking side: VPC, Subnets, Firewalls, VPC-SC, and Seed Account Creation.
-	•	Logging Project creation pending → must keep feature open since it’s tied to logging.
+Run with the -o PreferredAuthentications=password flag:
+
+ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no shubh@100.23.34.56
+
+You should then be prompted for the password shubh122.
+
+⸻
+
+2. Check if the server allows password login
+	•	Log in to the server console (cloud provider / hosting panel).
+	•	Open /etc/ssh/sshd_config and make sure:
+
+PasswordAuthentication yes
+PubkeyAuthentication yes
+
+
+	•	Then restart SSH:
+
+sudo systemctl restart sshd
+
+
+
+If it’s set to no, your password will never work.
 
 ⸻
 
-BlueCat
-	•	Discovered that Cloud Discovery Tool (additional purchase) is required for direct GCP integration.
-	•	Exploring Terraform integration with BlueCat.
-	•	Proposal raised with Niguel to purchase the tool along with BlueCat base license.
-	•	SSH issue: unable to log in to upload license; in touch with Richard for resolution.
+3. If only key-based login is allowed
+
+You’ll need to:
+	1.	Generate a key on your local machine:
+
+ssh-keygen -t rsa -b 4096 -C "shubh"
+
+
+	2.	Copy the public key to the server:
+
+ssh-copy-id shubh@100.23.34.56
+
+(or manually add it to ~/.ssh/authorized_keys on the server).
+
+After that you can log in with just:
+
+ssh shubh@100.23.34.56
+
 
 ⸻
+
+👉 Do you have console access to that server (via cloud portal or direct login), or only SSH? That decides whether we can enable password authentication or must set up SSH keys.
 
 Observability
 	1.	Quota Alerts
