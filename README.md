@@ -1,4 +1,20 @@
-Good question 👍 Let me break this down clearly for you.
+Got it 👍 Here are the green tick mark points for how VPC-SC helps with cross-environment traffic:
+
+✅ Restricts service-to-service data movement – Blocks unapproved API calls across environments (e.g., Dev → Prod).
+
+✅ Egress rules control – Define exactly what outbound traffic between environments is allowed.
+
+✅ Ingress rules for trusted services – Only allow traffic from approved environments (e.g., QA → Prod, but not Dev).
+
+✅ Hybrid & multi-cloud protection – Treats external traffic as untrusted unless explicitly authorized.
+
+✅ Auditing & visibility – Logs all cross-perimeter attempts with reason codes like PERIMETER_VIOLATION.
+
+✅ Context-aware access – Enforces rules based on identity, device, and network location for finer control.
+
+⸻
+
+Do you also want me to create a one-slide diagram with these points mapped to Dev–QA–Prod environments so it’s presentation-ready?
 
 ⸻
 
