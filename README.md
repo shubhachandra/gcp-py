@@ -1,4 +1,38 @@
-Got it 👍 Here are the green tick mark points for how VPC-SC helps with cross-environment traffic:
+Good question 👍 Let’s connect VPC-SC to macro-segmentation:
+
+⸻
+
+How VPC-SC Helps in Macro-Segmentation
+
+✅ Perimeter Boundaries = Macro Segments
+	•	Each VPC-SC perimeter acts as a logical segment for an SDLC (Dev, QA, Prod, etc.).
+	•	This separates environments at the folder/project level.
+
+✅ Isolation Across Environments
+	•	Traffic between perimeters is blocked by default.
+	•	Prevents accidental or malicious data movement between Dev ↔ QA ↔ Prod.
+
+✅ Shared VPC Within Segment
+	•	Within a perimeter, projects (host + service projects) can communicate via Shared VPC.
+	•	Ensures collaboration within a segment while keeping strict boundaries outside.
+
+✅ Controlled Exceptions (Ingress/Egress Policies)
+	•	If cross-environment communication is required, it’s done via explicit policies.
+	•	Acts like firewall rules at the service boundary.
+
+✅ Macro Segmentation Layered with Network Segmentation
+	•	Network-level segmentation (VPC, subnet, firewall rules) + VPC-SC (service perimeter) = defense-in-depth.
+	•	Macro: Isolate whole environments (SDLC level).
+	•	Micro: Control at subnet / workload level inside the environment.
+
+⸻
+
+👉 In short:
+VPC-SC gives you macro-segmentation by isolating environments and controlling data movement at the service/API level, while traditional VPC/subnet design + IAM handles micro-segmentation.
+
+⸻
+
+Do you want me to convert this into PowerPoint-style points (slide-ready) like I did earlier, so you can directly use it in your deck?
 
 ✅ Restricts service-to-service data movement – Blocks unapproved API calls across environments (e.g., Dev → Prod).
 
