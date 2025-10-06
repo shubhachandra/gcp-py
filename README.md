@@ -1,217 +1,70 @@
-Perfect 👍 let’s build you a ready-to-use starter Terraform repo layout with two modules:
-	•	primary_blocks → creates all the reserved routable blocks for every tenant × SDLC × region
-	•	request_range → allows requesting new subnets (explicit CIDR or next-available) inside one of the primary blocks
-
-I’ll scaffold the folders, variables, and show example usage.
+Perfect 👍 Here’s your self-assessment written clearly with each major work item broken into the required three-part format (Situation → My Contribution → What We Achieved):
 
 ⸻
 
-📂 Folder layout
+1. IAM Policy Binding Quota Issue
 
-bluecat-terraform/
-├── main.tf
-├── providers.tf
-├── variables.tf
-├── outputs.tf
-├── terraform.tfvars
-└── modules/
-    ├── primary_blocks/
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    └── request_range/
-        ├── main.tf
-        ├── variables.tf
-        └── outputs.tf
+Situation:
+In March 2025, project creation and application onboarding were blocked due to hitting the IAM policy member binding quota limits in multiple projects.
 
+My Contribution:
+I investigated the root cause, explained the quota limitation and its business impact, and proposed both tactical (cleanup of unused bindings) and strategic (migration to group-based IAM bindings) solutions. I also worked closely with application teams to help them understand and implement the required IAM changes.
+
+What We Achieved:
+The issue was permanently resolved by implementing group-based IAM bindings, ensuring scalability and eliminating recurring project creation failures. This improved governance and reduced future operational overhead.
 
 ⸻
 
-🔹 Root files
+2. IP Address Management and Reclamation Process
 
-providers.tf
+Situation:
+The organization lacked an automated IPAM solution, and IP allocations were being manually tracked through SharePoint, leading to inefficiencies and inconsistent utilization.
 
-terraform {
-  required_providers {
-    bluecat = {
-      source  = "bluecatlabs/bluecat"
-      version = ">= 2.0.0"
-    }
-  }
-  required_version = ">= 1.4"
-}
+My Contribution:
+I took ownership of maintaining and updating the manual IP allocation sheet, introduced clear demarcation of IP ranges, and established a process for revoking unused IPs. I collaborated with Cloud Ops and application teams to implement an approval and communication workflow for reclamation.
 
-provider "bluecat" {
-  server           = var.bluecat_server
-  port             = var.bluecat_port
-  transport        = "https"
-  api_version      = "1"
-  username         = var.bluecat_username
-  password         = var.bluecat_password
-  encrypt_password = false
-}
-
-variables.tf
-
-variable "bluecat_server" {}
-variable "bluecat_port" { default = 443 }
-variable "bluecat_username" {}
-variable "bluecat_password" { sensitive = true }
-
-variable "tenants" {
-  type    = list(string)
-  default = ["ad-ent", "qa-ent"]
-}
-
-variable "sdlcs" {
-  type    = list(string)
-  default = ["prod", "core", "nonprod", "sandbox", "pdisco", "paa", "pci"]
-}
-
-variable "regions" {
-  type    = list(string)
-  default = ["us-central1", "us-east1", "us-east4", "us-south1"]
-}
-
-# Example primary routable ranges (seeded with sandbox example)
-# You can extend for each tenant|sdlc|region combo.
-variable "primary_ranges" {
-  type = map(string)
-  default = {
-    "ad-ent|sandbox|us-east1" = "100.120.0.0/16"
-    "qa-ent|sandbox|us-east1" = "100.121.0.0/16"
-  }
-}
-
-main.tf
-
-# Create tenant configurations
-resource "bluecat_configuration" "tenants" {
-  for_each   = toset(var.tenants)
-  name       = each.key
-  properties = "description=Terraform-managed config for ${each.key}"
-}
-
-# Create all primary routable blocks
-module "primary_blocks" {
-  source          = "./modules/primary_blocks"
-  primary_ranges  = var.primary_ranges
-}
-
-# Example request for a pupi range
-module "request_range_example" {
-  source            = "./modules/request_range"
-  tenant            = "ad-ent"
-  sdlc              = "sandbox"
-  region            = "us-east1"
-  range_type        = "pupi"
-  parent_block_cidr = "100.120.0.0/16"
-  desired_size      = 20   # /20
-}
-
+What We Achieved:
+Created a repeatable, auditable IP address management process, improving visibility and freeing up significant unused IP ranges. This initiative laid the foundation for future IPAM automation.
 
 ⸻
 
-🔹 Module: primary_blocks
+3. Composer Migration (Composer 2 → Composer 3)
 
-main.tf
+Situation:
+The Composer team planned to migrate over 300 environments to Composer 3, initially requesting one dedicated subnet per Composer instance, which risked IP range exhaustion.
 
-resource "bluecat_ipv4block" "primary" {
-  for_each      = var.primary_ranges
-  configuration = split("|", each.key)[0]   # tenant name
-  name          = replace(each.key, "|", "_")
-  address       = cidrhost(each.value, 0)
-  cidr          = each.value
-  properties    = "tenant=${split(\"|\", each.key)[0]},sdlc=${split(\"|\", each.key)[1]},region=${split(\"|\", each.key)[2]},range_type=routable"
-}
+My Contribution:
+I proposed using a shared subnet model combined with HNAT, explained the design benefits, and helped the team implement and validate the setup.
 
-variables.tf
-
-variable "primary_ranges" {
-  type        = map(string)
-  description = "Map of tenant|sdlc|region => CIDR block"
-}
-
-outputs.tf
-
-output "primary_blocks" {
-  value = bluecat_ipv4block.primary
-}
-
+What We Achieved:
+Optimized IP utilization, avoided subnet exhaustion, and provided a scalable model that supported all Composer environments efficiently.
 
 ⸻
 
-🔹 Module: request_range
+4. Private Service Connect (PSC) and Vertex AI Networking
 
-main.tf
+Situation:
+Teams faced issues setting up PSC for the network prediction service integrated with Vertex AI, including a critical issue where PSC consumer subnets were wrongly flagged due to Terraform apply behavior.
 
-# If desired_cidr provided, create explicit network
-resource "bluecat_ipv4network" "explicit" {
-  count         = var.desired_cidr != null ? 1 : 0
-  configuration = var.tenant
-  name          = "${var.tenant}_${var.sdlc}_${var.region}_${var.range_type}_${replace(var.desired_cidr, "/", "_")}"
-  cidr          = var.desired_cidr
-  properties    = "tenant=${var.tenant},sdlc=${var.sdlc},region=${var.region},range_type=${var.range_type},gcp_subnet=${var.gcp_subnet}"
-}
+My Contribution:
+I analyzed and identified the Terraform-related issue, provided technical guidance to correct the configuration, and shared learnings with the broader team through a brown-bag session.
 
-# Else request next-available from parent block
-resource "bluecat_ipv4network" "next_available" {
-  count         = var.desired_cidr == null ? 1 : 0
-  configuration = var.tenant
-  name          = "${var.tenant}_${var.sdlc}_${var.region}_${var.range_type}_next"
-  parent_block  = var.parent_block_cidr
-  size          = pow(2, 32 - var.desired_size)
-  allocated_id  = timestamp()
-  properties    = "tenant=${var.tenant},sdlc=${var.sdlc},region=${var.region},range_type=${var.range_type},gcp_subnet=${var.gcp_subnet}"
-}
-
-variables.tf
-
-variable "tenant" {}
-variable "sdlc" {}
-variable "region" {}
-variable "range_type" { description = "routable | pupi | nonroutable" }
-
-variable "desired_cidr" {
-  type    = string
-  default = null
-}
-
-variable "parent_block_cidr" {
-  type    = string
-  default = null
-}
-
-variable "desired_size" {
-  type    = number
-  default = null
-}
-
-variable "gcp_subnet" {
-  type    = string
-  default = ""
-}
-
-outputs.tf
-
-output "requested_network" {
-  value = {
-    explicit       = one(bluecat_ipv4network.explicit[*].cidr)
-    next_available = one(bluecat_ipv4network.next_available[*].cidr)
-  }
-}
-
+What We Achieved:
+Resolved the PSC configuration issue, improved reliability of PSC deployments, and enhanced team knowledge to prevent similar future incidents.
 
 ⸻
 
-✅ How it works
-	•	primary_blocks seeds all tenant/SDLC/region routable ranges.
-	•	request_range lets you ask for a new subnet:
-	•	If you supply desired_cidr, it creates exactly that.
-	•	If not, it asks BlueCat for the next-available subnet inside parent_block_cidr.
+5. Knowledge Sharing and Documentation
 
-Labels (properties) store: tenant, sdlc, region, range_type, GCP subnet reference.
+Situation:
+There was limited team awareness around network segmentation concepts and the current network design architecture.
+
+My Contribution:
+I conducted brown-bag sessions on PSC troubleshooting, micro and macro segmentation, and created detailed network architecture diagrams. I also contributed to the Prod Discovery setup for the AD-ENT environment.
+
+What We Achieved:
+Improved team understanding of network architecture and security segmentation. Enhanced documentation and onboarding resources for ongoing and future projects.
 
 ⸻
 
-👉 Do you want me to pre-populate the primary_ranges map for all tenants × 7 SDLC × 4 regions (56 entries) with placeholder CIDRs (like 10.x.y.0/16), so you can directly adjust them?
+Would you like me to make this version slightly shorter to fit Workday’s character limits (around 1500–2000 characters), or keep this detailed version for a manager review attachment/email?
