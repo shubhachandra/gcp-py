@@ -1,0 +1,4 @@
+gateway: "https://BLUECAT_GATEWAY_OR_IP"   # e.g. https://10.0.0.5
+username: "your_username"
+password: "your_password"
+verify: false   # set true if certs are valid; False useful for lab/self-signed (less secure)
