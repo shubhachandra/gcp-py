@@ -1,3 +1,44 @@
+import requests
+import yaml
+import sys
+
+# Load config
+with open("config.yml") as f:
+    cfg = yaml.safe_load(f)
+
+GATEWAY = cfg['gateway']
+USERNAME = cfg['username']
+PASSWORD = cfg['password']
+VERIFY_TLS = cfg.get('verify', True)
+
+def login():
+    url = f"{GATEWAY.rstrip('/')}/rest_login"
+    payload = {"username": USERNAME, "password": PASSWORD}
+    r = requests.post(url, json=payload, verify=VERIFY_TLS, timeout=15)
+    r.raise_for_status()
+    data = r.json()
+    token = data.get("access_token")
+    if not token:
+        print("Login failed. No token returned:", data)
+        sys.exit(1)
+    return token
+
+def create_configuration(token, config_name):
+    url = f"{GATEWAY.rstrip('/')}/v1/addConfiguration"
+    headers = {"auth": f"Basic {token}"}
+    payload = {"name": config_name, "properties": ""}
+    r = requests.post(url, headers=headers, json=payload, verify=VERIFY_TLS, timeout=15)
+    if r.status_code == 200:
+        print(f"✅ Configuration '{config_name}' created successfully!")
+        print("Response:", r.text)
+    else:
+        print(f"❌ Failed to create configuration '{config_name}'")
+        print("Status:", r.status_code, "Response:", r.text)
+
+if __name__ == "__main__":
+    token = login()
+    create_configuration(token, "test-iPam")
+
 # bluecat_simple.py
 import requests
 import yaml
